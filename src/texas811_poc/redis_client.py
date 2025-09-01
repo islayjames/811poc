@@ -2,7 +2,7 @@
 
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import redis
@@ -55,10 +55,11 @@ class RedisSessionManager:
         if not ttl:
             ttl = settings.redis_session_ttl
 
+        now = datetime.now(UTC)
         session_data = {
             "data": data,
-            "created_at": datetime.utcnow().isoformat(),
-            "expires_at": (datetime.utcnow() + timedelta(seconds=ttl)).isoformat(),
+            "created_at": now.isoformat(),
+            "expires_at": (now + timedelta(seconds=ttl)).isoformat(),
         }
 
         if self.redis_client and self.is_connected():
@@ -83,12 +84,12 @@ class RedisSessionManager:
             try:
                 session_key = f"session:{session_id}"
                 session_json = self.redis_client.get(session_key)
-                if session_json:
-                    session_data = json.loads(session_json)
+                if session_json is not None:
+                    session_data = json.loads(str(session_json))
                     # Check expiration (Redis should handle this, but double-check)
                     expires_at = datetime.fromisoformat(session_data["expires_at"])
-                    if datetime.utcnow() <= expires_at:
-                        return session_data["data"]
+                    if datetime.now(UTC) <= expires_at:
+                        return dict(session_data["data"])
                 return None
             except Exception as e:
                 logger.error(f"Redis session retrieval failed: {e}")
@@ -97,8 +98,8 @@ class RedisSessionManager:
         if session_id in self._memory_store:
             session_data = self._memory_store[session_id]
             expires_at = datetime.fromisoformat(session_data["expires_at"])
-            if datetime.utcnow() <= expires_at:
-                return session_data["data"]
+            if datetime.now(UTC) <= expires_at:
+                return dict(session_data["data"])
             else:
                 # Expired - clean up
                 del self._memory_store[session_id]
@@ -124,19 +125,19 @@ class RedisSessionManager:
 
     def list_sessions(self) -> list[str]:
         """List all active session IDs (for debugging/monitoring)."""
-        session_ids = []
+        session_ids: list[str] = []
 
         if self.redis_client and self.is_connected():
             try:
-                session_keys = self.redis_client.keys("session:*")
-                session_ids.extend(
-                    [key.replace("session:", "") for key in session_keys]
-                )
+                # Use scan_iter for safer iteration over keys
+                for key in self.redis_client.scan_iter(match="session:*"):
+                    if isinstance(key, str):
+                        session_ids.append(key.replace("session:", ""))
             except Exception as e:
                 logger.error(f"Redis session listing failed: {e}")
 
         # Add in-memory sessions
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         for session_id, session_data in self._memory_store.items():
             expires_at = datetime.fromisoformat(session_data["expires_at"])
             if now <= expires_at:
@@ -150,7 +151,7 @@ class RedisSessionManager:
         if not self._memory_store:
             return 0
 
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         expired_keys = []
 
         for session_id, session_data in self._memory_store.items():

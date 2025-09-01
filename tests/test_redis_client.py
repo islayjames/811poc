@@ -1,6 +1,6 @@
 """Test Redis session manager."""
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from src.texas811_poc.redis_client import RedisSessionManager
 
@@ -64,7 +64,7 @@ def test_session_expiration(clean_session_manager):
     # Manually expire the session by modifying the stored data
     if session_id in manager._memory_store:
         manager._memory_store[session_id]["expires_at"] = (
-            datetime.utcnow() - timedelta(seconds=1)
+            datetime.now(UTC) - timedelta(seconds=1)
         ).isoformat()
 
     # Should now be None (expired)
@@ -83,7 +83,7 @@ def test_cleanup_expired_sessions(clean_session_manager):
     # Manually expire one session
     if "expired-session" in manager._memory_store:
         manager._memory_store["expired-session"]["expires_at"] = (
-            datetime.utcnow() - timedelta(seconds=1)
+            datetime.now(UTC) - timedelta(seconds=1)
         ).isoformat()
 
     # Run cleanup
@@ -104,7 +104,7 @@ def test_session_data_serialization():
     complex_data = {
         "nested": {"deep": {"data": "value"}},
         "list": [1, 2, 3],
-        "datetime": datetime.utcnow().isoformat(),
+        "datetime": datetime.now(UTC).isoformat(),
         "boolean": True,
         "null_value": None,
     }

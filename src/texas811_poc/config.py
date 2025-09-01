@@ -16,29 +16,30 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False)
 
     # Server configuration
-    host: str = Field(default="127.0.0.1", env="HOST")
-    port: int = Field(default=8000, env="PORT")
+    host: str = Field(default="127.0.0.1")
+    port: int = Field(default=8000)
 
     # Redis configuration
-    redis_url: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
-    redis_session_ttl: int = Field(default=3600, env="REDIS_SESSION_TTL")  # 1 hour
+    redis_url: str = Field(default="redis://localhost:6379/0")
+    redis_session_ttl: int = Field(default=3600)  # 1 hour
 
     # Data storage paths
-    data_root: Path = Field(default=Path("data"), env="DATA_ROOT")
+    data_root: Path = Field(default=Path("data"))
     tickets_dir: Path = Path("data/tickets")
     sessions_dir: Path = Path("data/sessions")
     audit_dir: Path = Path("data/audit")
 
     # External API configuration
-    mapbox_token: str | None = Field(default=None, env="MAPBOX_TOKEN")
+    mapbox_token: str | None = Field(default=None)
 
     # POC limits
-    max_tickets: int = Field(default=20, env="MAX_TICKETS")
+    max_tickets: int = Field(default=20)
 
     model_config = {
         "env_file": ".env",
         "env_file_encoding": "utf-8",
         "extra": "ignore",  # Ignore extra environment variables
+        "env_prefix": "",  # No prefix for environment variables
     }
 
     def model_post_init(self, __context: dict[str, Any] | None) -> None:

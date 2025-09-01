@@ -1,9 +1,10 @@
 """Texas 811 POC Backend - FastAPI application."""
 
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -12,7 +13,7 @@ from .redis_client import session_manager
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> None:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan management."""
 
     # Initialize data directories
@@ -64,7 +65,7 @@ app.add_middleware(
 
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Any, exc: Exception) -> JSONResponse:
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Global exception handler with proper error formatting."""
     if isinstance(exc, HTTPException):
         return JSONResponse(
@@ -101,7 +102,7 @@ async def root() -> dict[str, Any]:
 @app.get("/health", tags=["Health"])
 async def health_check() -> JSONResponse:
     """Detailed health check for monitoring."""
-    health_status = {
+    health_status: dict[str, Any] = {
         "service": settings.app_name,
         "status": "healthy",
         "version": settings.app_version,
@@ -110,13 +111,14 @@ async def health_check() -> JSONResponse:
 
     # Check Redis/Session manager
     redis_healthy = session_manager.is_connected()
+    components = health_status["components"]
     if redis_healthy:
-        health_status["components"]["redis"] = {
+        components["redis"] = {
             "status": "healthy",
             "url": settings.redis_url,
         }
     else:
-        health_status["components"]["redis"] = {
+        components["redis"] = {
             "status": "fallback",
             "message": "Using in-memory session storage",
             "url": settings.redis_url,
@@ -132,7 +134,7 @@ async def health_check() -> JSONResponse:
         ]
     )
 
-    health_status["components"]["storage"] = {
+    components["storage"] = {
         "status": "healthy" if data_dirs_healthy else "unhealthy",
         "data_root": str(settings.data_root),
         "directories": {
