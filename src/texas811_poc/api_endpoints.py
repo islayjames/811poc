@@ -20,7 +20,7 @@ import logging
 import time
 import uuid
 from datetime import UTC, date, datetime, timedelta
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -125,8 +125,8 @@ def log_request(
     request: Request,
     endpoint: str,
     request_id: str,
-    session_id: Optional[str] = None,
-    ticket_id: Optional[str] = None,
+    session_id: str | None = None,
+    ticket_id: str | None = None,
 ) -> None:
     """Log API request details.
 
@@ -167,7 +167,7 @@ def log_response(
     processing_time: float,
     response_size: int = 0,
     validation_gaps_count: int = 0,
-    error_code: Optional[str] = None,
+    error_code: str | None = None,
 ) -> None:
     """Log API response details.
 

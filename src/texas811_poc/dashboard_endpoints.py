@@ -13,7 +13,6 @@ Focus on compliance officers and field managers operations.
 
 import logging
 from datetime import UTC, date, datetime
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -60,7 +59,7 @@ class CountdownInfo(BaseModel):
 
     days_until_start: int = Field(..., description="Days until lawful start date")
     days_until_expiry: int = Field(..., description="Days until ticket expires")
-    days_until_marking_expiry: Optional[int] = Field(
+    days_until_marking_expiry: int | None = Field(
         None, description="Days until markings expire"
     )
     can_start_today: bool = Field(..., description="Whether work can start today")
@@ -77,7 +76,7 @@ class CountdownInfo(BaseModel):
     requires_action: bool = Field(
         ..., description="Whether ticket requires immediate action"
     )
-    action_required: Optional[str] = Field(
+    action_required: str | None = Field(
         None, description="Description of required action"
     )
     status_description: str = Field(
@@ -94,25 +93,25 @@ class TicketDetailResponse(BaseModel):
     county: str
     city: str
     address: str
-    cross_street: Optional[str] = None
+    cross_street: str | None = None
     work_description: str
-    caller_name: Optional[str] = None
-    caller_company: Optional[str] = None
-    caller_phone: Optional[str] = None
-    caller_email: Optional[str] = None
-    excavator_company: Optional[str] = None
-    excavator_address: Optional[str] = None
-    excavator_phone: Optional[str] = None
-    work_start_date: Optional[date] = None
-    work_duration_days: Optional[int] = None
-    work_type: Optional[str] = None
-    remarks: Optional[str] = None
-    gps_lat: Optional[float] = None
-    gps_lng: Optional[float] = None
-    lawful_start_date: Optional[date] = None
-    ticket_expires_date: Optional[date] = None
-    marking_valid_until: Optional[date] = None
-    submitted_at: Optional[datetime] = None
+    caller_name: str | None = None
+    caller_company: str | None = None
+    caller_phone: str | None = None
+    caller_email: str | None = None
+    excavator_company: str | None = None
+    excavator_address: str | None = None
+    excavator_phone: str | None = None
+    work_start_date: date | None = None
+    work_duration_days: int | None = None
+    work_type: str | None = None
+    remarks: str | None = None
+    gps_lat: float | None = None
+    gps_lng: float | None = None
+    lawful_start_date: date | None = None
+    ticket_expires_date: date | None = None
+    marking_valid_until: date | None = None
+    submitted_at: datetime | None = None
     created_at: datetime
     updated_at: datetime
     audit_history: list[AuditEventModel]
@@ -125,7 +124,7 @@ class MarkSubmittedRequest(BaseModel):
     submission_reference: str = Field(
         ..., min_length=1, description="Texas811 submission reference"
     )
-    notes: Optional[str] = Field(None, description="Additional submission notes")
+    notes: str | None = Field(None, description="Additional submission notes")
 
 
 class MarkSubmittedResponse(BaseModel):
@@ -147,7 +146,7 @@ class MarkResponsesInRequest(BaseModel):
         ..., ge=1, description="Number of utility responses received"
     )
     all_clear: bool = Field(..., description="Whether all responses were clear to dig")
-    notes: Optional[str] = Field(None, description="Response details or notes")
+    notes: str | None = Field(None, description="Response details or notes")
 
 
 class MarkResponsesInResponse(BaseModel):
@@ -166,8 +165,8 @@ class MarkResponsesInResponse(BaseModel):
 class CancelTicketRequest(BaseModel):
     """Request model for cancelling ticket."""
 
-    reason: Optional[str] = Field(None, description="Reason for cancellation")
-    confirm_deletion: Optional[bool] = Field(
+    reason: str | None = Field(None, description="Reason for cancellation")
+    confirm_deletion: bool | None = Field(
         False, description="Confirm permanent deletion"
     )
 
@@ -190,7 +189,7 @@ class CancelTicketResponse(BaseModel):
     ticket_id: str
     action: str  # "cancelled" or "deleted"
     reason: str
-    cancelled_at: Optional[datetime] = None
+    cancelled_at: datetime | None = None
     audit_event_created: bool = True
 
 
@@ -319,13 +318,13 @@ def parse_date_filter(date_str: str) -> datetime:
 @router.get("/tickets", response_model=TicketListResponse)
 async def get_tickets(
     api_key: str = Depends(verify_api_key),
-    status: Optional[str] = Query(None, description="Filter by ticket status"),
-    county: Optional[str] = Query(None, description="Filter by county"),
-    city: Optional[str] = Query(None, description="Filter by city"),
-    created_since: Optional[str] = Query(
+    status: str | None = Query(None, description="Filter by ticket status"),
+    county: str | None = Query(None, description="Filter by county"),
+    city: str | None = Query(None, description="Filter by city"),
+    created_since: str | None = Query(
         None, description="Filter by creation date (ISO format)"
     ),
-    updated_since: Optional[str] = Query(
+    updated_since: str | None = Query(
         None, description="Filter by update date (ISO format)"
     ),
     limit: int = Query(

@@ -13,7 +13,7 @@ Follows Texas 811 legal requirements for timing and ticket lifecycle management.
 """
 
 from datetime import date, datetime, timedelta
-from typing import Any, Optional, Union
+from typing import Any
 
 import pytz
 
@@ -143,7 +143,7 @@ def add_business_days(start_date: date, business_days: int) -> date:
     return current_date
 
 
-def calculate_lawful_start_date(submission_time: Optional[datetime] = None) -> date:
+def calculate_lawful_start_date(submission_time: datetime | None = None) -> date:
     """
     Calculate the lawful start date for work (2 business days minimum).
 
@@ -163,7 +163,7 @@ def calculate_lawful_start_date(submission_time: Optional[datetime] = None) -> d
     return add_business_days(submission_date, 2)
 
 
-def calculate_ticket_expiration(submission_date: Union[date, datetime]) -> date:
+def calculate_ticket_expiration(submission_date: date | datetime) -> date:
     """
     Calculate when a ticket expires (14 days from submission).
 
@@ -187,8 +187,8 @@ def calculate_ticket_expiration(submission_date: Union[date, datetime]) -> date:
 
 
 def calculate_marking_validity(
-    response_date: Optional[Union[date, datetime, list[Union[date, datetime]]]],
-) -> Optional[date]:
+    response_date: date | datetime | list[date | datetime] | None,
+) -> date | None:
     """
     Calculate when markings expire (14 days from positive response).
 
@@ -233,7 +233,7 @@ def calculate_marking_validity(
     return latest_response + timedelta(days=14)
 
 
-def validate_future_date(check_date: Optional[date], field_name: str) -> bool:
+def validate_future_date(check_date: date | None, field_name: str) -> bool:
     """
     Validate that a date is not in the past.
 
@@ -405,7 +405,7 @@ class ComplianceCalculator:
         self._holiday_cache = {}
 
     def calculate_lawful_start_date(
-        self, submission_time: Optional[datetime] = None
+        self, submission_time: datetime | None = None
     ) -> date:
         """Calculate lawful start date with timezone handling."""
         if submission_time is None:
@@ -418,16 +418,14 @@ class ComplianceCalculator:
 
         return calculate_lawful_start_date(submission_time)
 
-    def calculate_ticket_expiration(
-        self, submission_date: Union[date, datetime]
-    ) -> date:
+    def calculate_ticket_expiration(self, submission_date: date | datetime) -> date:
         """Calculate ticket expiration date."""
         return calculate_ticket_expiration(submission_date)
 
     def calculate_marking_validity(
         self,
-        response_date: Optional[Union[date, datetime, list[Union[date, datetime]]]],
-    ) -> Optional[date]:
+        response_date: date | datetime | list[date | datetime] | None,
+    ) -> date | None:
         """Calculate marking validity expiration."""
         return calculate_marking_validity(response_date)
 
@@ -437,7 +435,7 @@ class ComplianceCalculator:
         """Get comprehensive ticket lifecycle status."""
         return get_ticket_lifecycle_status(ticket_data)
 
-    def validate_future_date(self, check_date: Optional[date], field_name: str) -> bool:
+    def validate_future_date(self, check_date: date | None, field_name: str) -> bool:
         """Validate date is not in past."""
         return validate_future_date(check_date, field_name)
 

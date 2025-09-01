@@ -11,12 +11,21 @@ from fastapi.responses import JSONResponse
 from .api_endpoints import router as api_router
 from .config import settings
 from .dashboard_endpoints import router as dashboard_router
+from .logging_config import (
+    MetricsMiddleware,
+    RequestLoggingMiddleware,
+    health_metrics,
+    setup_production_monitoring,
+)
 from .redis_client import session_manager
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan management."""
+
+    # Setup production monitoring and logging
+    setup_production_monitoring()
 
     # Initialize data directories
     settings.data_root.mkdir(parents=True, exist_ok=True)
@@ -27,15 +36,24 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     print(f"✓ Data directories initialized at {settings.data_root}")
 
     # Session manager initializes Redis connection automatically
-    print(
-        f"✓ Session manager initialized (Redis: {'enabled' if session_manager.is_connected() else 'fallback mode'})"
-    )
+    redis_status = "enabled" if session_manager.is_connected() else "fallback mode"
+    print(f"✓ Session manager initialized (Redis: {redis_status})")
+
+    # Initialize metrics
+    health_metrics.update_health_check()
+    print("✓ Production monitoring initialized")
 
     yield
 
     # Cleanup expired in-memory sessions
     session_manager.cleanup_expired()
     print("✓ Session cleanup completed")
+
+    # Log final metrics
+    final_metrics = health_metrics.get_metrics()
+    print(
+        f"✓ Final metrics: {final_metrics['total_requests']} requests, {final_metrics['total_errors']} errors"
+    )
 
 
 # FastAPI application
@@ -53,17 +71,45 @@ app = FastAPI(
 )
 
 # CORS middleware for CustomGPT integration
+# Production-ready CORS configuration
+cors_origins = [
+    "https://chatgpt.com",
+    "https://chat.openai.com",
+]
+
+# Add development origins only in debug mode
+if settings.debug:
+    cors_origins.extend(
+        [
+            "http://localhost:*",
+            "http://localhost:3000",
+            "http://127.0.0.1:*",
+            "http://127.0.0.1:3000",
+        ]
+    )
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://chatgpt.com",
-        "https://chat.openai.com",
-        "http://localhost:*",
-    ],
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "Accept",
+        "Origin",
+        "User-Agent",
+        "DNT",
+        "Cache-Control",
+        "X-Requested-With",
+    ],
+    expose_headers=["Content-Length", "X-Total-Count", "X-Request-ID"],
+    max_age=86400,  # 24 hours for preflight cache
 )
+
+# Add production monitoring middleware
+app.add_middleware(RequestLoggingMiddleware)
+app.add_middleware(MetricsMiddleware)
 
 # Include API routes
 app.include_router(api_router)
@@ -72,24 +118,109 @@ app.include_router(dashboard_router)
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Global exception handler with proper error formatting."""
+    """Global exception handler with proper error formatting and logging."""
+    import time
+    import traceback
+
+    # Generate error ID for tracking
+    error_id = f"err_{int(time.time())}_{hash(str(exc)) % 10000:04d}"
+
     if isinstance(exc, HTTPException):
+        # Handle known HTTP exceptions
+        error_response = {
+            "error": True,
+            "message": exc.detail,
+            "type": "http_error",
+            "error_id": error_id,
+        }
+
+        # Log HTTP errors in production for monitoring
+        if not settings.debug:
+            print(
+                f"HTTP Error {exc.status_code}: {exc.detail} | ID: {error_id} | Path: {request.url.path}"
+            )
+
         return JSONResponse(
             status_code=exc.status_code,
-            content={"error": True, "message": exc.detail, "type": "http_error"},
+            content=error_response,
         )
 
-    # Log unexpected errors in production
+    # Handle validation errors from Pydantic
+    from pydantic import ValidationError
+
+    if isinstance(exc, ValidationError):
+        error_response = {
+            "error": True,
+            "message": "Validation error",
+            "type": "validation_error",
+            "error_id": error_id,
+            "details": exc.errors() if settings.debug else "Invalid input data",
+        }
+
+        if not settings.debug:
+            print(
+                f"Validation Error: {len(exc.errors())} field errors | ID: {error_id} | Path: {request.url.path}"
+            )
+
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content=error_response,
+        )
+
+    # Handle Redis connection errors gracefully
+    from redis.exceptions import RedisError
+
+    if isinstance(exc, RedisError):
+        error_response = {
+            "error": True,
+            "message": "Session service temporarily unavailable",
+            "type": "service_error",
+            "error_id": error_id,
+        }
+
+        print(
+            f"Redis Error: {type(exc).__name__} | ID: {error_id} | Falling back to in-memory sessions"
+        )
+
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content=error_response,
+        )
+
+    # Handle unexpected errors
+    error_response = {
+        "error": True,
+        "message": "Internal server error" if not settings.debug else str(exc),
+        "type": "internal_error",
+        "error_id": error_id,
+    }
+
+    # Enhanced logging for production debugging
     if not settings.debug:
-        print(f"Unexpected error: {exc}")
+        print(
+            f"CRITICAL ERROR: {type(exc).__name__}: {str(exc)[:200]} | ID: {error_id}"
+        )
+        print(f"Path: {request.url.path} | Method: {request.method}")
+        print(f"Headers: {dict(request.headers)}")
+        if hasattr(request, "body"):
+            try:
+                # Try to log request body for debugging (truncated)
+                body = await request.body()
+                if body:
+                    print(
+                        f"Body (first 200 chars): {body.decode('utf-8', errors='ignore')[:200]}"
+                    )
+            except Exception:
+                print("Could not read request body")
+    else:
+        # In debug mode, include full traceback
+        error_response["traceback"] = traceback.format_exc()
+        print(f"Debug Error: {exc}")
+        traceback.print_exc()
 
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={
-            "error": True,
-            "message": "Internal server error" if not settings.debug else str(exc),
-            "type": "internal_error",
-        },
+        content=error_response,
     )
 
 
@@ -108,11 +239,15 @@ async def root() -> dict[str, Any]:
 @app.get("/health", tags=["Health"])
 async def health_check() -> JSONResponse:
     """Detailed health check for monitoring."""
+    # Update health check timestamp
+    health_metrics.update_health_check()
+
     health_status: dict[str, Any] = {
         "service": settings.app_name,
         "status": "healthy",
         "version": settings.app_version,
         "components": {},
+        "metrics": health_metrics.get_metrics(),
     }
 
     # Check Redis/Session manager
@@ -150,8 +285,25 @@ async def health_check() -> JSONResponse:
         },
     }
 
-    # Overall health
-    overall_healthy = data_dirs_healthy  # Redis is optional for POC
+    # Check error rate for overall health
+    metrics = health_status["metrics"]
+    error_rate = metrics["error_rate"]
+
+    # Consider unhealthy if error rate is above 10% and we have sufficient requests
+    if error_rate > 0.1 and metrics["total_requests"] > 10:
+        components["error_rate"] = {
+            "status": "unhealthy",
+            "error_rate": error_rate,
+            "total_errors": metrics["total_errors"],
+        }
+        overall_healthy = False
+    else:
+        components["error_rate"] = {
+            "status": "healthy",
+            "error_rate": error_rate,
+        }
+        overall_healthy = data_dirs_healthy
+
     health_status["status"] = "healthy" if overall_healthy else "unhealthy"
 
     status_code = (

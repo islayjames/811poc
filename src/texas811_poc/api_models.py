@@ -11,7 +11,7 @@ and proper validation for Texas811 requirements.
 """
 
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -31,9 +31,7 @@ class APIResponse(BaseModel):
     timestamp: datetime = Field(
         description="Server timestamp when response was generated"
     )
-    request_id: Optional[str] = Field(
-        None, description="Unique request ID for debugging"
-    )
+    request_id: str | None = Field(None, description="Unique request ID for debugging")
 
 
 # Error Response Models
@@ -43,10 +41,8 @@ class APIError(BaseModel):
     error: bool = Field(True, description="Indicates this is an error response")
     message: str = Field(description="Human-readable error message")
     error_code: str = Field(description="Machine-readable error code")
-    details: Optional[dict[str, Any]] = Field(
-        None, description="Additional error details"
-    )
-    request_id: Optional[str] = Field(None, description="Request ID for debugging")
+    details: dict[str, Any] | None = Field(None, description="Additional error details")
+    request_id: str | None = Field(None, description="Request ID for debugging")
 
 
 class ValidationError(APIError):
@@ -55,7 +51,7 @@ class ValidationError(APIError):
     validation_errors: list[dict[str, Any]] = Field(
         description="List of field validation errors"
     )
-    validation_gaps: Optional[list[ValidationGapModel]] = Field(
+    validation_gaps: list[ValidationGapModel] | None = Field(
         None, description="Current validation gaps"
     )
 
@@ -87,18 +83,18 @@ class CreateTicketRequest(BaseModel):
         min_length=1,
         max_length=200,
     )
-    cross_street: Optional[str] = Field(
+    cross_street: str | None = Field(
         None, description="Nearest cross street for location clarity", max_length=100
     )
 
     # GPS coordinates (alternative/supplement to address)
-    gps_lat: Optional[float] = Field(
+    gps_lat: float | None = Field(
         None,
         ge=25.0,
         le=37.0,
         description="GPS latitude (Texas bounds approximately 25-37°N)",
     )
-    gps_lng: Optional[float] = Field(
+    gps_lng: float | None = Field(
         None,
         ge=-107.0,
         le=-93.0,
@@ -113,58 +109,58 @@ class CreateTicketRequest(BaseModel):
     )
 
     # Contact Information
-    caller_name: Optional[str] = Field(
+    caller_name: str | None = Field(
         None, description="Name of person calling in locate request", max_length=100
     )
-    caller_company: Optional[str] = Field(
+    caller_company: str | None = Field(
         None, description="Company requesting the locate", max_length=100
     )
-    caller_phone: Optional[str] = Field(
+    caller_phone: str | None = Field(
         None, description="Contact phone number for locate coordination", max_length=20
     )
-    caller_email: Optional[str] = Field(
+    caller_email: str | None = Field(
         None, description="Email for locate updates and notifications", max_length=100
     )
 
     # Excavator Information
-    excavator_company: Optional[str] = Field(
+    excavator_company: str | None = Field(
         None, description="Company performing the excavation work", max_length=100
     )
-    excavator_address: Optional[str] = Field(
+    excavator_address: str | None = Field(
         None, description="Excavator business address", max_length=200
     )
-    excavator_phone: Optional[str] = Field(
+    excavator_phone: str | None = Field(
         None, description="Excavator contact phone number", max_length=20
     )
 
     # Work Details
-    work_start_date: Optional[date] = Field(
+    work_start_date: date | None = Field(
         None,
         description="Requested work start date (must be at least 2 business days future)",
     )
-    work_duration_days: Optional[int] = Field(
+    work_duration_days: int | None = Field(
         None, ge=1, le=30, description="Expected duration of work in days"
     )
-    work_type: Optional[str] = Field(
+    work_type: str | None = Field(
         None, description="Type of work (Normal, Emergency, etc.)", max_length=50
     )
 
     # Additional Details
-    remarks: Optional[str] = Field(
+    remarks: str | None = Field(
         None, description="Additional remarks or special instructions", max_length=500
     )
 
     # Work Method Flags
-    white_lining_complete: Optional[bool] = Field(
+    white_lining_complete: bool | None = Field(
         None, description="Has white lining been completed?"
     )
-    boring_crossing: Optional[bool] = Field(
+    boring_crossing: bool | None = Field(
         None, description="Will work involve boring/crossing utilities?"
     )
-    explosives_used: Optional[bool] = Field(
+    explosives_used: bool | None = Field(
         None, description="Will explosives be used in the work?"
     )
-    hand_digging_only: Optional[bool] = Field(
+    hand_digging_only: bool | None = Field(
         None, description="Hand digging only (no mechanical excavation)?"
     )
 
@@ -181,14 +177,14 @@ class CreateTicketResponse(APIResponse):
     city: str
     address: str
     work_description: str
-    cross_street: Optional[str] = None
+    cross_street: str | None = None
 
     # Geocoded coordinates (if available)
-    gps_lat: Optional[float] = None
-    gps_lng: Optional[float] = None
+    gps_lat: float | None = None
+    gps_lng: float | None = None
 
     # Generated geometry
-    geometry: Optional[GeometryModel] = Field(
+    geometry: GeometryModel | None = Field(
         None, description="Generated GeoJSON geometry for work area"
     )
 
@@ -196,15 +192,15 @@ class CreateTicketResponse(APIResponse):
     validation_gaps: list[ValidationGapModel] = Field(
         description="Current validation gaps that need to be resolved"
     )
-    next_prompt: Optional[str] = Field(
+    next_prompt: str | None = Field(
         None, description="Next conversational prompt for CustomGPT to ask user"
     )
 
     # Calculated compliance dates
-    lawful_start_date: Optional[date] = Field(
+    lawful_start_date: date | None = Field(
         None, description="Earliest lawful work start date (+2 business days)"
     )
-    ticket_expires_date: Optional[date] = Field(
+    ticket_expires_date: date | None = Field(
         None, description="Date when ticket expires (14 days from submission)"
     )
 
@@ -220,35 +216,35 @@ class UpdateTicketRequest(BaseModel):
     # Any field from the original ticket can be updated
     # Using Optional for all fields since updates are partial
 
-    county: Optional[str] = Field(None, min_length=1, max_length=50)
-    city: Optional[str] = Field(None, min_length=1, max_length=100)
-    address: Optional[str] = Field(None, min_length=1, max_length=200)
-    cross_street: Optional[str] = Field(None, max_length=100)
+    county: str | None = Field(None, min_length=1, max_length=50)
+    city: str | None = Field(None, min_length=1, max_length=100)
+    address: str | None = Field(None, min_length=1, max_length=200)
+    cross_street: str | None = Field(None, max_length=100)
 
-    gps_lat: Optional[float] = Field(None, ge=25.0, le=37.0)
-    gps_lng: Optional[float] = Field(None, ge=-107.0, le=-93.0)
+    gps_lat: float | None = Field(None, ge=25.0, le=37.0)
+    gps_lng: float | None = Field(None, ge=-107.0, le=-93.0)
 
-    work_description: Optional[str] = Field(None, min_length=1, max_length=1000)
+    work_description: str | None = Field(None, min_length=1, max_length=1000)
 
-    caller_name: Optional[str] = Field(None, max_length=100)
-    caller_company: Optional[str] = Field(None, max_length=100)
-    caller_phone: Optional[str] = Field(None, max_length=20)
-    caller_email: Optional[str] = Field(None, max_length=100)
+    caller_name: str | None = Field(None, max_length=100)
+    caller_company: str | None = Field(None, max_length=100)
+    caller_phone: str | None = Field(None, max_length=20)
+    caller_email: str | None = Field(None, max_length=100)
 
-    excavator_company: Optional[str] = Field(None, max_length=100)
-    excavator_address: Optional[str] = Field(None, max_length=200)
-    excavator_phone: Optional[str] = Field(None, max_length=20)
+    excavator_company: str | None = Field(None, max_length=100)
+    excavator_address: str | None = Field(None, max_length=200)
+    excavator_phone: str | None = Field(None, max_length=20)
 
-    work_start_date: Optional[date] = None
-    work_duration_days: Optional[int] = Field(None, ge=1, le=30)
-    work_type: Optional[str] = Field(None, max_length=50)
+    work_start_date: date | None = None
+    work_duration_days: int | None = Field(None, ge=1, le=30)
+    work_type: str | None = Field(None, max_length=50)
 
-    remarks: Optional[str] = Field(None, max_length=500)
+    remarks: str | None = Field(None, max_length=500)
 
-    white_lining_complete: Optional[bool] = None
-    boring_crossing: Optional[bool] = None
-    explosives_used: Optional[bool] = None
-    hand_digging_only: Optional[bool] = None
+    white_lining_complete: bool | None = None
+    boring_crossing: bool | None = None
+    explosives_used: bool | None = None
+    hand_digging_only: bool | None = None
 
 
 class UpdateTicketResponse(APIResponse):
@@ -263,49 +259,49 @@ class UpdateTicketResponse(APIResponse):
     city: str
     address: str
     work_description: str
-    cross_street: Optional[str] = None
+    cross_street: str | None = None
 
-    gps_lat: Optional[float] = None
-    gps_lng: Optional[float] = None
+    gps_lat: float | None = None
+    gps_lng: float | None = None
 
     # Contact Information
-    caller_name: Optional[str] = None
-    caller_company: Optional[str] = None
-    caller_phone: Optional[str] = None
-    caller_email: Optional[str] = None
+    caller_name: str | None = None
+    caller_company: str | None = None
+    caller_phone: str | None = None
+    caller_email: str | None = None
 
     # Excavator Information
-    excavator_company: Optional[str] = None
-    excavator_address: Optional[str] = None
-    excavator_phone: Optional[str] = None
+    excavator_company: str | None = None
+    excavator_address: str | None = None
+    excavator_phone: str | None = None
 
     # Work Details
-    work_start_date: Optional[date] = None
-    work_duration_days: Optional[int] = None
-    work_type: Optional[str] = None
+    work_start_date: date | None = None
+    work_duration_days: int | None = None
+    work_type: str | None = None
 
     # Additional Details
-    remarks: Optional[str] = None
+    remarks: str | None = None
 
     # Work Method Flags
-    white_lining_complete: Optional[bool] = None
-    boring_crossing: Optional[bool] = None
-    explosives_used: Optional[bool] = None
-    hand_digging_only: Optional[bool] = None
+    white_lining_complete: bool | None = None
+    boring_crossing: bool | None = None
+    explosives_used: bool | None = None
+    hand_digging_only: bool | None = None
 
-    geometry: Optional[GeometryModel] = None
+    geometry: GeometryModel | None = None
 
     # Updated validation results
     validation_gaps: list[ValidationGapModel] = Field(
         description="Current validation gaps after update"
     )
-    next_prompt: Optional[str] = Field(
+    next_prompt: str | None = Field(
         None, description="Next conversational prompt (if gaps remain)"
     )
 
     # Recalculated compliance dates
-    lawful_start_date: Optional[date] = None
-    ticket_expires_date: Optional[date] = None
+    lawful_start_date: date | None = None
+    ticket_expires_date: date | None = None
 
     # Update tracking
     updated_fields: list[str] = Field(
@@ -323,7 +319,7 @@ class ConfirmTicketRequest(BaseModel):
     # Confirmation endpoint typically doesn't need request body
     # But we can include optional final confirmation fields
 
-    final_remarks: Optional[str] = Field(
+    final_remarks: str | None = Field(
         None, description="Final remarks before submission", max_length=500
     )
 
@@ -415,10 +411,10 @@ class RequestLogEntry(BaseModel):
     request_id: str
     endpoint: str
     method: str
-    session_id: Optional[str]
-    ticket_id: Optional[str]
-    user_agent: Optional[str]
-    ip_address: Optional[str]
+    session_id: str | None
+    ticket_id: str | None
+    user_agent: str | None
+    ip_address: str | None
     request_size_bytes: int
     timestamp: datetime
 
@@ -431,5 +427,5 @@ class ResponseLogEntry(BaseModel):
     response_size_bytes: int
     processing_time_ms: float
     validation_gaps_count: int
-    error_code: Optional[str]
+    error_code: str | None
     timestamp: datetime
