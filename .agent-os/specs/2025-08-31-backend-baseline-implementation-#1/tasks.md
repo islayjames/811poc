@@ -43,23 +43,23 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 4.6 Create confidence scoring for generated geometries
   - [x] 4.7 Verify all GIS tests pass with real address and GPS data
 
-- [ ] 5. Compliance Date Calculator Implementation
-  - [ ] 5.1 Write tests for business day calculations and date logic
-  - [ ] 5.2 Implement 2 business day minimum calculation
-  - [ ] 5.3 Create simple hardcoded Texas holiday list for POC
-  - [ ] 5.4 Implement 14-day validity window calculation
-  - [ ] 5.5 Create ticket lifecycle status calculations
-  - [ ] 5.6 Implement past date prevention for ticket confirmation
-  - [ ] 5.7 Verify all compliance date tests pass
+- [x] 5. Compliance Date Calculator Implementation
+  - [x] 5.1 Write tests for business day calculations and date logic
+  - [x] 5.2 Implement 2 business day minimum calculation
+  - [x] 5.3 Create simple hardcoded Texas holiday list for POC
+  - [x] 5.4 Implement 14-day validity window calculation
+  - [x] 5.5 Create ticket lifecycle status calculations
+  - [x] 5.6 Implement past date prevention for ticket confirmation
+  - [x] 5.7 Verify all compliance date tests pass
 
-- [ ] 6. Session Management and Ticket State
-  - [ ] 6.1 Write tests for Redis session management and state tracking
-  - [ ] 6.2 Implement Redis session storage with TTL for CustomGPT workflows
-  - [ ] 6.3 Create ticket state management (draft, validated, confirmed, submitted)
-  - [ ] 6.4 Implement field locking for confirmed tickets
-  - [ ] 6.5 Create simple audit trail logging to JSON files
-  - [ ] 6.6 Implement ticket expiration status calculations
-  - [ ] 6.7 Verify all session and state management tests pass
+- [x] 6. Session Management and Ticket State
+  - [x] 6.1 Write tests for Redis session management and state tracking
+  - [x] 6.2 Implement Redis session storage with TTL for CustomGPT workflows
+  - [x] 6.3 Create ticket state management (draft, validated, confirmed, submitted)
+  - [x] 6.4 Implement field locking for confirmed tickets
+  - [x] 6.5 Create simple audit trail logging to JSON files
+  - [x] 6.6 Implement ticket expiration status calculations
+  - [x] 6.7 Verify all session and state management tests pass
 
 - [x] 7. CustomGPT API Endpoints Implementation
   - [x] 7.1 Write tests for CustomGPT API contract and responses

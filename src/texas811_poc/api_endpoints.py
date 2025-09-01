@@ -36,6 +36,7 @@ from texas811_poc.api_models import (
     UpdateTicketResponse,
     ValidationError,
 )
+from texas811_poc.compliance import ComplianceCalculator
 from texas811_poc.config import settings
 from texas811_poc.geocoding import GeocodingService, GeofenceBuilder, GeometryGenerator
 from texas811_poc.models import (
@@ -67,6 +68,7 @@ validation_engine = ValidationEngine()
 geocoding_service = GeocodingService()
 geometry_generator = GeometryGenerator()
 geofence_builder = GeofenceBuilder()
+compliance_calculator = ComplianceCalculator()
 
 # API Router
 router = APIRouter(prefix="/tickets", tags=["CustomGPT Integration"])
@@ -197,42 +199,7 @@ def log_response(
         logger.error(f"Failed to log response: {e}")
 
 
-# Business date calculation utilities
-def calculate_lawful_start_date(reference_date: date = None) -> date:
-    """Calculate earliest lawful start date (+2 business days).
-
-    Args:
-        reference_date: Reference date (defaults to today)
-
-    Returns:
-        Earliest lawful start date per Texas811 requirements
-    """
-    if reference_date is None:
-        reference_date = date.today()
-
-    # Add 2 business days
-    business_days_added = 0
-    current_date = reference_date
-
-    while business_days_added < 2:
-        current_date += timedelta(days=1)
-        # Skip weekends (Monday=0, Sunday=6)
-        if current_date.weekday() < 5:  # Monday-Friday
-            business_days_added += 1
-
-    return current_date
-
-
-def calculate_ticket_expiration(lawful_start: date) -> date:
-    """Calculate ticket expiration date (14 days from lawful start).
-
-    Args:
-        lawful_start: Lawful start date
-
-    Returns:
-        Ticket expiration date
-    """
-    return lawful_start + timedelta(days=14)
+# Compliance calculations are now handled by ComplianceCalculator
 
 
 # Geocoding and geometry utilities
@@ -292,9 +259,10 @@ def generate_submission_packet(ticket: TicketModel) -> dict[str, Any]:
     Returns:
         Texas811-formatted submission packet
     """
-    # Calculate compliance dates
-    lawful_start = calculate_lawful_start_date()
-    ticket_expires = calculate_ticket_expiration(lawful_start)
+    # Calculate compliance dates using ticket's submitted time or current time
+    submission_time = ticket.submitted_at or datetime.now(UTC)
+    lawful_start = compliance_calculator.calculate_lawful_start_date(submission_time)
+    ticket_expires = compliance_calculator.calculate_ticket_expiration(submission_time)
 
     packet = {
         "texas811_fields": {
@@ -392,10 +360,14 @@ async def create_ticket(
         # Process geocoding if needed
         ticket_data = process_geocoding(ticket_data)
 
-        # Calculate compliance dates
-        lawful_start = calculate_lawful_start_date()
-        ticket_data["lawful_start_date"] = lawful_start
-        ticket_data["ticket_expires_date"] = calculate_ticket_expiration(lawful_start)
+        # Calculate compliance dates using new compliance calculator
+        created_time = datetime.now(UTC)
+        ticket_data["lawful_start_date"] = (
+            compliance_calculator.calculate_lawful_start_date(created_time)
+        )
+        ticket_data["ticket_expires_date"] = (
+            compliance_calculator.calculate_ticket_expiration(created_time)
+        )
 
         # Create ticket model
         ticket = TicketModel(**ticket_data)
@@ -563,9 +535,29 @@ async def update_ticket(
 
         # Recalculate compliance dates if work start date changed
         if "work_start_date" in updated_fields:
-            lawful_start = calculate_lawful_start_date(ticket.work_start_date)
-            ticket.lawful_start_date = lawful_start
-            ticket.ticket_expires_date = calculate_ticket_expiration(lawful_start)
+            # Use submission time for compliance calculations, not work start date
+            submission_time = ticket.submitted_at or ticket.created_at
+            ticket.lawful_start_date = (
+                compliance_calculator.calculate_lawful_start_date(submission_time)
+            )
+            ticket.ticket_expires_date = (
+                compliance_calculator.calculate_ticket_expiration(submission_time)
+            )
+
+            # Validate that work start date is not before lawful start
+            if (
+                ticket.work_start_date
+                and ticket.work_start_date < ticket.lawful_start_date
+            ):
+                ticket.validation_gaps.append(
+                    {
+                        "field_name": "work_start_date",
+                        "severity": "required",
+                        "message": f"Work start date cannot be before lawful start date ({ticket.lawful_start_date})",
+                        "suggested_value": str(ticket.lawful_start_date),
+                        "prompt_text": f"The earliest you can start work is {ticket.lawful_start_date.strftime('%B %d, %Y')}. Please choose a start date on or after this date.",
+                    }
+                )
 
         # Save updated ticket
         ticket_storage.save_ticket(ticket, create_backup=True)

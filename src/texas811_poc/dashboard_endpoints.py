@@ -19,6 +19,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field, model_validator
 
+from texas811_poc.compliance import ComplianceCalculator
 from texas811_poc.config import settings
 from texas811_poc.models import (
     AuditAction,
@@ -31,10 +32,11 @@ from texas811_poc.storage import create_storage_instances
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Initialize storage
+# Initialize storage and compliance calculator
 ticket_storage, audit_storage, backup_manager = create_storage_instances(
     settings.data_root
 )
+compliance_calculator = ComplianceCalculator()
 
 # API Router
 router = APIRouter(prefix="/dashboard", tags=["Dashboard & Manual Operations"])
@@ -58,10 +60,25 @@ class CountdownInfo(BaseModel):
 
     days_until_start: int = Field(..., description="Days until lawful start date")
     days_until_expiry: int = Field(..., description="Days until ticket expires")
+    days_until_marking_expiry: Optional[int] = Field(
+        None, description="Days until markings expire"
+    )
     can_start_today: bool = Field(..., description="Whether work can start today")
+    can_start_work: bool = Field(
+        ..., description="Whether work is authorized (past lawful start)"
+    )
+    markings_valid: bool = Field(
+        ..., description="Whether markings are currently valid"
+    )
     is_expired: bool = Field(..., description="Whether ticket has expired")
     is_urgent: bool = Field(
         ..., description="Whether ticket is urgent (start < 2 days)"
+    )
+    requires_action: bool = Field(
+        ..., description="Whether ticket requires immediate action"
+    )
+    action_required: Optional[str] = Field(
+        None, description="Description of required action"
     )
     status_description: str = Field(
         ..., description="Human-readable status description"
@@ -207,56 +224,67 @@ async def verify_api_key(
 
 # Utility functions
 def calculate_countdown_info(ticket: TicketModel) -> CountdownInfo:
-    """Calculate countdown and compliance deadline information."""
-    today = date.today()
+    """Calculate countdown and compliance deadline information using comprehensive compliance calculator."""
+    # Convert ticket to dict for compliance calculator
+    ticket_dict = ticket.model_dump()
 
-    # Default values
-    days_until_start = 0
-    days_until_expiry = 0
-    can_start_today = False
-    is_expired = False
-    is_urgent = False
+    # Get comprehensive lifecycle status from compliance calculator
+    lifecycle_status = compliance_calculator.get_ticket_lifecycle_status(ticket_dict)
 
-    # Calculate days until start
-    if ticket.lawful_start_date:
-        days_until_start = max(0, (ticket.lawful_start_date - today).days)
-        can_start_today = days_until_start == 0
-        is_urgent = 0 < days_until_start <= 2
+    # Extract values with defaults
+    days_until_start = lifecycle_status.get("days_until_lawful_start") or 0
+    days_until_expiry = lifecycle_status.get("days_until_expiration") or 0
+    days_until_marking_expiry = lifecycle_status.get("days_until_marking_expiration")
+    can_start_work = lifecycle_status.get("can_start_work", False)
+    markings_valid = lifecycle_status.get("markings_valid", False)
+    requires_action = lifecycle_status.get("requires_action", False)
+    action_required = lifecycle_status.get("action_required")
 
-    # Calculate days until expiry
-    if ticket.ticket_expires_date:
-        days_until_expiry = max(0, (ticket.ticket_expires_date - today).days)
-        is_expired = days_until_expiry == 0 and ticket.ticket_expires_date < today
+    # Backward compatibility calculations
+    can_start_today = days_until_start <= 0
+    is_expired = lifecycle_status["current_status"] == "expired"
+    is_urgent = 0 < days_until_start <= 2
 
-    # Generate status description
+    # Generate enhanced status descriptions
+    current_status = lifecycle_status["current_status"]
+
     status_descriptions = {
-        TicketStatus.DRAFT: "Draft - requires validation before submission",
-        TicketStatus.VALIDATED: f"Validated - ready for submission ({days_until_start} days until start)",
-        TicketStatus.READY: f"Ready - awaiting submission ({days_until_start} days until start)",
-        TicketStatus.SUBMITTED: f"Submitted - waiting for utility responses ({days_until_expiry} days remaining)",
-        TicketStatus.RESPONSES_IN: f"Responses received - ready to dig ({days_until_expiry} days remaining)",
-        TicketStatus.READY_TO_DIG: f"Ready to dig - all clear ({days_until_expiry} days remaining)",
-        TicketStatus.COMPLETED: "Work completed",
-        TicketStatus.CANCELLED: "Cancelled",
-        TicketStatus.EXPIRED: "Expired - new ticket required",
+        "draft": "Draft - requires validation before submission",
+        "validated": f"Validated - ready for submission ({abs(days_until_start)} days until lawful start)",
+        "ready": f"Ready - awaiting submission ({abs(days_until_start)} days until lawful start)",
+        "submitted": f"Submitted - waiting for utility responses ({days_until_expiry} days remaining)",
+        "responses_in": f"Responses received - markings valid ({days_until_expiry} days remaining)",
+        "ready_to_dig": f"Ready to dig - all clear to start work ({days_until_expiry} days remaining)",
+        "completed": "Work completed",
+        "cancelled": "Cancelled",
+        "expired": "Ticket expired - new ticket required",
     }
 
     status_description = status_descriptions.get(
-        ticket.status, f"Status: {ticket.status}"
+        current_status, f"Status: {current_status}"
     )
 
-    # Add urgency to description
-    if is_urgent and ticket.status in [TicketStatus.VALIDATED, TicketStatus.READY]:
+    # Add urgency indicators
+    if is_urgent and current_status in ["validated", "ready"]:
         status_description = f"URGENT: {status_description}"
     elif is_expired:
         status_description = f"EXPIRED: {status_description}"
+    elif requires_action and action_required:
+        status_description = (
+            f"ACTION REQUIRED: {status_description} | {action_required}"
+        )
 
     return CountdownInfo(
         days_until_start=days_until_start,
         days_until_expiry=days_until_expiry,
+        days_until_marking_expiry=days_until_marking_expiry,
         can_start_today=can_start_today,
+        can_start_work=can_start_work,
+        markings_valid=markings_valid,
         is_expired=is_expired,
         is_urgent=is_urgent,
+        requires_action=requires_action,
+        action_required=action_required,
         status_description=status_description,
     )
 
