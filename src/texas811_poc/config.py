@@ -52,9 +52,14 @@ class Settings(BaseSettings):
         self.sessions_dir = self.data_root / "sessions"
         self.audit_dir = self.data_root / "audit"
 
-        # Ensure directories exist
+        # Ensure directories exist (handle permission errors gracefully)
         for directory in [self.tickets_dir, self.sessions_dir, self.audit_dir]:
-            directory.mkdir(parents=True, exist_ok=True)
+            try:
+                directory.mkdir(parents=True, exist_ok=True)
+            except PermissionError:
+                # In Railway deployment, startup.py will create these directories
+                # In tests, /data may not be writable
+                pass
 
 
 # Global settings instance

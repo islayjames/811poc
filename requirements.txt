@@ -1,0 +1,26 @@
+# Texas 811 POC Backend Dependencies
+# Generated from pyproject.toml for Railway deployment
+
+# Core FastAPI dependencies
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+
+# Data validation and settings
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# External services
+redis>=5.0.0
+httpx>=0.25.0
+
+# File handling and forms
+python-multipart>=0.0.6
+
+# Configuration
+python-dotenv>=1.0.0
+
+# CLI and utilities
+rich>=13.7.0
+
+# Timezone handling
+pytz>=2023.3
