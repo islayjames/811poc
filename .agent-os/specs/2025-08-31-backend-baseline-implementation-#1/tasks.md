@@ -7,14 +7,14 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
 
 ## Tasks
 
-- [ ] 1. Project Foundation and Environment Setup
-  - [ ] 1.1 Set up Python project structure with uv package manager
-  - [ ] 1.2 Configure FastAPI application with OpenAPI documentation
-  - [ ] 1.3 Configure Redis for session management only
-  - [ ] 1.4 Set up testing framework with pytest
-  - [ ] 1.5 Set up code quality tools (black, ruff, mypy)
-  - [ ] 1.6 Create basic project structure for JSON persistence
-  - [ ] 1.7 Configure environment variables and settings
+- [x] 1. Project Foundation and Environment Setup
+  - [x] 1.1 Set up Python project structure with uv package manager
+  - [x] 1.2 Configure FastAPI application with OpenAPI documentation
+  - [x] 1.3 Configure Redis for session management only
+  - [x] 1.4 Set up testing framework with pytest
+  - [x] 1.5 Set up code quality tools (black, ruff, mypy)
+  - [x] 1.6 Create basic project structure for JSON persistence
+  - [x] 1.7 Configure environment variables and settings
 
 - [ ] 2. JSON Data Models and Storage Layer
   - [ ] 2.1 Write tests for Pydantic models and JSON serialization
