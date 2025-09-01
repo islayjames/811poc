@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from fastapi.testclient import TestClient
+
 from texas811_poc.config import Settings, settings
 from texas811_poc.main import app
 

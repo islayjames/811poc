@@ -12,6 +12,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
 from texas811_poc.models import (
     AuditAction,
     AuditEventModel,

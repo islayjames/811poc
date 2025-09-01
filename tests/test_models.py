@@ -9,6 +9,7 @@ from datetime import date, datetime
 
 import pytest
 from pydantic import ValidationError
+
 from texas811_poc.models import (
     AuditAction,
     AuditEventModel,
