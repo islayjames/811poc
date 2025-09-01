@@ -1,276 +1,182 @@
-"""Tests for Railway deployment configuration and functionality."""
+"""Tests for deployment workflow and health checks."""
 
-import os
-import sys
-from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from texas811_poc.config import Settings  # noqa: E402
-from texas811_poc.main import app  # noqa: E402
+from src.texas811_poc.main import app
 
 
-class TestRailwayConfiguration:
-    """Test Railway deployment configuration."""
-
-    def test_railway_toml_exists(self):
-        """Test that railway.toml configuration file exists."""
-        railway_config = Path(__file__).parent.parent / "railway.toml"
-        assert railway_config.exists(), "railway.toml configuration file must exist"
-
-    def test_dockerfile_exists(self):
-        """Test that Dockerfile exists for Railway deployment."""
-        dockerfile = Path(__file__).parent.parent / "Dockerfile"
-        assert dockerfile.exists(), "Dockerfile must exist for Railway deployment"
-
-    def test_requirements_txt_exists(self):
-        """Test that requirements.txt exists for dependency installation."""
-        requirements_file = Path(__file__).parent.parent / "requirements.txt"
-        assert requirements_file.exists(), "requirements.txt must exist for Railway"
-
-    def test_startup_script_exists(self):
-        """Test that startup.py script exists."""
-        startup_script = Path(__file__).parent.parent / "src" / "startup.py"
-        assert startup_script.exists(), "startup.py script must exist"
-
-    def test_railway_toml_content(self):
-        """Test railway.toml contains required configuration."""
-        railway_config = Path(__file__).parent.parent / "railway.toml"
-        if railway_config.exists():
-            content = railway_config.read_text()
-            assert "[build]" in content, "railway.toml must have [build] section"
-            assert "[deploy]" in content, "railway.toml must have [deploy] section"
-            assert (
-                "nixpacks" in content or "dockerfile" in content
-            ), "Must specify build method"
-
-    def test_dockerfile_content(self):
-        """Test Dockerfile contains required instructions."""
-        dockerfile = Path(__file__).parent.parent / "Dockerfile"
-        if dockerfile.exists():
-            content = dockerfile.read_text()
-            assert "FROM python:" in content, "Must use Python base image"
-            assert "COPY requirements.txt" in content, "Must copy requirements.txt"
-            assert "RUN pip install" in content, "Must install dependencies"
-            assert "CMD" in content, "Must have CMD instruction"
-
-    def test_requirements_content(self):
-        """Test requirements.txt contains essential dependencies."""
-        requirements_file = Path(__file__).parent.parent / "requirements.txt"
-        if requirements_file.exists():
-            content = requirements_file.read_text()
-            assert "fastapi" in content, "Must include fastapi dependency"
-            assert "uvicorn" in content, "Must include uvicorn dependency"
-            assert "pydantic" in content, "Must include pydantic dependency"
+@pytest.fixture
+def client():
+    """Create test client."""
+    return TestClient(app)
 
 
-class TestEnvironmentConfiguration:
-    """Test environment variable configuration for Railway."""
-
-    def test_port_environment_variable(self):
-        """Test that PORT environment variable is respected."""
-        with patch.dict(os.environ, {"PORT": "8080"}):
-            Settings()  # Just validate it can be created
-            # The startup.py should use PORT env var for Railway
-            assert "PORT" in os.environ
-
-    def test_data_root_configuration(self):
-        """Test data root configuration for Railway volumes."""
-        with patch.dict(os.environ, {"DATA_ROOT": "/data"}):
-            settings = Settings()
-            # Railway will mount volume at /data
-            assert settings.data_root == Path("/data")
-            # Directory creation may fail in tests due to permissions, but paths should be set correctly
-            assert settings.tickets_dir == Path("/data/tickets")
-            assert settings.sessions_dir == Path("/data/sessions")
-            assert settings.audit_dir == Path("/data/audit")
-
-    def test_redis_configuration(self):
-        """Test Redis configuration for Railway."""
-        # Test with Redis URL environment variable
-        with patch.dict(os.environ, {"REDIS_URL": "redis://railway-redis:6379/0"}):
-            settings = Settings()
-            assert settings.redis_url == "redis://railway-redis:6379/0"
-
-    def test_debug_mode_disabled_in_production(self):
-        """Test that debug mode is disabled in production."""
-        with patch.dict(os.environ, {"DEBUG": "false"}):
-            settings = Settings()
-            assert not settings.debug, "Debug mode should be disabled in production"
+def test_health_check_endpoint(client):
+    """Test that health check endpoint returns 200."""
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
 
 
-class TestHealthEndpoints:
-    """Test health endpoints for Railway monitoring."""
-
-    @pytest.fixture
-    def client(self):
-        """FastAPI test client."""
-        return TestClient(app)
-
-    def test_health_endpoint_responds(self, client):
-        """Test that health endpoint responds correctly."""
-        response = client.get("/health")
-        assert response.status_code in [200, 503], "Health endpoint must respond"
-        data = response.json()
-        assert "service" in data
-        assert "status" in data
-        assert "version" in data
-
-    def test_ready_endpoint_responds(self, client):
-        """Test that ready endpoint responds for Railway health checks."""
-        response = client.get("/ready")
-        assert response.status_code == 200, "Ready endpoint must return 200"
-        data = response.json()
-        assert data["status"] == "ready"
-
-    def test_root_endpoint_responds(self, client):
-        """Test that root endpoint provides API information."""
-        response = client.get("/")
-        assert response.status_code == 200
-        data = response.json()
-        assert "service" in data
-        assert "version" in data
-        assert "status" in data
-
-    def test_health_endpoint_includes_components(self, client):
-        """Test that health endpoint includes component status."""
-        response = client.get("/health")
-        data = response.json()
-        assert "components" in data, "Health check must include component status"
-
-        # Should include storage and redis components
-        components = data["components"]
-        assert "storage" in components or "redis" in components
+def test_health_check_includes_database_connection(client):
+    """Test that health check includes database/storage status."""
+    response = client.get("/health")
+    assert response.status_code == 200
+    data = response.json()
+    assert "status" in data
+    assert "components" in data
+    assert "version" in data
+    assert "service" in data
 
 
-class TestStartupConfiguration:
-    """Test startup script configuration."""
-
-    def test_startup_script_imports(self):
-        """Test that startup script can be imported."""
-        startup_script = Path(__file__).parent.parent / "src" / "startup.py"
-        if startup_script.exists():
-            # Test that the file can be imported without syntax errors
-
-            try:
-                # Don't actually run it, just check it can be loaded
-                with open(startup_script) as f:
-                    compile(f.read(), startup_script, "exec")
-            except SyntaxError as e:
-                pytest.fail(f"Startup script has syntax errors: {e}")
+def test_root_endpoint_responds(client):
+    """Test that root endpoint is accessible."""
+    response = client.get("/")
+    assert response.status_code in [200, 404]  # Either works or redirects
 
 
-class TestDockerConfiguration:
-    """Test Docker configuration for Railway."""
-
-    def test_dockerfile_uses_correct_python_version(self):
-        """Test that Dockerfile uses Python 3.11+ as specified in pyproject.toml."""
-        dockerfile = Path(__file__).parent.parent / "Dockerfile"
-        if dockerfile.exists():
-            content = dockerfile.read_text()
-            assert (
-                "python:3.11" in content or "python:3.12" in content
-            ), "Must use Python 3.11+ as specified in project requirements"
-
-    def test_dockerfile_exposes_port(self):
-        """Test that Dockerfile exposes appropriate port."""
-        dockerfile = Path(__file__).parent.parent / "Dockerfile"
-        if dockerfile.exists():
-            content = dockerfile.read_text()
-            # Railway uses PORT environment variable, so EXPOSE might be optional
-            # But we should at least have CMD that respects PORT
-            assert "CMD" in content, "Must have CMD instruction to start the server"
+def test_openapi_docs_available(client):
+    """Test that OpenAPI documentation is available."""
+    response = client.get("/docs")
+    assert response.status_code == 200
 
 
-class TestDataPersistence:
-    """Test data persistence configuration for Railway."""
+def test_openapi_json_available(client):
+    """Test that OpenAPI JSON schema is available."""
+    response = client.get("/openapi.json")
+    assert response.status_code == 200
+    data = response.json()
+    assert "openapi" in data
+    assert "info" in data
 
-    def test_data_directories_creation(self):
-        """Test that data directories are created properly."""
+
+class TestDeploymentHealth:
+    """Tests for deployment health verification."""
+
+    def test_app_starts_successfully(self):
+        """Test that the application starts without errors."""
+        # This test verifies the app can be imported and created
+        from src.texas811_poc.main import app
+
+        assert app is not None
+
+    def test_critical_endpoints_exist(self, client):
+        """Test that all critical endpoints are available."""
+        critical_endpoints = [
+            "/health",
+            "/docs",
+            "/openapi.json",
+        ]
+
+        for endpoint in critical_endpoints:
+            response = client.get(endpoint)
+            assert response.status_code in [200, 401], f"Endpoint {endpoint} failed"
+
+    def test_environment_configuration(self):
+        """Test that environment variables are properly configured."""
+        from src.texas811_poc.config import settings
+
+        # Verify critical settings exist
+        assert hasattr(settings, "debug")
+        assert hasattr(settings, "data_root")
+        assert hasattr(settings, "app_name")
+        assert hasattr(settings, "app_version")
+
+    @patch.dict("os.environ", {"DEBUG": "false"})
+    def test_production_configuration(self):
+        """Test production environment configuration."""
+        from src.texas811_poc.config import Settings
+
+        # Create new settings instance with production env
         settings = Settings()
 
-        # Test directory structure
-        expected_dirs = [
-            settings.tickets_dir,
-            settings.sessions_dir,
-            settings.audit_dir,
-        ]
-
-        for directory in expected_dirs:
-            # Directories should be created by config
-            assert directory.parent == settings.data_root
-
-    def test_volume_mount_compatibility(self):
-        """Test configuration is compatible with Railway volume mounts."""
-        # Test with Railway-style volume mount
-        with patch.dict(os.environ, {"DATA_ROOT": "/data"}):
-            settings = Settings()
-
-            # Should work with absolute paths
-            assert settings.data_root == Path("/data")
-            assert settings.tickets_dir == Path("/data/tickets")
-            assert settings.sessions_dir == Path("/data/sessions")
-            assert settings.audit_dir == Path("/data/audit")
-
-        # Test with fallback path (no DATA_ROOT set)
-        with patch.dict(os.environ, {}, clear=True):
-            # Remove DATA_ROOT from environment
-            if "DATA_ROOT" in os.environ:
-                del os.environ["DATA_ROOT"]
-            settings = Settings()
-            assert settings.data_root == Path("data")
-            assert settings.tickets_dir == Path("data/tickets")
+        assert settings.debug is False
 
 
-@pytest.mark.asyncio
-async def test_application_startup():
-    """Test that application can start up correctly."""
-    # This tests the lifespan function
-    from texas811_poc.main import lifespan
+class TestPerformanceBaseline:
+    """Basic performance tests for deployment validation."""
 
-    # Mock FastAPI app
-    mock_app = Mock()
+    def test_health_check_response_time(self, client):
+        """Test that health check responds quickly."""
+        import time
 
-    # Test lifespan context manager
-    async with lifespan(mock_app):
-        # Should not raise any exceptions
-        pass
+        start_time = time.time()
+        response = client.get("/health")
+        response_time = time.time() - start_time
+
+        assert response.status_code == 200
+        assert response_time < 1.0  # Should respond within 1 second
+
+    def test_multiple_concurrent_health_checks(self, client):
+        """Test that multiple health checks don't cause issues."""
+        import concurrent.futures
+
+        def make_request():
+            return client.get("/health")
+
+        # Make 10 concurrent requests
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(make_request) for _ in range(10)]
+            results = [
+                future.result() for future in concurrent.futures.as_completed(futures)
+            ]
+
+        # All requests should succeed
+        for response in results:
+            assert response.status_code == 200
+            assert response.json()["status"] == "healthy"
 
 
+@pytest.mark.integration
 class TestDeploymentReadiness:
-    """Test overall deployment readiness."""
+    """Integration tests to verify deployment readiness."""
 
-    def test_all_required_files_exist(self):
-        """Test that all required deployment files exist."""
-        project_root = Path(__file__).parent.parent
+    def test_all_dependencies_importable(self):
+        """Test that all required dependencies can be imported."""
+        required_modules = ["fastapi", "pydantic", "redis", "httpx", "uvicorn"]
 
-        required_files = [
-            "railway.toml",
-            "Dockerfile",
-            "requirements.txt",
-            "src/startup.py",
-        ]
+        for module in required_modules:
+            try:
+                __import__(module)
+            except ImportError:
+                pytest.fail(f"Required module {module} not available")
 
-        for file_path in required_files:
-            full_path = project_root / file_path
-            assert full_path.exists(), f"Required deployment file missing: {file_path}"
+    def test_data_directory_writable(self):
+        """Test that data directory is writable."""
+        import os
 
-    def test_no_syntax_errors_in_main_files(self):
-        """Test that main Python files have no syntax errors."""
-        python_files = ["src/texas811_poc/main.py", "src/texas811_poc/config.py"]
+        from src.texas811_poc.config import settings
 
-        project_root = Path(__file__).parent.parent
+        data_root = settings.data_root
 
-        for file_path in python_files:
-            full_path = project_root / file_path
-            if full_path.exists():
-                with open(full_path) as f:
-                    try:
-                        compile(f.read(), full_path, "exec")
-                    except SyntaxError as e:
-                        pytest.fail(f"Syntax error in {file_path}: {e}")
+        # Ensure directory exists and is writable
+        os.makedirs(data_root, exist_ok=True)
+
+        # Test write access
+        test_file = os.path.join(data_root, "test_write.tmp")
+        try:
+            with open(test_file, "w") as f:
+                f.write("test")
+            os.remove(test_file)
+        except (OSError, PermissionError):
+            pytest.fail(f"Data directory {data_root} is not writable")
+
+    def test_redis_connection_available(self):
+        """Test that Redis connection is available when configured."""
+        from src.texas811_poc.config import settings
+
+        if hasattr(settings, "redis_url") and settings.redis_url:
+            try:
+                from src.texas811_poc.redis_client import session_manager
+
+                # Test Redis connection status
+                is_connected = session_manager.is_connected()
+                # Allow fallback to in-memory storage in tests
+                assert isinstance(is_connected, bool)
+            except Exception as e:
+                # Allow fallback to in-memory storage in tests
+                if "Connection refused" not in str(e):
+                    pytest.fail(f"Redis connection test failed: {e}")

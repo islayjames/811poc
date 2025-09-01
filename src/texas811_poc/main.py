@@ -9,8 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .api_endpoints import router as api_router
-from .dashboard_endpoints import router as dashboard_router
 from .config import settings
+from .dashboard_endpoints import router as dashboard_router
 from .redis_client import session_manager
 
 
@@ -48,8 +48,8 @@ app = FastAPI(
         "compliance date calculation, and submission packet generation."
     ),
     lifespan=lifespan,
-    docs_url="/docs" if settings.debug else None,
-    redoc_url="/redoc" if settings.debug else None,
+    docs_url="/docs",  # Enable docs in production for POC testing
+    redoc_url="/redoc",  # Enable redoc in production for POC testing
 )
 
 # CORS middleware for CustomGPT integration
