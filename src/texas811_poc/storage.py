@@ -19,6 +19,13 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from texas811_poc.models import (
+    AuditAction,
+    AuditEventModel,
+    TicketModel,
+    TicketStatus,
+)
+
 
 def json_serializer(obj):
     """JSON serializer for datetime and other objects."""
@@ -29,14 +36,6 @@ def json_serializer(obj):
     elif hasattr(obj, "__dict__"):
         return obj.__dict__
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
-
-
-from texas811_poc.models import (
-    AuditAction,
-    AuditEventModel,
-    TicketModel,
-    TicketStatus,
-)
 
 
 class StorageError(Exception):
@@ -97,7 +96,7 @@ class JSONStorage:
                 raise
 
         except (OSError, TypeError) as e:
-            raise StorageError(f"Failed to save JSON to {file_path}: {e}")
+            raise StorageError(f"Failed to save JSON to {file_path}: {e}") from e
 
     def load_json(self, file_path: Path) -> dict[str, Any] | None:
         """
@@ -119,7 +118,7 @@ class JSONStorage:
             with open(file_path, encoding="utf-8") as f:
                 return json.load(f)
         except (OSError, json.JSONDecodeError) as e:
-            raise StorageError(f"Failed to load JSON from {file_path}: {e}")
+            raise StorageError(f"Failed to load JSON from {file_path}: {e}") from e
 
 
 class TicketStorage(JSONStorage):
@@ -162,7 +161,7 @@ class TicketStorage(JSONStorage):
         try:
             return TicketModel.model_validate(ticket_data)
         except Exception as e:
-            raise StorageError(f"Failed to parse ticket {ticket_id}: {e}")
+            raise StorageError(f"Failed to parse ticket {ticket_id}: {e}") from e
 
     def list_tickets(self) -> list[TicketModel]:
         """
@@ -212,7 +211,7 @@ class TicketStorage(JSONStorage):
             file_path.unlink()
             return True
         except OSError as e:
-            raise StorageError(f"Failed to delete ticket {ticket_id}: {e}")
+            raise StorageError(f"Failed to delete ticket {ticket_id}: {e}") from e
 
     def search_tickets(
         self,
@@ -387,7 +386,7 @@ class BackupManager:
             shutil.copy2(file_path, backup_path)
             return backup_path
         except OSError as e:
-            raise StorageError(f"Failed to create backup: {e}")
+            raise StorageError(f"Failed to create backup: {e}") from e
 
     def restore_from_backup(self, backup_path: Path, target_path: Path) -> None:
         """
@@ -408,7 +407,7 @@ class BackupManager:
             target_path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(backup_path, target_path)
         except OSError as e:
-            raise StorageError(f"Failed to restore from backup: {e}")
+            raise StorageError(f"Failed to restore from backup: {e}") from e
 
     def list_backups(self) -> list[Path]:
         """List all backup files."""

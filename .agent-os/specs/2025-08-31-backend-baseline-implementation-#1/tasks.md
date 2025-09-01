@@ -25,14 +25,14 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 2.6 Create data migration utilities for schema changes
   - [x] 2.7 Verify all data persistence tests pass
 
-- [ ] 3. Core Validation Engine Implementation
-  - [ ] 3.1 Write tests for field validation logic and gap detection
-  - [ ] 3.2 Implement Texas811 required field validation rules
-  - [ ] 3.3 Create severity classification system (required vs recommended)
-  - [ ] 3.4 Implement gap prompt generation with actionable suggestions
-  - [ ] 3.5 Create progressive validation for partial updates
-  - [ ] 3.6 Implement validation result caching in memory
-  - [ ] 3.7 Verify all validation tests pass with sample work order data
+- [x] 3. Core Validation Engine Implementation
+  - [x] 3.1 Write tests for field validation logic and gap detection
+  - [x] 3.2 Implement Texas811 required field validation rules
+  - [x] 3.3 Create severity classification system (required vs recommended)
+  - [x] 3.4 Implement gap prompt generation with actionable suggestions
+  - [x] 3.5 Create progressive validation for partial updates
+  - [x] 3.6 Implement validation result caching in memory
+  - [x] 3.7 Verify all validation tests pass with sample work order data
 
 - [ ] 4. GIS and Geocoding Integration
   - [ ] 4.1 Write tests for geocoding and geometry generation

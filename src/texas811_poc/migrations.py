@@ -81,7 +81,7 @@ class MigrationManager:
                 data = json.load(f)
                 return SchemaVersion.from_string(data["version"])
         except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
-            raise MigrationError(f"Failed to read schema version: {e}")
+            raise MigrationError(f"Failed to read schema version: {e}") from e
 
     def set_schema_version(self, version: SchemaVersion) -> None:
         """Set current schema version in storage."""
@@ -96,7 +96,7 @@ class MigrationManager:
                 json.dump(version_data, f, indent=2)
 
         except OSError as e:
-            raise MigrationError(f"Failed to save schema version: {e}")
+            raise MigrationError(f"Failed to save schema version: {e}") from e
 
     def needs_migration(self, target_version: SchemaVersion) -> bool:
         """Check if migration is needed to reach target version."""
@@ -153,7 +153,7 @@ class MigrationManager:
             return backup_path
 
         except OSError as e:
-            raise MigrationError(f"Failed to create backup: {e}")
+            raise MigrationError(f"Failed to create backup: {e}") from e
 
     def list_backups(self) -> list[dict[str, Any]]:
         """List all available backups with metadata."""
@@ -439,7 +439,7 @@ class DataMigrator:
                 )
 
         except (OSError, json.JSONDecodeError) as e:
-            raise MigrationError(f"Rollback failed: {e}")
+            raise MigrationError(f"Rollback failed: {e}") from e
 
     def cleanup_migration_artifacts(self) -> int:
         """
