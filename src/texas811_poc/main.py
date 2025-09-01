@@ -232,6 +232,7 @@ async def root() -> dict[str, Any]:
         "service": settings.app_name,
         "version": settings.app_version,
         "status": "running",
+        "deployment": "2025-09-01-v2",  # Test deployment marker
         "docs_url": "/docs" if settings.debug else "disabled in production",
     }
 
