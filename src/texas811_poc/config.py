@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     # External API configuration
     mapbox_token: str | None = Field(default=None, alias="GEOCODING_API_KEY")
 
+    # API security
+    api_key: str | None = Field(default=None, alias="API_KEY")
+
     # POC limits
     max_tickets: int = Field(default=20)
 

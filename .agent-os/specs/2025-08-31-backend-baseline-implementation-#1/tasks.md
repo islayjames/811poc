@@ -61,32 +61,32 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [ ] 6.6 Implement ticket expiration status calculations
   - [ ] 6.7 Verify all session and state management tests pass
 
-- [ ] 7. CustomGPT API Endpoints Implementation
-  - [ ] 7.1 Write tests for CustomGPT API contract and responses
-  - [ ] 7.2 Implement POST /tickets/create endpoint with validation
-  - [ ] 7.3 Implement POST /tickets/{ticket_id}/update endpoint
-  - [ ] 7.4 Implement POST /tickets/{ticket_id}/confirm endpoint
-  - [ ] 7.5 Create comprehensive error handling and gap response formatting
-  - [ ] 7.6 Implement request/response logging for debugging
-  - [ ] 7.7 Verify all CustomGPT integration tests pass
+- [x] 7. CustomGPT API Endpoints Implementation
+  - [x] 7.1 Write tests for CustomGPT API contract and responses
+  - [x] 7.2 Implement POST /tickets/create endpoint with validation
+  - [x] 7.3 Implement POST /tickets/{ticket_id}/update endpoint
+  - [x] 7.4 Implement POST /tickets/{ticket_id}/confirm endpoint
+  - [x] 7.5 Create comprehensive error handling and gap response formatting
+  - [x] 7.6 Implement request/response logging for debugging
+  - [x] 7.7 Verify all CustomGPT integration tests pass
 
-- [ ] 8. Dashboard and Manual Operations
-  - [ ] 8.1 Write tests for dashboard endpoints and ticket retrieval
-  - [ ] 8.2 Implement GET /tickets endpoint with simple filtering
-  - [ ] 8.3 Implement GET /tickets/{ticket_id} detailed view endpoint
-  - [ ] 8.4 Implement manual state transition endpoints (mark-submitted, mark-responses-in)
-  - [ ] 8.5 Create ticket cancellation and deletion endpoints
-  - [ ] 8.6 Implement countdown calculations for dashboard display
-  - [ ] 8.7 Verify all dashboard API tests pass
+- [x] 8. Dashboard and Manual Operations
+  - [x] 8.1 Write tests for dashboard endpoints and ticket retrieval
+  - [x] 8.2 Implement GET /tickets endpoint with simple filtering
+  - [x] 8.3 Implement GET /tickets/{ticket_id} detailed view endpoint
+  - [x] 8.4 Implement manual state transition endpoints (mark-submitted, mark-responses-in)
+  - [x] 8.5 Create ticket cancellation and deletion endpoints
+  - [x] 8.6 Implement countdown calculations for dashboard display
+  - [x] 8.7 Verify all dashboard API tests pass
 
-- [ ] 9. Texas811 Submission Packet Generator
-  - [ ] 9.1 Write tests for submission packet generation and formatting
-  - [ ] 9.2 Implement Texas811 portal-aligned packet structure
-  - [ ] 9.3 Create section formatting (Caller/Excavator, Work, Location, etc.)
-  - [ ] 9.4 Implement field validation for submission packets
-  - [ ] 9.5 Create packet export in JSON format for manual portal entry
-  - [ ] 9.6 Implement submission packet freezing on confirmation
-  - [ ] 9.7 Verify submission packets match Texas811 portal requirements
+- [x] 9. Texas811 Submission Packet Generator
+  - [x] 9.1 Write tests for submission packet generation and formatting
+  - [x] 9.2 Implement Texas811 portal-aligned packet structure
+  - [x] 9.3 Create section formatting (Caller/Excavator, Work, Location, etc.)
+  - [x] 9.4 Implement field validation for submission packets
+  - [x] 9.5 Create packet export in JSON format for manual portal entry
+  - [x] 9.6 Implement submission packet freezing on confirmation
+  - [x] 9.7 Verify submission packets match Texas811 portal requirements
 
 - [ ] 10. Integration Testing and POC Validation
   - [ ] 10.1 Write end-to-end tests for complete ticket workflows

@@ -8,6 +8,8 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from .api_endpoints import router as api_router
+from .dashboard_endpoints import router as dashboard_router
 from .config import settings
 from .redis_client import session_manager
 
@@ -62,6 +64,10 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+# Include API routes
+app.include_router(api_router)
+app.include_router(dashboard_router)
 
 
 @app.exception_handler(Exception)
