@@ -305,11 +305,11 @@ def parse_date_filter(date_str: str) -> datetime:
                 clean_date = date_str.split("+")[0].split("Z")[0]
                 parsed_date = datetime.fromisoformat(clean_date)
                 return parsed_date.replace(tzinfo=UTC)
-            except ValueError:
+            except ValueError as e:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Invalid date format: {date_str}. Use ISO format (YYYY-MM-DDTHH:MM:SS) or YYYY-MM-DD",
-                )
+                ) from e
 
 
 # Dashboard Endpoints
@@ -415,7 +415,7 @@ async def get_tickets(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve tickets: {str(e)}",
-        )
+        ) from e
 
 
 @router.get("/tickets/{ticket_id}", response_model=TicketDetailResponse)
@@ -492,7 +492,7 @@ async def get_ticket_detail(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve ticket detail: {str(e)}",
-        )
+        ) from e
 
 
 @router.post(
@@ -586,7 +586,7 @@ async def mark_ticket_submitted(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to mark ticket as submitted: {str(e)}",
-        )
+        ) from e
 
 
 @router.post(
@@ -695,7 +695,7 @@ async def mark_responses_received(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to mark responses received: {str(e)}",
-        )
+        ) from e
 
 
 @router.delete("/tickets/{ticket_id}", response_model=CancelTicketResponse)
@@ -842,4 +842,4 @@ async def cancel_ticket(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to cancel/delete ticket: {str(e)}",
-        )
+        ) from e

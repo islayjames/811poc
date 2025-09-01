@@ -66,10 +66,7 @@ def setup_data_directories(data_root: str):
 def validate_deployment():
     """Validate deployment requirements."""
 
-    # Check Python version
-    if sys.version_info < (3, 11):
-        print("ERROR: Python 3.11+ required")
-        sys.exit(1)
+    # Python version is validated by pyproject.toml requirements
 
     # Check required modules
     try:

@@ -359,7 +359,6 @@ class TestUpdateTicketEndpoint:
             "/tickets/create", headers=headers, json=valid_ticket_data
         )
         ticket_id = create_response.json()["ticket_id"]
-        initial_status = create_response.json()["status"]
 
         # Add recommended fields - should become VALIDATED
         update_data = {

@@ -30,8 +30,6 @@ from texas811_poc.api_models import (
     ConfirmTicketResponse,
     CreateTicketRequest,
     CreateTicketResponse,
-    RequestLogEntry,
-    ResponseLogEntry,
     UpdateTicketRequest,
     UpdateTicketResponse,
     ValidationError,
@@ -138,24 +136,12 @@ def log_request(
         ticket_id: Ticket ID if available
     """
     try:
-        log_entry = RequestLogEntry(
-            request_id=request_id,
-            endpoint=endpoint,
-            method=request.method,
-            session_id=session_id,
-            ticket_id=ticket_id,
-            user_agent=request.headers.get("user-agent"),
-            ip_address=request.client.host if request.client else None,
-            request_size_bytes=int(request.headers.get("content-length", 0)),
-            timestamp=datetime.now(UTC),
-        )
-
+        # Log request details (detailed log entry would be stored in production)
         logger.info(
-            f"API Request: {endpoint} | ID: {request_id} | Session: {session_id}"
+            f"API Request: {endpoint} | ID: {request_id} | Session: {session_id} | "
+            f"Method: {request.method} | User-Agent: {request.headers.get('user-agent')} | "
+            f"IP: {request.client.host if request.client else None}"
         )
-
-        # Store detailed log entry (in production, this would go to structured logging)
-        # For POC, we'll just log the summary
 
     except Exception as e:
         logger.error(f"Failed to log request: {e}")
@@ -180,19 +166,10 @@ def log_response(
         error_code: Error code if applicable
     """
     try:
-        log_entry = ResponseLogEntry(
-            request_id=request_id,
-            status_code=status_code,
-            response_size_bytes=response_size,
-            processing_time_ms=processing_time,
-            validation_gaps_count=validation_gaps_count,
-            error_code=error_code,
-            timestamp=datetime.now(UTC),
-        )
-
+        # Log response details (detailed log entry would be stored in production)
         logger.info(
             f"API Response: {status_code} | Time: {processing_time:.1f}ms | "
-            f"Gaps: {validation_gaps_count} | ID: {request_id}"
+            f"Gaps: {validation_gaps_count} | ID: {request_id} | Size: {response_size}B"
         )
 
     except Exception as e:
@@ -454,7 +431,7 @@ async def create_ticket(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create ticket: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/{ticket_id}/update", response_model=UpdateTicketResponse)
@@ -653,7 +630,7 @@ async def update_ticket(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to update ticket: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/{ticket_id}/confirm", response_model=ConfirmTicketResponse)
@@ -824,7 +801,7 @@ async def confirm_ticket(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to confirm ticket: {str(e)}",
-        )
+        ) from e
 
 
 # Additional utility endpoints
