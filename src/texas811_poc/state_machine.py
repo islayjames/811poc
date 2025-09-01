@@ -498,7 +498,8 @@ class TicketStateMachine:
 
 # Convenience functions for common operations
 def create_state_machine(
-    session_manager: RedisSessionManager = None, audit_storage_path: Path = None
+    session_manager: RedisSessionManager | None = None,
+    audit_storage_path: Path | None = None,
 ) -> TicketStateMachine:
     """
     Create state machine instance with default dependencies.

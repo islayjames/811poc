@@ -8,11 +8,12 @@ and starts the FastAPI server with proper Railway configuration.
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 import uvicorn
 
 
-def setup_environment():
+def setup_environment() -> tuple[str, int]:
     """Configure environment variables for Railway deployment."""
 
     # Railway provides PORT environment variable
@@ -47,7 +48,7 @@ def setup_environment():
     return host, port
 
 
-def setup_data_directories(data_root: str):
+def setup_data_directories(data_root: str) -> None:
     """Create required data directories."""
     directories = [
         f"{data_root}/tickets",
@@ -63,7 +64,7 @@ def setup_data_directories(data_root: str):
             print(f"⚠ Permission denied creating: {directory} (may be created by app)")
 
 
-def validate_deployment():
+def validate_deployment() -> Any:
     """Validate deployment requirements."""
 
     # Python version is validated by pyproject.toml requirements
@@ -97,7 +98,7 @@ def validate_deployment():
         sys.exit(1)
 
 
-def main():
+def main() -> None:
     """Main startup function."""
     print("🚀 Starting Texas 811 POC Backend on Railway")
 

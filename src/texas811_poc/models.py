@@ -254,12 +254,12 @@ class TicketModel(BaseModel):
 
     @field_validator("updated_at", mode="before")
     @classmethod
-    def set_updated_at(cls, v):
+    def set_updated_at(cls, v: Any) -> datetime:
         """Always update the updated_at timestamp."""
         return datetime.now(UTC)
 
     @model_validator(mode="after")
-    def validate_location_info(self):
+    def validate_location_info(self) -> "TicketModel":
         """Validate that either address OR GPS coordinates are provided."""
         address = self.address
         gps_lat = self.gps_lat
@@ -279,7 +279,7 @@ class TicketModel(BaseModel):
 
     @field_validator("caller_email")
     @classmethod
-    def validate_email(cls, v):
+    def validate_email(cls, v: str | None) -> str | None:
         """Basic email validation."""
         if v and "@" not in v:
             raise ValueError("Invalid email format")
@@ -287,7 +287,7 @@ class TicketModel(BaseModel):
 
     @field_validator("work_start_date")
     @classmethod
-    def validate_work_start_date(cls, v):
+    def validate_work_start_date(cls, v: date | None) -> date | None:
         """Ensure work start date is not in the past."""
         if v and v < date.today():
             raise ValueError("Work start date cannot be in the past")

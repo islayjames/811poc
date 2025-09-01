@@ -402,7 +402,7 @@ class ComplianceCalculator:
         """
         self.timezone = timezone
         self.tz = pytz.timezone(timezone)
-        self._holiday_cache = {}
+        self._holiday_cache: dict[int, list[date]] = {}
 
     def calculate_lawful_start_date(
         self, submission_time: datetime | None = None

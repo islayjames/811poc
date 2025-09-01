@@ -171,7 +171,7 @@ class CancelTicketRequest(BaseModel):
     )
 
     @model_validator(mode="after")
-    def validate_reason_or_deletion(self):
+    def validate_reason_or_deletion(self) -> "CancelTicketRequest":
         """Ensure either reason is provided for cancellation or confirm_deletion is True for deletion."""
         if self.confirm_deletion is True:
             # For permanent deletion, reason is optional

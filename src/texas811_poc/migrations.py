@@ -157,7 +157,7 @@ class MigrationManager:
 
     def list_backups(self) -> list[dict[str, Any]]:
         """List all available backups with metadata."""
-        backups = []
+        backups: list[dict[str, Any]] = []
 
         if not self.backup_dir.exists():
             return backups

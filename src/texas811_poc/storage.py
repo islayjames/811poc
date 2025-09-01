@@ -27,7 +27,7 @@ from texas811_poc.models import (
 )
 
 
-def json_serializer(obj):
+def json_serializer(obj: Any) -> str:
     """JSON serializer for datetime and other objects."""
     if isinstance(obj, datetime):
         return obj.isoformat()
@@ -170,7 +170,7 @@ class TicketStorage(JSONStorage):
         Returns:
             List of all ticket models
         """
-        tickets = []
+        tickets: list[dict[str, Any]] = []
 
         if not self.tickets_dir.exists():
             return tickets
@@ -358,7 +358,7 @@ class BackupManager:
         self.backup_dir = self.base_path / "backups"
         self.backup_dir.mkdir(parents=True, exist_ok=True)
 
-    def create_backup(self, file_path: Path, backup_suffix: str = None) -> Path:
+    def create_backup(self, file_path: Path, backup_suffix: str | None = None) -> Path:
         """
         Create backup of file.
 
@@ -532,7 +532,7 @@ class DataQueryUtils:
 
     def search_tickets_advanced(
         self,
-        query: str = None,
+        query: str | None = None,
         status: TicketStatus | None = None,
         county: str | None = None,
         date_from: date | None = None,

@@ -112,3 +112,8 @@ markers = [
     "integration: marks tests as integration tests",
     "slow: marks tests as slow",
 ]
+
+[dependency-groups]
+dev = [
+    "types-pytz>=2025.2.0.20250809",
+]

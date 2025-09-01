@@ -92,7 +92,7 @@ class ProductionLogger:
 
     @staticmethod
     def log_health_status(
-        component: str, status: str, details: dict[str, Any] = None
+        component: str, status: str, details: dict[str, Any] | None = None
     ) -> None:
         """Log component health status changes."""
         logger = logging.getLogger("texas811_poc.health")
@@ -126,9 +126,9 @@ class ProductionLogger:
     @staticmethod
     def log_business_event(
         event: str,
-        session_id: str = None,
-        ticket_id: str = None,
-        details: dict[str, Any] = None,
+        session_id: str | None = None,
+        ticket_id: str | None = None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         """Log business logic events for audit trail."""
         logger = logging.getLogger("texas811_poc.business")
@@ -150,7 +150,7 @@ class ProductionLogger:
 class HealthMetrics:
     """Simple metrics collection for production monitoring."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.request_count = 0
         self.error_count = 0
         self.last_error_time = None

@@ -100,7 +100,7 @@ class FieldValidator(ABC):
 class Texas811FieldValidator(FieldValidator):
     """Texas811-specific field validator with state-specific rules."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize Texas811 field validator."""
         self._validation_rules = self._build_validation_rules()
         self._phone_pattern = re.compile(
@@ -116,7 +116,7 @@ class Texas811FieldValidator(FieldValidator):
 
     def validate_field(self, field_name: str, value: Any) -> list[ValidationGapModel]:
         """Validate field against Texas811 rules."""
-        gaps = []
+        gaps: list[ValidationGapModel] = []
         rules = self._validation_rules.get(field_name, {})
 
         if not rules:
@@ -130,6 +130,7 @@ class Texas811FieldValidator(FieldValidator):
                         field_name=field_name,
                         severity=ValidationSeverity.REQUIRED,
                         message=f"{field_name.replace('_', ' ').title()} is required for Texas811 submission",
+                        suggested_value=None,
                         prompt_text=self._get_field_prompt(field_name),
                     )
                 )
@@ -143,6 +144,7 @@ class Texas811FieldValidator(FieldValidator):
                         field_name=field_name,
                         severity=ValidationSeverity.RECOMMENDED,
                         message=f"{field_name.replace('_', ' ').title()} is recommended for faster processing",
+                        suggested_value=None,
                         prompt_text=self._get_field_prompt(field_name),
                     )
                 )
@@ -156,6 +158,7 @@ class Texas811FieldValidator(FieldValidator):
                         field_name=field_name,
                         severity=ValidationSeverity.WARNING,
                         message=f"Phone number format may be invalid: {value}",
+                        suggested_value=None,
                         prompt_text=f"Please verify the phone number format for {field_name.replace('_', ' ')}: {value}",
                     )
                 )
@@ -167,6 +170,7 @@ class Texas811FieldValidator(FieldValidator):
                         field_name=field_name,
                         severity=ValidationSeverity.WARNING,
                         message=f"Email format may be invalid: {value}",
+                        suggested_value=None,
                         prompt_text=f"Please verify the email address: {value}",
                     )
                 )
@@ -179,6 +183,7 @@ class Texas811FieldValidator(FieldValidator):
                         field_name=field_name,
                         severity=ValidationSeverity.WARNING,
                         message=f"GPS latitude {value} may be outside Texas bounds (25°-37°N)",
+                        suggested_value=None,
                         prompt_text=f"Please verify the GPS latitude is correct: {value}",
                     )
                 )
@@ -190,6 +195,7 @@ class Texas811FieldValidator(FieldValidator):
                         field_name=field_name,
                         severity=ValidationSeverity.WARNING,
                         message=f"GPS longitude {value} may be outside Texas bounds (-107° to -93°W)",
+                        suggested_value=None,
                         prompt_text=f"Please verify the GPS longitude is correct: {value}",
                     )
                 )
@@ -352,6 +358,7 @@ class GapDetector:
                         field_name=field_name,
                         severity=ValidationSeverity.REQUIRED,
                         message=f"{field_name.replace('_', ' ').title()} is required but not provided",
+                        suggested_value=None,
                         prompt_text=self._get_field_prompt(field_name),
                     )
                 )
@@ -419,6 +426,7 @@ class GapDetector:
                     field_name="location",
                     severity=ValidationSeverity.REQUIRED,
                     message="Must provide either street address OR GPS coordinates for work location",
+                    suggested_value=None,
                     prompt_text="I need either a street address or GPS coordinates. Which would you prefer to provide?",
                 )
             )
@@ -433,6 +441,7 @@ class GapDetector:
                     field_name="work_start_date",
                     severity=ValidationSeverity.WARNING,
                     message="Work start date should be at least 2 business days in the future per Texas811 requirements",
+                    suggested_value=None,
                     prompt_text="Texas law requires at least 2 business days notice. When do you plan to start work?",
                 )
             )
@@ -442,7 +451,8 @@ class GapDetector:
     def _get_field_prompt(self, field_name: str) -> str:
         """Get conversational prompt for field (delegate to field validator)."""
         if hasattr(self.field_validator, "_get_field_prompt"):
-            return self.field_validator._get_field_prompt(field_name)
+            result = self.field_validator._get_field_prompt(field_name)  # type: ignore[attr-defined]
+            return str(result)
         return f"Can you provide the {field_name.replace('_', ' ')}?"
 
 
@@ -479,7 +489,7 @@ class ValidationCache:
             del self._cache[cache_key]
             return None
 
-        return entry["result"]
+        return entry["result"]  # type: ignore[no-any-return]
 
     def store(self, cache_key: str, result: ValidationResult) -> None:
         """Store validation result in cache.
@@ -654,8 +664,8 @@ class ValidationEngine:
     ) -> float:
         """Calculate overall validation score (0.0 to 1.0)."""
         validation_rules = self.field_validator.get_validation_rules()
-        total_weight = 0
-        achieved_weight = 0
+        total_weight = 0.0
+        achieved_weight = 0.0
 
         # Weight scoring by field importance
         field_weights = {
