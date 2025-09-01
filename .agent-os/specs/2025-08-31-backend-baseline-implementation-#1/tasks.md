@@ -16,14 +16,14 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 1.6 Create basic project structure for JSON persistence
   - [x] 1.7 Configure environment variables and settings
 
-- [ ] 2. JSON Data Models and Storage Layer
-  - [ ] 2.1 Write tests for Pydantic models and JSON serialization
-  - [ ] 2.2 Create Pydantic models for tickets, validation_gaps, and geometry
-  - [ ] 2.3 Implement JSON file storage with atomic writes and backups
-  - [ ] 2.4 Create data loading and query utilities for ticket search
-  - [ ] 2.5 Implement audit event logging to JSON files
-  - [ ] 2.6 Create data migration utilities for schema changes
-  - [ ] 2.7 Verify all data persistence tests pass
+- [x] 2. JSON Data Models and Storage Layer
+  - [x] 2.1 Write tests for Pydantic models and JSON serialization
+  - [x] 2.2 Create Pydantic models for tickets, validation_gaps, and geometry
+  - [x] 2.3 Implement JSON file storage with atomic writes and backups
+  - [x] 2.4 Create data loading and query utilities for ticket search
+  - [x] 2.5 Implement audit event logging to JSON files
+  - [x] 2.6 Create data migration utilities for schema changes
+  - [x] 2.7 Verify all data persistence tests pass
 
 - [ ] 3. Core Validation Engine Implementation
   - [ ] 3.1 Write tests for field validation logic and gap detection
