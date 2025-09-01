@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     audit_dir: Path = Path("data/audit")
 
     # External API configuration
-    mapbox_token: str | None = Field(default=None)
+    mapbox_token: str | None = Field(default=None, alias="GEOCODING_API_KEY")
 
     # POC limits
     max_tickets: int = Field(default=20)
