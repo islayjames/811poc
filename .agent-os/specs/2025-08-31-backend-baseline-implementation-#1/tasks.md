@@ -34,14 +34,14 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 3.6 Implement validation result caching in memory
   - [x] 3.7 Verify all validation tests pass with sample work order data
 
-- [ ] 4. GIS and Geocoding Integration
-  - [ ] 4.1 Write tests for geocoding and geometry generation
-  - [ ] 4.2 Integrate Mapbox geocoding API with error handling
-  - [ ] 4.3 Implement geometry generation from GPS coordinates
-  - [ ] 4.4 Create simple geofence builder (box/polyline buffer)
-  - [ ] 4.5 Implement coordinate validation and Texas bounds checking
-  - [ ] 4.6 Create confidence scoring for generated geometries
-  - [ ] 4.7 Verify all GIS tests pass with real address and GPS data
+- [x] 4. GIS and Geocoding Integration
+  - [x] 4.1 Write tests for geocoding and geometry generation
+  - [x] 4.2 Integrate Mapbox geocoding API with error handling
+  - [x] 4.3 Implement geometry generation from GPS coordinates
+  - [x] 4.4 Create simple geofence builder (box/polyline buffer)
+  - [x] 4.5 Implement coordinate validation and Texas bounds checking
+  - [x] 4.6 Create confidence scoring for generated geometries
+  - [x] 4.7 Verify all GIS tests pass with real address and GPS data
 
 - [ ] 5. Compliance Date Calculator Implementation
   - [ ] 5.1 Write tests for business day calculations and date logic

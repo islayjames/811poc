@@ -43,9 +43,10 @@ class GeometryGenerationError(Exception):
 class GeocodingService:
     """Service for geocoding addresses using Mapbox API."""
 
-    _SENTINEL = object()  # Sentinel to distinguish None from not provided
+    _SENTINEL: object = object()  # Sentinel to distinguish None from not provided
+    api_key: str | None
 
-    def __init__(self, api_key: str | None = _SENTINEL):
+    def __init__(self, api_key: str | None | object = _SENTINEL):
         """Initialize the geocoding service.
 
         Args:
@@ -55,7 +56,7 @@ class GeocodingService:
         if api_key is self._SENTINEL:
             self.api_key = settings.mapbox_token
         else:
-            self.api_key = api_key
+            self.api_key = api_key if isinstance(api_key, str | type(None)) else None
 
         self.base_url = "https://api.mapbox.com/geocoding/v5/mapbox.places"
         # Mock mode if no API key or placeholder value
@@ -264,7 +265,7 @@ class CoordinateValidator:
 class GeometryGenerator:
     """Generates GeoJSON geometries from GPS coordinates."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the geometry generator."""
         self.validator = CoordinateValidator()
 
