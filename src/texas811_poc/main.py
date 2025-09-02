@@ -6,6 +6,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 
 from .api_endpoints import parcel_router
@@ -92,6 +93,7 @@ app = FastAPI(
             "description": "Development server",
         },
     ],
+    openapi_version="3.0.0",  # Force OpenAPI 3.0.0 for OpenAI compatibility
     openapi_tags=[
         {
             "name": "Health",
@@ -106,7 +108,7 @@ app = FastAPI(
             "description": "Parcel enrichment endpoints for GIS data analysis and comparison",
         },
         {
-            "name": "Dashboard",
+            "name": "Dashboard & Manual Operations",
             "description": "Dashboard endpoints for ticket viewing and manual operations",
         },
     ],
@@ -157,6 +159,77 @@ app.add_middleware(MetricsMiddleware)
 app.include_router(api_router)
 app.include_router(parcel_router)
 app.include_router(dashboard_router)
+
+
+def convert_anyof_to_nullable(schema_dict: dict) -> dict:
+    """Convert OpenAPI 3.1 anyOf with null to OpenAPI 3.0 nullable format."""
+    if isinstance(schema_dict, dict):
+        # Handle anyOf with null pattern
+        if "anyOf" in schema_dict:
+            any_of = schema_dict["anyOf"]
+            if len(any_of) == 2:
+                # Check if one item is null type
+                null_item = None
+                type_item = None
+                for item in any_of:
+                    if item.get("type") == "null":
+                        null_item = item
+                    else:
+                        type_item = item
+
+                if null_item and type_item:
+                    # Convert to nullable format
+                    new_schema = type_item.copy()
+                    new_schema["nullable"] = True
+                    # Copy over title and description from parent
+                    if "title" in schema_dict:
+                        new_schema["title"] = schema_dict["title"]
+                    if "description" in schema_dict:
+                        new_schema["description"] = schema_dict["description"]
+                    return convert_anyof_to_nullable(new_schema)
+
+        # Recursively process all dict values
+        result = {}
+        for key, value in schema_dict.items():
+            result[key] = convert_anyof_to_nullable(value)
+        return result
+    elif isinstance(schema_dict, list):
+        # Recursively process all list items
+        return [convert_anyof_to_nullable(item) for item in schema_dict]
+    else:
+        return schema_dict
+
+
+def custom_openapi():
+    """Generate OpenAPI 3.0 compatible schema."""
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+        servers=app.servers,
+    )
+
+    # Force OpenAPI version to 3.0.0
+    openapi_schema["openapi"] = "3.0.0"
+
+    # Convert anyOf patterns to nullable
+    openapi_schema = convert_anyof_to_nullable(openapi_schema)
+
+    # Add security schemes
+    openapi_schema["components"]["securitySchemes"] = {
+        "HTTPBearer": {"type": "http", "scheme": "bearer"}
+    }
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+# Override the OpenAPI generation
+app.openapi = custom_openapi
 
 
 @app.exception_handler(Exception)
