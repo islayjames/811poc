@@ -1,6 +1,141 @@
 import type { TicketListResponse, TicketDetail, TicketFilters } from "./types"
 import { MOCK_TICKETS, MOCK_TICKET_BY_ID } from "./mock-data"
 
+// Backend API Response Types
+interface BackendTicketModel {
+  ticket_id: string
+  session_id: string
+  status: string
+  county: string
+  city: string
+  address: string
+  cross_street: string | null
+  work_description: string
+  caller_name: string | null
+  caller_company: string | null
+  caller_phone: string | null
+  caller_email: string | null
+  excavator_company: string | null
+  excavator_address: string | null
+  excavator_phone: string | null
+  work_start_date: string | null
+  work_duration_days: number | null
+  work_type: string | null
+  remarks: string | null
+  gps_lat: number | null
+  gps_lng: number | null
+  lawful_start_date: string | null
+  ticket_expires_date: string | null
+  marking_valid_until: string | null
+  submitted_at: string | null
+  created_at: string
+  updated_at: string
+  validation_gaps: any[]
+  geometry: any
+  white_lining_complete?: boolean | null
+  explosives_used?: boolean | null
+  submission_packet?: any
+}
+
+interface BackendTicketListResponse {
+  tickets: BackendTicketModel[]
+  total_count: number
+  page: number
+  page_size: number
+}
+
+interface BackendTicketDetailResponse extends BackendTicketModel {
+  audit_history: any[]
+  countdown_info: any
+}
+
+// Mapping functions
+function mapBackendTicketToFrontend(backendTicket: BackendTicketModel) {
+  return {
+    id: backendTicket.ticket_id,
+    work_order_ref: null, // Backend doesn't have this field
+    city: backendTicket.city,
+    county: backendTicket.county,
+    status: mapBackendStatus(backendTicket.status),
+    dates: {
+      earliest_lawful_start: backendTicket.lawful_start_date,
+      expires_at: backendTicket.ticket_expires_date,
+    },
+    gap_count: backendTicket.validation_gaps?.length || 0,
+  }
+}
+
+function mapBackendDetailToFrontend(backendDetail: BackendTicketDetailResponse): TicketDetail {
+  return {
+    id: backendDetail.ticket_id,
+    status: mapBackendStatus(backendDetail.status),
+    ticket_type_hint: "Normal",
+    requested_at: backendDetail.created_at,
+    dates: {
+      earliest_lawful_start: backendDetail.lawful_start_date,
+      positive_response_at: null,
+      expires_at: backendDetail.ticket_expires_date,
+    },
+    excavator: {
+      company: backendDetail.excavator_company || "Unknown",
+      contact_name: backendDetail.caller_name || "Unknown",
+      phone: backendDetail.excavator_phone || backendDetail.caller_phone || "",
+      email: backendDetail.caller_email,
+    },
+    work: {
+      work_for: backendDetail.caller_company,
+      type_of_work: backendDetail.work_description,
+      is_trenchless: false,
+      is_blasting: backendDetail.explosives_used || false,
+      depth_inches: null,
+      duration_days: backendDetail.work_duration_days,
+    },
+    site: {
+      county: backendDetail.county,
+      city: backendDetail.city,
+      address: backendDetail.address,
+      cross_street: backendDetail.cross_street,
+      subdivision: null,
+      lot_block: null,
+      gps: { lat: backendDetail.gps_lat, lng: backendDetail.gps_lng },
+      driving_directions: null,
+      work_area_description: backendDetail.work_description,
+      site_marked_white: backendDetail.white_lining_complete || false,
+    },
+    geom: {
+      geometry_type: "Point",
+      geojson: backendDetail.geometry,
+      confidence: null,
+      assumptions: null,
+      warnings: null,
+    },
+    submit_packet: backendDetail.submission_packet || {},
+    responses: [],
+    audit_log: (backendDetail.audit_history || []).map((event: any) => ({
+      ts: event.timestamp || event.created_at,
+      actor: event.user_id || "system",
+      from: null,
+      to: event.action,
+      note: event.details?.notes || null,
+    })),
+  }
+}
+
+function mapBackendStatus(backendStatus: string) {
+  const statusMap: Record<string, string> = {
+    "draft": "Draft",
+    "validated": "ValidPendingConfirm",
+    "ready": "Ready",
+    "submitted": "Submitted",
+    "responses_in": "ResponsesIn",
+    "ready_to_dig": "ReadyToDig",
+    "completed": "ReadyToDig",
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+  }
+  return statusMap[backendStatus.toLowerCase()] || backendStatus
+}
+
 class ApiError extends Error {
   constructor(
     public status: number,
@@ -11,11 +146,14 @@ class ApiError extends Error {
   }
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`/api/${endpoint}`, {
+  const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      "Authorization": "Bearer dashboard-admin-key",
       ...options.headers,
     },
   })
@@ -211,7 +349,8 @@ export const api = {
     const params = new URLSearchParams()
 
     if (filters.status?.length) {
-      filters.status.forEach((status) => params.append("status", status))
+      // Backend expects single status filter, take first one
+      params.set("status", filters.status[0].toLowerCase())
     }
     if (filters.city) params.set("city", filters.city)
     if (filters.county) params.set("county", filters.county)
@@ -220,9 +359,17 @@ export const api = {
     if (filters.offset) params.set("offset", filters.offset.toString())
 
     const queryString = params.toString()
-    const endpoint = `tickets${queryString ? `?${queryString}` : ""}`
+    const endpoint = `dashboard/tickets${queryString ? `?${queryString}` : ""}`
 
-    return apiRequest<TicketListResponse>(endpoint)
+    const backendResponse = await apiRequest<BackendTicketListResponse>(endpoint)
+
+    // Map backend response to frontend format
+    return {
+      tickets: backendResponse.tickets.map(mapBackendTicketToFrontend),
+      total: backendResponse.total_count,
+      limit: backendResponse.page_size,
+      offset: (backendResponse.page - 1) * backendResponse.page_size,
+    }
   },
 
   // Get single ticket detail
@@ -231,7 +378,8 @@ export const api = {
       return mockGetTicket(id)
     }
 
-    return apiRequest<TicketDetail>(`tickets/${id}`)
+    const backendResponse = await apiRequest<BackendTicketDetailResponse>(`dashboard/tickets/${id}`)
+    return mapBackendDetailToFrontend(backendResponse)
   },
 
   // Confirm ticket (ValidPendingConfirm -> Ready)
@@ -240,7 +388,11 @@ export const api = {
       return mockStatusAction(id, "confirm")
     }
 
-    await apiRequest(`tickets/${id}/confirm`, { method: "POST" })
+    // Backend uses mark-submitted endpoint for confirm action
+    await apiRequest(`dashboard/tickets/${id}/mark-submitted`, {
+      method: "POST",
+      body: JSON.stringify({ submission_reference: `CONFIRMED-${Date.now()}`, notes: "Confirmed via dashboard" })
+    })
   },
 
   // Mark ticket as submitted (Ready -> Submitted)
@@ -249,7 +401,10 @@ export const api = {
       return mockStatusAction(id, "mark-submitted")
     }
 
-    await apiRequest(`tickets/${id}/mark-submitted`, { method: "POST" })
+    await apiRequest(`dashboard/tickets/${id}/mark-submitted`, {
+      method: "POST",
+      body: JSON.stringify({ submission_reference: `SUBMITTED-${Date.now()}`, notes: "Marked as submitted via dashboard" })
+    })
   },
 
   // Mark responses received (Submitted -> ResponsesIn)
@@ -258,7 +413,10 @@ export const api = {
       return mockStatusAction(id, "mark-responses-in")
     }
 
-    await apiRequest(`tickets/${id}/mark-responses-in`, { method: "POST" })
+    await apiRequest(`dashboard/tickets/${id}/mark-responses-in`, {
+      method: "POST",
+      body: JSON.stringify({ response_count: 1, all_clear: true, notes: "Responses received via dashboard" })
+    })
   },
 
   // Cancel ticket (any status -> Cancelled)
@@ -267,7 +425,10 @@ export const api = {
       return mockStatusAction(id, "cancel")
     }
 
-    await apiRequest(`tickets/${id}/cancel`, { method: "POST" })
+    await apiRequest(`dashboard/tickets/${id}`, {
+      method: "DELETE",
+      body: JSON.stringify({ reason: "Cancelled via dashboard", confirm_deletion: false })
+    })
   },
 }
 
