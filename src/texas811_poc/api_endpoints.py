@@ -69,7 +69,7 @@ geofence_builder = GeofenceBuilder()
 compliance_calculator = ComplianceCalculator()
 
 # API Router
-router = APIRouter(prefix="/tickets", tags=["CustomGPT Integration"])
+router = APIRouter(prefix="/tickets", tags=["Tickets"])
 
 # Security
 security = HTTPBearer()
@@ -301,7 +301,16 @@ def generate_submission_packet(ticket: TicketModel) -> dict[str, Any]:
 
 
 @router.post(
-    "/create", response_model=CreateTicketResponse, status_code=status.HTTP_201_CREATED
+    "/create",
+    response_model=CreateTicketResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create new ticket with validation",
+    description=(
+        "Creates a draft ticket from partial or complete work order data. "
+        "Returns detailed validation gaps for iterative completion via CustomGPT. "
+        "Automatically enriches data with geocoding and compliance calculations."
+    ),
+    response_description="Created ticket with validation gaps and session ID",
 )
 async def create_ticket(
     request: Request,
@@ -434,7 +443,17 @@ async def create_ticket(
         ) from e
 
 
-@router.post("/{ticket_id}/update", response_model=UpdateTicketResponse)
+@router.post(
+    "/{ticket_id}/update",
+    response_model=UpdateTicketResponse,
+    summary="Update ticket with additional data",
+    description=(
+        "Updates an existing ticket with new or corrected field values. "
+        "Used iteratively as CustomGPT gathers missing information from users. "
+        "Re-validates all fields and returns updated validation gaps."
+    ),
+    response_description="Updated ticket with current validation status",
+)
 async def update_ticket(
     request: Request,
     ticket_id: str,
@@ -633,7 +652,17 @@ async def update_ticket(
         ) from e
 
 
-@router.post("/{ticket_id}/confirm", response_model=ConfirmTicketResponse)
+@router.post(
+    "/{ticket_id}/confirm",
+    response_model=ConfirmTicketResponse,
+    summary="Confirm ticket and generate submission packet",
+    description=(
+        "Confirms a validated ticket, locking all fields from further changes. "
+        "Generates a Texas 811-compliant submission packet ready for portal entry. "
+        "Ticket must be fully validated before confirmation."
+    ),
+    response_description="Confirmed ticket with submission packet",
+)
 async def confirm_ticket(
     request: Request,
     ticket_id: str,
@@ -805,7 +834,13 @@ async def confirm_ticket(
 
 
 # Additional utility endpoints
-@router.get("/{ticket_id}", tags=["Ticket Management"])
+@router.get(
+    "/{ticket_id}",
+    tags=["Tickets"],
+    summary="Get ticket details",
+    description="Retrieves complete ticket information including validation status and enrichments.",
+    response_description="Complete ticket data",
+)
 async def get_ticket(
     ticket_id: str,
     api_key: str = Depends(verify_api_key),
@@ -832,7 +867,16 @@ async def get_ticket(
     return ticket
 
 
-@router.get("/session/{session_id}/tickets", tags=["Ticket Management"])
+@router.get(
+    "/session/{session_id}/tickets",
+    tags=["Tickets"],
+    summary="List tickets in session",
+    description=(
+        "Retrieves all tickets associated with a CustomGPT session. "
+        "Sessions maintain state across multiple API calls for iterative completion."
+    ),
+    response_description="List of tickets in the session",
+)
 async def get_session_tickets(
     session_id: str,
     api_key: str = Depends(verify_api_key),

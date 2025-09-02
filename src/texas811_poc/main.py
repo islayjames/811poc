@@ -61,13 +61,40 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description=(
-        "Texas 811 POC Backend API for automated ticket submission workflow. "
-        "Handles PDF extraction processing, field validation, geocoding, "
-        "compliance date calculation, and submission packet generation."
+        "Texas 811 POC Backend API for automated ticket submission workflow.\n\n"
+        "## Overview\n"
+        "This API handles the complete workflow for Texas 811 utility locate requests:\n"
+        "- **Validation**: Iterative field validation with detailed gap feedback\n"
+        "- **Enrichment**: Automatic geocoding and compliance date calculations\n"
+        "- **Submission**: Generation of Texas 811-compliant submission packets\n"
+        "- **Tracking**: Ticket lifecycle management and status monitoring\n\n"
+        "## Integration\n"
+        "Designed for integration with CustomGPT for PDF extraction and conversational UI.\n"
+        "Sessions maintain state across multiple API calls for progressive data completion.\n\n"
+        "## Key Features\n"
+        "- Stateful validation with detailed gap analysis\n"
+        "- Address geocoding with confidence scoring\n"
+        "- Texas business day calculations with holiday awareness\n"
+        "- Simple geofence generation for work areas\n"
+        "- Audit trail for compliance tracking"
     ),
     lifespan=lifespan,
     docs_url="/docs",  # Enable docs in production for POC testing
     redoc_url="/redoc",  # Enable redoc in production for POC testing
+    openapi_tags=[
+        {
+            "name": "Health",
+            "description": "Health check and readiness endpoints for monitoring",
+        },
+        {
+            "name": "Tickets",
+            "description": "Core ticket management endpoints for CustomGPT integration",
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard endpoints for ticket viewing and manual operations",
+        },
+    ],
 )
 
 # CORS middleware for CustomGPT integration
