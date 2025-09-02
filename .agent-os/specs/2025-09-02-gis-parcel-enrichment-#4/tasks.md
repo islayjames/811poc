@@ -7,21 +7,21 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
 
 ## Tasks
 
-- [ ] 1. Create CAD Resolvers Configuration
-  - [ ] 1.1 Write tests for CAD_RESOLVERS structure validation
-  - [ ] 1.2 Create cad_resolvers.ts with TypeScript interfaces
-  - [ ] 1.3 Implement CAD_RESOLVERS const with 4 county configurations
-  - [ ] 1.4 Add county name normalization helper function
-  - [ ] 1.5 Create Python equivalent cad_resolvers.py for backend
-  - [ ] 1.6 Verify all tests pass
+- [x] 1. Create CAD Resolvers Configuration
+  - [x] 1.1 Write tests for CAD_RESOLVERS structure validation
+  - [ ] 1.2 Create cad_resolvers.ts with TypeScript interfaces (skipped - Python only per user request)
+  - [x] 1.3 Implement CAD_RESOLVERS const with 4 county configurations
+  - [x] 1.4 Add county name normalization helper function
+  - [x] 1.5 Create Python equivalent cad_resolvers.py for backend
+  - [x] 1.6 Verify all tests pass
 
-- [ ] 2. Implement Core Parcel Enrichment Function
-  - [ ] 2.1 Write tests for enrichParcelFromGIS function
-  - [ ] 2.2 Create parcel_enrichment module structure
-  - [ ] 2.3 Implement enrichParcelFromGIS with error handling
-  - [ ] 2.4 Add coordinate validation and bounds checking
-  - [ ] 2.5 Implement feature_found logic and matched_count tracking
-  - [ ] 2.6 Verify all tests pass
+- [x] 2. Implement Core Parcel Enrichment Function
+  - [x] 2.1 Write tests for enrichParcelFromGIS function
+  - [x] 2.2 Create parcel_enrichment module structure
+  - [x] 2.3 Implement enrichParcelFromGIS with error handling
+  - [x] 2.4 Add coordinate validation and bounds checking
+  - [x] 2.5 Implement feature_found logic and matched_count tracking
+  - [x] 2.6 Verify all tests pass
 
 - [ ] 3. Build ArcGIS Query Client
   - [ ] 3.1 Write tests for fetchParcelFeature function
