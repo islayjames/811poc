@@ -107,58 +107,64 @@ jobs:
 
     - name: Health check
       run: |
-        # Get the deployment URL from Railway using the specific service
-        DEPLOY_URL=$(railway status --service=${{ env.RAILWAY_SERVICE }} --json | jq -r '.deployments[0].url // empty' 2>/dev/null || echo "")
+        # Install curl and jq in the container
+        apk add --no-cache curl jq
 
-        if [ -z "$DEPLOY_URL" ]; then
-          echo "Could not retrieve deployment URL from status, trying domain command..."
-          # Fallback to domain command
-          DEPLOY_URL=$(railway domain --service=${{ env.RAILWAY_SERVICE }} 2>/dev/null || echo "")
+        # Get the deployment URL from Railway
+        echo "Getting deployment URL from Railway..."
+        DEPLOY_URL=$(railway domain 2>/dev/null || echo "")
 
-          # If still empty, construct from service name
-          if [ -z "$DEPLOY_URL" ]; then
-            DEPLOY_URL="https://${{ env.RAILWAY_SERVICE }}-production.up.railway.app"
-            echo "Using constructed URL: $DEPLOY_URL"
-          fi
+        # If domain command doesn't return URL, try to get it from status
+        if [ -z "$DEPLOY_URL" ] || [ "$DEPLOY_URL" = "null" ]; then
+          echo "Trying to get URL from railway status..."
+          DEPLOY_URL=$(railway status --json 2>/dev/null | jq -r '.domains[0] // empty' || echo "")
         fi
 
-        if [ -n "$DEPLOY_URL" ]; then
-          echo "Testing health endpoint at: $DEPLOY_URL/health"
+        # If still no URL, use the known pattern for Railway deployments
+        if [ -z "$DEPLOY_URL" ] || [ "$DEPLOY_URL" = "null" ]; then
+          DEPLOY_URL="https://texas811-poc-production.up.railway.app"
+          echo "Using known deployment URL: $DEPLOY_URL"
+        else
+          # Ensure URL has https:// prefix
+          if [[ ! "$DEPLOY_URL" =~ ^https?:// ]]; then
+            DEPLOY_URL="https://$DEPLOY_URL"
+          fi
+          echo "Using deployment URL: $DEPLOY_URL"
+        fi
 
-          # Wait for deployment to be ready
-          for i in {1..10}; do
-            if curl -f -s "$DEPLOY_URL/health" >/dev/null; then
-              echo "✅ Health check passed!"
+        echo "Testing health endpoint at: $DEPLOY_URL/health"
 
-              # Validate health response
-              HEALTH_RESPONSE=$(curl -s "$DEPLOY_URL/health")
-              echo "Health response: $HEALTH_RESPONSE"
+        # Wait for deployment to be ready
+        for i in {1..10}; do
+          if curl -f -s "$DEPLOY_URL/health" >/dev/null 2>&1; then
+            echo "✅ Health check passed!"
 
-              # Check if response contains expected fields
-              if echo "$HEALTH_RESPONSE" | jq -e '.status' >/dev/null 2>&1; then
-                if echo "$HEALTH_RESPONSE" | jq -r '.status' | grep -q "healthy"; then
-                  echo "✅ Health check validation passed!"
-                  exit 0
-                else
-                  echo "❌ Health check returned unhealthy status"
-                  exit 1
-                fi
+            # Validate health response
+            HEALTH_RESPONSE=$(curl -s "$DEPLOY_URL/health")
+            echo "Health response: $HEALTH_RESPONSE"
+
+            # Check if response contains expected fields
+            if echo "$HEALTH_RESPONSE" | jq -e '.status' >/dev/null 2>&1; then
+              if echo "$HEALTH_RESPONSE" | jq -r '.status' | grep -q "healthy"; then
+                echo "✅ Health check validation passed!"
+                echo "Deployment URL: $DEPLOY_URL"
+                exit 0
               else
-                echo "❌ Health check response missing status field"
+                echo "❌ Health check returned unhealthy status"
                 exit 1
               fi
             else
-              echo "Health check attempt $i failed, waiting 10 seconds..."
-              sleep 10
+              echo "❌ Health check response missing status field"
+              exit 1
             fi
-          done
+          else
+            echo "Health check attempt $i failed, waiting 10 seconds..."
+            sleep 10
+          fi
+        done
 
-          echo "❌ Health check failed after 10 attempts"
-          exit 1
-        else
-          echo "❌ Could not determine deployment URL"
-          exit 1
-        fi
+        echo "❌ Health check failed after 10 attempts"
+        exit 1
 
   notify:
     name: Notify Deployment Status
