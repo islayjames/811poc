@@ -23,13 +23,13 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 2.5 Implement feature_found logic and matched_count tracking
   - [x] 2.6 Verify all tests pass
 
-- [ ] 3. Build ArcGIS Query Client
-  - [ ] 3.1 Write tests for fetchParcelFeature function
-  - [ ] 3.2 Implement query parameter construction
-  - [ ] 3.3 Add HTTP client with timeout support
-  - [ ] 3.4 Implement response parsing and field mapping
-  - [ ] 3.5 Add retry logic with exponential backoff
-  - [ ] 3.6 Verify all tests pass with mocked responses
+- [x] 3. Build ArcGIS Query Client
+  - [x] 3.1 Write tests for fetchParcelFeature function
+  - [x] 3.2 Implement query parameter construction
+  - [x] 3.3 Add HTTP client with timeout support
+  - [x] 3.4 Implement response parsing and field mapping
+  - [x] 3.5 Add retry logic with exponential backoff
+  - [x] 3.6 Verify all tests pass with mocked responses
 
 - [ ] 4. Integrate with Validation Pipeline
   - [ ] 4.1 Write integration tests for validation flow
