@@ -20,6 +20,7 @@ export default function TicketsListPage() {
   const searchParams = useSearchParams()
   const tableRef = useRef<HTMLDivElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
+  const isInitialMount = useRef(true)
 
   const [tickets, setTickets] = useState<TicketListItem[]>([])
   const [total, setTotal] = useState(0)
@@ -29,37 +30,28 @@ export default function TicketsListPage() {
 
   const [ariaLiveMessage, setAriaLiveMessage] = useState("")
 
-  const [currentPage, setCurrentPage] = useState(() => {
-    return Number.parseInt(searchParams.get("page") || "1", 10)
-  })
-
-  const [pageSize, setPageSize] = useState(() => {
+  // Initialize from URL params if present, otherwise use defaults
+  const getInitialPage = () => Number.parseInt(searchParams.get("page") || "1", 10)
+  const getInitialPageSize = () => {
     const size = Number.parseInt(searchParams.get("pageSize") || DEFAULT_PAGE_SIZE.toString(), 10)
     return PAGE_SIZE_OPTIONS.includes(size) ? size : DEFAULT_PAGE_SIZE
-  })
+  }
 
+  const [currentPage, setCurrentPage] = useState(getInitialPage)
+  const [pageSize, setPageSize] = useState(getInitialPageSize)
   const [statusFilter, setStatusFilter] = useState<TicketStatus[] | undefined>(() => {
-    const statusParams = searchParams.getAll("status") as TicketStatus[]
-    return statusParams.length > 0 ? statusParams : undefined
+    const status = searchParams.getAll("status") as TicketStatus[]
+    return status.length > 0 ? status : undefined
   })
-  const [cityFilter, setCityFilter] = useState<string | undefined>(() => {
-    return searchParams.get("city") || undefined
-  })
-  const [countyFilter, setCountyFilter] = useState<string | undefined>(() => {
-    return searchParams.get("county") || undefined
-  })
-  const [searchFilter, setSearchFilter] = useState<string | undefined>(() => {
-    return searchParams.get("q") || undefined
-  })
-
-  const [sortBy, setSortBy] = useState<"earliest_start" | "expires" | "status">(() => {
-    const sort = searchParams.get("sort") as "earliest_start" | "expires" | "status"
-    return sort || "earliest_start"
-  })
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(() => {
-    const dir = searchParams.get("dir") as "asc" | "desc"
-    return dir || "asc"
-  })
+  const [cityFilter, setCityFilter] = useState<string | undefined>(searchParams.get("city") || undefined)
+  const [countyFilter, setCountyFilter] = useState<string | undefined>(searchParams.get("county") || undefined)
+  const [searchFilter, setSearchFilter] = useState<string | undefined>(searchParams.get("q") || undefined)
+  const [sortBy, setSortBy] = useState<"earliest_start" | "expires" | "status">(
+    (searchParams.get("sort") as "earliest_start" | "expires" | "status") || "earliest_start"
+  )
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
+    (searchParams.get("dir") as "asc" | "desc") || "asc"
+  )
 
   const fetchTickets = async () => {
     try {
@@ -109,12 +101,9 @@ export default function TicketsListPage() {
         setHasEverHadTickets(true)
       }
 
-      if (tableRef.current) {
-        const rect = tableRef.current.getBoundingClientRect()
-        if (rect.top < 0) {
-          tableRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
-      }
+      // Only scroll if this was a user-initiated action (like pagination)
+      // Don't scroll on initial load or automatic refreshes
+      // This can be enhanced with a flag to track user interactions
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
         return
@@ -136,6 +125,14 @@ export default function TicketsListPage() {
     newPage?: number,
     newPageSize?: number,
   ) => {
+    // Don't update URL on initial mount
+    if (isInitialMount.current) {
+      return
+    }
+
+    // Save current scroll position
+    const scrollY = window.scrollY
+
     const params = new URLSearchParams()
 
     const status = newStatusFilter !== undefined ? newStatusFilter : statusFilter
@@ -143,6 +140,7 @@ export default function TicketsListPage() {
     const county = newCountyFilter !== undefined ? newCountyFilter : countyFilter
     const search = newSearchFilter !== undefined ? newSearchFilter : searchFilter
 
+    // Only add non-default values to URL
     if (status?.length) {
       status.forEach((s) => params.append("status", s))
     }
@@ -150,13 +148,27 @@ export default function TicketsListPage() {
     if (county) params.set("county", county)
     if (search) params.set("q", search)
 
-    params.set("page", (newPage || currentPage).toString())
-    params.set("pageSize", (newPageSize || pageSize).toString())
+    // Only add pagination params if not default
+    const page = newPage || currentPage
+    const size = newPageSize || pageSize
+    if (page !== 1) params.set("page", page.toString())
+    if (size !== DEFAULT_PAGE_SIZE) params.set("pageSize", size.toString())
 
-    params.set("sort", newSortBy || sortBy)
-    params.set("dir", newSortOrder || sortOrder)
+    // Only add sort params if not default
+    const sort = newSortBy || sortBy
+    const dir = newSortOrder || sortOrder
+    if (sort !== "earliest_start") params.set("sort", sort)
+    if (dir !== "asc") params.set("dir", dir)
 
-    router.push(`/tickets?${params.toString()}`)
+    // Use replace instead of push to avoid adding to history stack
+    const queryString = params.toString()
+    const newUrl = queryString ? `/tickets?${queryString}` : '/tickets'
+    router.replace(newUrl, { scroll: false })
+
+    // Restore scroll position after a small delay
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollY)
+    })
   }
 
   const handleFiltersChange = (newFilters: Partial<TicketFilters>) => {
@@ -166,6 +178,7 @@ export default function TicketsListPage() {
     if (newFilters.q !== undefined) setSearchFilter(newFilters.q)
 
     setCurrentPage(1)
+    // Update URL when user interacts with filters
     updateURL(newFilters.status, newFilters.city, newFilters.county, newFilters.q, undefined, undefined, 1)
   }
 
@@ -198,8 +211,18 @@ export default function TicketsListPage() {
     setSortBy("earliest_start")
     setSortOrder("asc")
     setCurrentPage(1)
-    updateURL(undefined, undefined, undefined, undefined, "earliest_start", "asc", 1)
+    // Clear URL params when clearing filters
+    router.replace('/tickets', { scroll: false })
   }
+
+  // Track initial mount and prevent URL updates for first 500ms
+  useEffect(() => {
+    // Delay to ensure we don't update URL during initial renders
+    const timer = setTimeout(() => {
+      isInitialMount.current = false
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     fetchTickets()

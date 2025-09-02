@@ -53,18 +53,18 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         expires_at: backendData.ticket_expires_date,
       },
       excavator: {
-        company: backendData.excavator_company || backendData.caller_company || "Unknown",
-        contact_name: backendData.caller_name || "Unknown",
-        phone: backendData.excavator_phone || backendData.caller_phone || "",
+        company: backendData.excavator_company || backendData.caller_company || null,
+        contact_name: backendData.caller_name || null,
+        phone: backendData.excavator_phone || backendData.caller_phone || null,
         email: backendData.caller_email || null,
       },
       work: {
-        work_for: backendData.caller_company || "Unknown",
-        type_of_work: backendData.work_description || "Unknown",
+        work_for: backendData.caller_company || null,
+        type_of_work: backendData.work_description || null,
         is_trenchless: backendData.boring_crossing || false,
         is_blasting: backendData.explosives_used || false,
-        depth_inches: 24, // Default value
-        duration_days: backendData.work_duration_days || 1,
+        depth_inches: null, // Let frontend handle display
+        duration_days: backendData.work_duration_days || null,
       },
       site: {
         county: backendData.county,

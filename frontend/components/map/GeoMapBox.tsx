@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
 import { MapPinIcon, NavigationIcon } from "lucide-react"
+import "mapbox-gl/dist/mapbox-gl.css"
 
 interface GeoMapBoxProps {
   geometry: any | null // GeoJSON Feature or FeatureCollection
@@ -18,7 +19,7 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
   useEffect(() => {
     const loadMapbox = async () => {
       try {
-        const mapboxModule = await import("https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js")
+        const mapboxModule = await import("mapbox-gl")
         const mapboxgl = (mapboxModule as any).default || mapboxModule
         setMapboxgl(mapboxgl)
         setIsLoading(false)
@@ -36,6 +37,7 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
     if (!mapboxgl || !mapContainer.current || map.current) return
 
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+    console.log('Mapbox token available:', !!token, 'Token prefix:', token?.substring(0, 10))
 
     if (!token) {
       setError("Mapbox token not configured")

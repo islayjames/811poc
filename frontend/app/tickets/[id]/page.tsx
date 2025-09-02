@@ -46,10 +46,14 @@ import {
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
-export default function TicketDetailPage({ params }: { params: { id: string } }) {
+export default async function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  return <TicketDetailContent ticketId={id} />
+}
+
+function TicketDetailContent({ ticketId }: { ticketId: string }) {
   const router = useRouter()
   const { toast } = useToast()
-  const ticketId = params.id as string
 
   const [ticket, setTicket] = useState<TicketDetail | null>(null)
   const [loading, setLoading] = useState(true)
@@ -69,6 +73,7 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
     description: "",
     action: async () => {},
   })
+
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
@@ -150,14 +155,14 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
 
   useEffect(() => {
     fetchTicket()
-  }, [ticketId])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (error) {
     return (
       <div className="min-h-screen">
         <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b h-14 flex items-center justify-between px-6">
           <div className="flex items-center space-x-3">
-            <Button variant="outline" size="sm" onClick={() => router.back()}>
+            <Button variant="outline" size="sm" onClick={() => router.push('/tickets')}>
               <ArrowLeftIcon className="h-4 w-4 mr-2" />
               Back
             </Button>
@@ -283,7 +288,7 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
     return (
       <div className="min-h-screen">
         <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b h-14 flex items-center px-6">
-          <Button variant="outline" size="sm" onClick={() => router.back()}>
+          <Button variant="outline" size="sm" onClick={() => router.push('/tickets')}>
             <ArrowLeftIcon className="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -363,7 +368,7 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
         <div className="max-w-screen-xl mx-auto px-6 h-14 flex items-center justify-between">
           {/* Left cluster */}
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm" onClick={() => router.back()}>
+            <Button variant="outline" size="sm" onClick={() => router.push('/tickets')}>
               <ArrowLeftIcon className="h-4 w-4 mr-2" />
               Back
             </Button>
