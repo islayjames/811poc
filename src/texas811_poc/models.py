@@ -244,6 +244,12 @@ class TicketModel(BaseModel):
     )
 
     # Additional Details
+    driving_directions: str | None = Field(
+        None, description="Driving directions to work location"
+    )
+    marking_instructions: str | None = Field(
+        None, description="Specific marking and work area instructions"
+    )
     remarks: str | None = Field(
         None, description="Additional remarks or special instructions"
     )

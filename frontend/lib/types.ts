@@ -68,6 +68,7 @@ export interface TicketDetail {
     lot_block: string | null
     gps: { lat: number | null; lng: number | null }
     driving_directions: string | null
+    marking_instructions: string | null
     work_area_description: string
     site_marked_white: boolean
   }

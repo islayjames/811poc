@@ -33,6 +33,7 @@ interface SubmitPacketProps {
       subdivision?: string
       lot_block?: string
       driving_directions?: string
+      marking_instructions?: string
       remarks?: string
     }
     map_description: {
@@ -229,10 +230,17 @@ export function SubmitPacketView({ packet, mode, showDisclaimer }: SubmitPacketP
           <FieldRow label="City" value={safePacket.location.city} />
           <FieldRow label="Address" value={safePacket.location.address || safePacket.location.gps} />
           <FieldRow label="Cross Street" value={safePacket.location.cross_street} />
-          <FieldRow label="Driving Directions" value={safePacket.location.driving_directions} />
           <FieldRow label="Subdivision" value={safePacket.location.subdivision} />
           <FieldRow label="Lot/Block" value={safePacket.location.lot_block} />
-          <FieldRow label="Remarks" value={safePacket.location.remarks} />
+        </dl>
+      </SectionWrapper>
+
+      {/* 2.5) Directions & Instructions */}
+      <SectionWrapper title="Directions & Instructions">
+        <dl className="space-y-2">
+          <FieldRow label="Driving Directions" value={safePacket.location.driving_directions} />
+          <FieldRow label="Marking Instructions" value={safePacket.location.marking_instructions} />
+          <FieldRow label="Additional Remarks" value={safePacket.location.remarks} />
         </dl>
       </SectionWrapper>
 

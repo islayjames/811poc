@@ -147,6 +147,12 @@ class CreateTicketRequest(BaseModel):
     )
 
     # Additional Details
+    driving_directions: str | None = Field(
+        None, description="Driving directions to work location", max_length=1000
+    )
+    marking_instructions: str | None = Field(
+        None, description="Specific marking and work area instructions", max_length=1000
+    )
     remarks: str | None = Field(
         None, description="Additional remarks or special instructions", max_length=500
     )
@@ -165,6 +171,14 @@ class CreateTicketRequest(BaseModel):
         None, description="Hand digging only (no mechanical excavation)?"
     )
 
+    # Optional pre-enriched data (if client has already processed)
+    geometry: GeometryModel | None = Field(
+        None, description="Pre-generated GeoJSON geometry (optional)"
+    )
+    parcel_info: ParcelInfoModel | None = Field(
+        None, description="Pre-enriched parcel data (optional)"
+    )
+
 
 class CreateTicketResponse(APIResponse):
     """Response model for successful ticket creation."""
@@ -178,6 +192,9 @@ class CreateTicketResponse(APIResponse):
     city: str
     address: str
     work_description: str
+    driving_directions: str | None = None
+    marking_instructions: str | None = None
+    remarks: str | None = None
     cross_street: str | None = None
 
     # Geocoded coordinates (if available)
@@ -245,6 +262,8 @@ class UpdateTicketRequest(BaseModel):
     work_duration_days: int | None = Field(None, ge=1, le=30)
     work_type: str | None = Field(None, max_length=50)
 
+    driving_directions: str | None = Field(None, max_length=1000)
+    marking_instructions: str | None = Field(None, max_length=1000)
     remarks: str | None = Field(None, max_length=500)
 
     white_lining_complete: bool | None = None
@@ -265,6 +284,9 @@ class UpdateTicketResponse(APIResponse):
     city: str
     address: str
     work_description: str
+    driving_directions: str | None = None
+    marking_instructions: str | None = None
+    remarks: str | None = None
     cross_street: str | None = None
 
     gps_lat: float | None = None

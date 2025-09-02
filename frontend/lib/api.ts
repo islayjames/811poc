@@ -21,6 +21,8 @@ interface BackendTicketModel {
   work_start_date: string | null
   work_duration_days: number | null
   work_type: string | null
+  driving_directions: string | null
+  marking_instructions: string | null
   remarks: string | null
   gps_lat: number | null
   gps_lng: number | null
@@ -98,7 +100,8 @@ function mapBackendDetailToFrontend(backendDetail: BackendTicketDetailResponse):
       subdivision: null,
       lot_block: null,
       gps: { lat: backendDetail.gps_lat, lng: backendDetail.gps_lng },
-      driving_directions: null,
+      driving_directions: backendDetail.driving_directions,
+      marking_instructions: backendDetail.marking_instructions,
       work_area_description: backendDetail.work_description,
       site_marked_white: backendDetail.white_lining_complete || false,
     },
@@ -297,6 +300,7 @@ function mockGetTicket(id: string): Promise<TicketDetail> {
               lot_block: null,
               gps: { lat: null, lng: null },
               driving_directions: null,
+              marking_instructions: null,
               work_area_description: "Synthesized work area description",
               site_marked_white: false,
             },
