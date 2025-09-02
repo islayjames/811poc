@@ -88,49 +88,49 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
     needs: [test, build]
     if: github.ref == 'refs/heads/main'
     environment: production
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: 29fd5b29-f71d-4921-8ee1-284a818024ef
+      RAILWAY_SERVICE: texas811-poc
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install Railway CLI
+    - name: Link Railway project
       run: |
-        curl -fsSL https://railway.app/install.sh | sh
-        echo "$HOME/.railway/bin" >> $GITHUB_PATH
-
-    - name: Verify Railway CLI
-      run: railway --version
+        railway link ${{ env.RAILWAY_PROJECT_ID }}
 
     - name: Deploy to Railway
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        RAILWAY_PROJECT_ID: 29fd5b29-f71d-4921-8ee1-284a818024ef
-        RAILWAY_ENVIRONMENT_ID: production
-        RAILWAY_SERVICE_ID: api
       run: |
-        railway up
+        railway up --service=${{ env.RAILWAY_SERVICE }}
 
     - name: Wait for deployment
       run: sleep 30
 
     - name: Health check
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       run: |
-        # Get the deployment URL from Railway
-        DEPLOY_URL=$(railway status --json | jq -r '.deployment.url' 2>/dev/null || echo "")
+        # Get the deployment URL from Railway using the specific service
+        DEPLOY_URL=$(railway status --service=${{ env.RAILWAY_SERVICE }} --json | jq -r '.deployments[0].url // empty' 2>/dev/null || echo "")
 
         if [ -z "$DEPLOY_URL" ]; then
-          echo "Could not retrieve deployment URL, trying fallback..."
-          # Fallback to project domain if available
-          DEPLOY_URL=$(railway domain 2>/dev/null || echo "")
+          echo "Could not retrieve deployment URL from status, trying domain command..."
+          # Fallback to domain command
+          DEPLOY_URL=$(railway domain --service=${{ env.RAILWAY_SERVICE }} 2>/dev/null || echo "")
+
+          # If still empty, construct from service name
+          if [ -z "$DEPLOY_URL" ]; then
+            DEPLOY_URL="https://${{ env.RAILWAY_SERVICE }}-production.up.railway.app"
+            echo "Using constructed URL: $DEPLOY_URL"
+          fi
         fi
 
         if [ -n "$DEPLOY_URL" ]; then
-          echo "Testing health endpoint at: $DEPLOY_URL"
+          echo "Testing health endpoint at: $DEPLOY_URL/health"
 
           # Wait for deployment to be ready
           for i in {1..10}; do

@@ -18,7 +18,7 @@
   },
   "services": [
     {
-      "name": "api",
+      "name": "texas811-poc",
       "source": {
         "repo": "https://github.com/islayjames/811poc"
       },
