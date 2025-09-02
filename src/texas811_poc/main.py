@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from .api_endpoints import parcel_router
 from .api_endpoints import router as api_router
 from .config import settings
 from .dashboard_endpoints import router as dashboard_router
@@ -91,6 +92,10 @@ app = FastAPI(
             "description": "Core ticket management endpoints for CustomGPT integration",
         },
         {
+            "name": "Parcels",
+            "description": "Parcel enrichment endpoints for GIS data analysis and comparison",
+        },
+        {
             "name": "Dashboard",
             "description": "Dashboard endpoints for ticket viewing and manual operations",
         },
@@ -140,6 +145,7 @@ app.add_middleware(MetricsMiddleware)
 
 # Include API routes
 app.include_router(api_router)
+app.include_router(parcel_router)
 app.include_router(dashboard_router)
 
 

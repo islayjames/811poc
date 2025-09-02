@@ -413,7 +413,7 @@ class TestFetchParcelFeature:
         """Sample Harris county resolver for testing."""
         return {
             "name": "Harris County",
-            "arcgis_url": "https://gis.hctx.net/arcgis/rest/services/parcel/MapServer/0",
+            "arcgis_url": "https://gis.hctx.net/arcgis/rest/services/parcel/MapServer/0/query",
             "out_fields": {
                 "subdivision": "SUBDIVNME",
                 "lot": "LOT",
@@ -698,7 +698,7 @@ class TestFetchParcelFeature:
 
             await fetchParcelFeature(29.7604, -95.3698, harris_resolver)
 
-            # Verify the URL includes /query endpoint
+            # Verify the URL uses the resolver URL directly (already includes /query)
             call_args = mock_get.call_args
-            expected_url = harris_resolver["arcgis_url"] + "/query"
+            expected_url = harris_resolver["arcgis_url"]
             assert call_args[0][0] == expected_url

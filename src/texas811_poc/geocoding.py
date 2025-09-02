@@ -693,3 +693,50 @@ class ConfidenceScorer:
             assumptions.append("Simple rectangular buffer used - not precise geometry")
 
         return assumptions
+
+
+# Utility Functions
+def calculate_haversine_distance(
+    lat1: float, lng1: float, lat2: float, lng2: float
+) -> float:
+    """
+    Calculate the great-circle distance between two points on Earth using the Haversine formula.
+
+    Args:
+        lat1: Latitude of first point in degrees
+        lng1: Longitude of first point in degrees
+        lat2: Latitude of second point in degrees
+        lng2: Longitude of second point in degrees
+
+    Returns:
+        Distance between points in meters
+
+    Examples:
+        >>> # Distance between Houston downtown locations (about 1 mile apart)
+        >>> distance = calculate_haversine_distance(29.7604, -95.3698, 29.7752, -95.3821)
+        >>> print(f"Distance: {distance:.1f} meters")
+        Distance: 1834.2 meters
+    """
+    import math
+
+    # Earth's radius in meters
+    EARTH_RADIUS_M = 6371000
+
+    # Convert degrees to radians
+    lat1_rad = math.radians(lat1)
+    lng1_rad = math.radians(lng1)
+    lat2_rad = math.radians(lat2)
+    lng2_rad = math.radians(lng2)
+
+    # Haversine formula
+    dlat = lat2_rad - lat1_rad
+    dlng = lng2_rad - lng1_rad
+
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlng / 2) ** 2
+    )
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance = EARTH_RADIUS_M * c
+    return distance

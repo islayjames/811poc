@@ -1,181 +1,140 @@
 """
-CAD Resolvers Configuration for GIS Parcel Enrichment.
+Parcel Data Resolver Configuration using ReportAll USA API.
 
-This module provides county-specific ArcGIS endpoint configurations for
-retrieving parcel information from County Appraisal District (CAD) systems.
+This module provides configuration for the ReportAll USA API, which offers
+nationwide parcel data coverage through a single, reliable endpoint.
 
-Supported counties:
-- Harris County (HCAD)
-- Fort Bend County (FBCAD)
-- Galveston County (City of Webster)
-- Liberty County (LJA Engineering)
+ReportAll USA API Features:
+- Nationwide coverage (all US counties)
+- Reliable SSL certificates and uptime
+- Standardized field schema across all counties
+- Rich parcel data including ownership and legal descriptions
 
-Each resolver contains:
-- name: Human-readable CAD system name
-- arcgis_url: ArcGIS REST endpoint for parcel queries
-- out_fields: Mapping of normalized field names to county-specific field names
+The resolver contains:
+- name: System name (ReportAll USA)
+- arcgis_url: ReportAll USA ArcGIS REST endpoint
+- out_fields: Mapping of normalized field names to ReportAll USA field names
+- client_key: Embedded API key for authentication
 """
 
-import re
 from typing import Any
 
-# County-specific CAD resolver configurations
-CAD_RESOLVERS: dict[str, dict[str, Any]] = {
-    "Harris": {
-        "name": "HCAD",
-        "arcgis_url": "https://gis.hctx.net/arcgis/rest/services/HCAD/Parcels/MapServer/0/query",
-        "out_fields": {
-            "subdivision": "SUBDIVNME",
-            "lot": "LOT",
-            "block": "BLOCK",
-            "parcel_id": "ACCOUNT",
-        },
-    },
-    "Fort Bend": {
-        "name": "FBCAD",
-        "arcgis_url": "https://gisweb.fbcad.org/arcgis/rest/services/Hosted/FBCAD_Public_Data/FeatureServer/0/query",
-        "out_fields": {
-            "subdivision": "SUBDIVISION",
-            "lot": "LOT",
-            "block": "BLOCK",
-            "parcel_id": "PROP_ID",
-        },
-    },
-    "Galveston": {
-        "name": "City of Webster",
-        "arcgis_url": "https://www1.cityofwebster.com/arcgis/rest/services/Landbase/CountyGalveston/MapServer/0/query",
-        "out_fields": {
-            "subdivision": "SUBDIVISION",
-            "lot": "LOT",
-            "block": "BLOCK",
-            "parcel_id": "ACCOUNT",
-        },
-    },
-    "Liberty": {
-        "name": "LJA Engineering",
-        "arcgis_url": "https://gis.ljaengineering.com/arcgis/rest/services/liberty/liberty_co/MapServer/0/query",
-        "out_fields": {
-            "subdivision": "SUBDIV",
-            "lot": "LOT",
-            "block": "BLOCK",
-            "parcel_id": "ACCOUNT",
-        },
+# ReportAll USA API configuration for nationwide parcel data
+# This single resolver works for all counties in the United States
+REPORTALL_USA_RESOLVER: dict[str, Any] = {
+    "name": "ReportAll USA",
+    "arcgis_url": "https://reportallusa.com/api/rest_services/client=C5fcN8oa9c/Parcels/MapServer/0/query",
+    "client_key": "C5fcN8oa9c",  # Embedded in URL for authentication
+    "out_fields": {
+        "subdivision": "legal_desc1",  # ReportAll uses legal_desc1 for subdivision info
+        "lot": "legal_desc2",  # Use legal_desc2 for lot information
+        "block": "legal_desc3",  # Use legal_desc3 for block information
+        "parcel_id": "parcel_id",  # Direct mapping for parcel_id
+        "owner": "owner",  # Additional field: property owner
+        "address": "address",  # Additional field: property address
     },
 }
 
+# For backward compatibility, maintain the CAD_RESOLVERS structure
+# All counties now use the same ReportAll USA resolver
+CAD_RESOLVERS: dict[str, dict[str, Any]] = {
+    # All counties use ReportAll USA - no county-specific endpoints needed
+    "default": REPORTALL_USA_RESOLVER.copy(),
+}
 
-def normalize_county_name(county: str | None) -> str | None:
+
+def normalize_county_name(county: str | None) -> str:
     """
-    Normalize county name to match CAD_RESOLVERS keys.
+    Normalize county name - ReportAll USA supports all counties.
 
-    Handles case variations, whitespace, and common alternate spellings.
+    Since ReportAll USA provides nationwide coverage, any valid county name
+    is supported. We return 'default' to use the universal resolver.
 
     Args:
-        county: Raw county name string
+        county: Raw county name string (any US county)
 
     Returns:
-        Normalized county name that matches CAD_RESOLVERS key, or None if unsupported
+        Always returns 'default' since ReportAll USA supports all counties
 
     Examples:
         >>> normalize_county_name('harris')
-        'Harris'
+        'default'
         >>> normalize_county_name('FORT BEND')
-        'Fort Bend'
-        >>> normalize_county_name('fort_bend')
-        'Fort Bend'
-        >>> normalize_county_name('Unsupported')
-        None
+        'default'
+        >>> normalize_county_name('Any County')
+        'default'
     """
-    if not county or not county.strip():
-        return None
-
-    # Clean and normalize input
-    cleaned = re.sub(r"[_\-\s]+", " ", county.strip().lower())
-
-    # Define normalization mappings
-    mappings = {
-        "harris": "Harris",
-        "fort bend": "Fort Bend",
-        "fortbend": "Fort Bend",
-        "galveston": "Galveston",
-        "liberty": "Liberty",
-    }
-
-    # Look for direct match
-    if cleaned in mappings:
-        return mappings[cleaned]
-
-    # Handle partial matches or variations
-    for key, normalized in mappings.items():
-        if key.replace(" ", "") == cleaned.replace(" ", ""):
-            return normalized
-
-    return None
+    # ReportAll USA supports all counties, so we always return 'default'
+    # The county information is preserved in the API response for reference
+    return "default"
 
 
-def get_resolver(county: str | None) -> dict[str, Any] | None:
+def get_resolver(county: str | None) -> dict[str, Any]:
     """
-    Get CAD resolver configuration for a county.
+    Get resolver configuration - ReportAll USA supports all counties.
 
     Args:
-        county: County name (case insensitive)
+        county: County name (any US county, case insensitive)
 
     Returns:
-        Resolver configuration dict, or None if county not supported
+        ReportAll USA resolver configuration dict
 
     Examples:
         >>> resolver = get_resolver('Harris')
         >>> resolver['name']
-        'HCAD'
-        >>> get_resolver('Unsupported') is None
-        True
+        'ReportAll USA'
+        >>> resolver = get_resolver('Any County')
+        >>> resolver['name']
+        'ReportAll USA'
     """
-    normalized = normalize_county_name(county)
-    if normalized and normalized in CAD_RESOLVERS:
-        return CAD_RESOLVERS[normalized].copy()  # Return copy to prevent modification
-    return None
+    # ReportAll USA supports all counties, so always return the default resolver
+    resolver = CAD_RESOLVERS["default"].copy()  # Return copy to prevent modification
+
+    # Add the original county name to the resolver for reference
+    resolver["original_county"] = county
+
+    return resolver
 
 
-def get_all_supported_counties() -> set[str]:
+def get_all_supported_counties() -> str:
     """
-    Get set of all supported county names.
+    Get information about supported counties.
 
     Returns:
-        Set of normalized county names that have CAD resolvers
+        Information string indicating nationwide support
 
     Examples:
         >>> counties = get_all_supported_counties()
-        >>> 'Harris' in counties
-        True
-        >>> len(counties)
-        4
+        >>> print(counties)
+        'All US counties supported via ReportAll USA API'
     """
-    return set(CAD_RESOLVERS.keys())
+    return "All US counties supported via ReportAll USA API"
 
 
-def get_out_fields_string(county: str | None) -> str | None:
+def get_out_fields_string(county: str | None) -> str:
     """
-    Get comma-separated out_fields string for ArcGIS query.
+    Get comma-separated out_fields string for ReportAll USA API query.
 
     Args:
-        county: County name (case insensitive)
+        county: County name (any US county, case insensitive)
 
     Returns:
-        Comma-separated field names for ArcGIS outFields parameter, or None if unsupported
+        Comma-separated field names for ArcGIS outFields parameter
 
     Examples:
         >>> get_out_fields_string('Harris')
-        'SUBDIVNME,LOT,BLOCK,ACCOUNT'
-        >>> get_out_fields_string('Unsupported') is None
-        True
+        'legal_desc1,legal_desc2,legal_desc3,parcel_id,owner,address'
+        >>> get_out_fields_string('Any County')
+        'legal_desc1,legal_desc2,legal_desc3,parcel_id,owner,address'
     """
     resolver = get_resolver(county)
-    if resolver:
-        fields = resolver["out_fields"].values()
-        return ",".join(fields)
-    return None
+    fields = resolver["out_fields"].values()
+    return ",".join(fields)
 
 
 # Type definitions for external use
-CADResolverType = dict[str, Any]
+ResolverType = dict[str, Any]
 OutFieldsMapping = dict[str, str]
+
+# Legacy type alias for backward compatibility
+CADResolverType = ResolverType

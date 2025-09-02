@@ -4,6 +4,7 @@ import os
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -18,6 +19,91 @@ def setup_test_environment():
     """Set up test environment variables."""
     os.environ["DEBUG"] = "true"
     os.environ["REDIS_URL"] = "redis://localhost:6379/1"  # Use test database
+    # Force geocoding service into mock mode for testing
+    os.environ["GEOCODING_API_KEY"] = ""
+
+
+@pytest.fixture(autouse=True)
+def mock_external_apis():
+    """Automatically mock external API calls for all tests."""
+    # Mock httpx calls to prevent external API calls
+    with (
+        patch("httpx.get") as mock_httpx_get,
+        patch("httpx.post") as mock_httpx_post,
+        patch("httpx.AsyncClient.get") as mock_async_get,
+        patch("httpx.AsyncClient.post") as mock_async_post,
+    ):
+
+        # Setup mock responses for different endpoints
+        def mock_response_func(url, *args, **kwargs):
+            mock_response = MagicMock()
+            mock_response.status_code = 200
+            mock_response.raise_for_status.return_value = None
+
+            # Mock Mapbox geocoding response
+            if "mapbox.com/geocoding" in str(url):
+                mock_response.json.return_value = {
+                    "features": [
+                        {
+                            "center": [-95.3698, 29.7604],
+                            "place_name": "1234 Main Street, Houston, TX 77002",
+                            "properties": {},
+                            "relevance": 0.95,
+                        }
+                    ]
+                }
+            else:
+                # Mock ArcGIS or other responses
+                mock_response.json.return_value = {"features": []}
+
+            return mock_response
+
+        # Apply to all HTTP methods
+        mock_httpx_get.side_effect = mock_response_func
+        mock_httpx_post.side_effect = mock_response_func
+        mock_async_get.side_effect = mock_response_func
+        mock_async_post.side_effect = mock_response_func
+
+        yield {
+            "httpx_get": mock_httpx_get,
+            "httpx_post": mock_httpx_post,
+            "async_get": mock_async_get,
+            "async_post": mock_async_post,
+        }
+
+
+@pytest.fixture
+def mock_services():
+    """Provide mock services for integration tests that need more control."""
+    with (
+        patch(
+            "texas811_poc.api_endpoints.geocoding_service.geocode_address"
+        ) as mock_geocode,
+        patch("texas811_poc.api_endpoints.enrichParcelFromGIS") as mock_parcel,
+    ):
+
+        # Default successful responses
+        mock_geocode.return_value = {
+            "latitude": 29.7604,
+            "longitude": -95.3698,
+            "formatted_address": "123 Test Street, Houston, TX 77002",
+            "confidence": 0.95,
+        }
+
+        mock_parcel.return_value = {
+            "subdivision": "TEST SUBDIVISION",
+            "lot": "1",
+            "block": "A",
+            "parcel_id": "TEST123456",
+            "feature_found": True,
+            "matched_count": 1,
+            "arcgis_url": "https://test-gis.example.com/service",
+            "source_county": "Harris",
+            "enrichment_attempted": True,
+            "enrichment_timestamp": "2025-09-02T10:00:00Z",
+        }
+
+        yield {"geocoding": mock_geocode, "parcel": mock_parcel}
 
 
 @pytest.fixture
@@ -83,7 +169,7 @@ def clean_session_manager():
 def sample_ticket_data() -> dict:
     """Sample ticket data for testing."""
     return {
-        "work_order_id": "WO-2024-001",
+        "work_order_id": "WO-2025-001",
         "requester": {
             "company": "ABC Construction",
             "contact_name": "John Smith",
@@ -98,7 +184,7 @@ def sample_ticket_data() -> dict:
         },
         "work_description": "Install fiber optic cable",
         "work_type": "excavation",
-        "requested_start_date": "2024-02-01",
+        "requested_start_date": "2025-12-01",
         "ticket_type": "normal",
     }
 

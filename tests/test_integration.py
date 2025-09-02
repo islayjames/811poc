@@ -27,6 +27,40 @@ from fastapi.testclient import TestClient
 
 from src.texas811_poc.models import TicketStatus
 
+# Mock data for consistent testing
+MOCK_GEOCODING_RESULT = {
+    "latitude": 29.7604,
+    "longitude": -95.3698,
+    "formatted_address": "1234 Main Street, Houston, TX 77002",
+    "confidence": 0.95,
+}
+
+MOCK_PARCEL_SUCCESS = {
+    "subdivision": "SPRING VALLEY VILLAGE",
+    "lot": "12",
+    "block": "A",
+    "parcel_id": "ABC123456789",
+    "feature_found": True,
+    "matched_count": 1,
+    "arcgis_url": "https://hcad.org/arcgis/rest/services/PropertyData/MapServer/0",
+    "source_county": "Harris",
+    "enrichment_attempted": True,
+    "enrichment_timestamp": "2025-09-02T10:00:00Z",
+}
+
+MOCK_PARCEL_NOT_FOUND = {
+    "subdivision": None,
+    "lot": None,
+    "block": None,
+    "parcel_id": None,
+    "feature_found": False,
+    "matched_count": 0,
+    "arcgis_url": "",
+    "source_county": "Travis",
+    "enrichment_attempted": True,
+    "enrichment_timestamp": "2025-09-02T10:00:00Z",
+}
+
 
 class TestTicketLifecycleIntegration:
     """Integration tests for complete ticket lifecycle workflows."""
@@ -48,6 +82,7 @@ class TestTicketLifecycleIntegration:
 
     def test_complete_ticket_lifecycle_success(
         self,
+        mock_services,
         client: TestClient,
         valid_headers: dict[str, str],
         sample_work_orders: dict,
@@ -179,7 +214,7 @@ class TestTicketLifecycleIntegration:
         update_2 = {
             "session_id": work_order["session_id"],
             "caller_email": "contact@austin-utilities.com",
-            "work_start_date": "2024-09-10",
+            "work_start_date": "2025-12-10",
             "excavator_company": "Austin Utilities Inc",
         }
 
@@ -245,7 +280,7 @@ class TestTicketLifecycleIntegration:
         assert current_status != TicketStatus.DRAFT
         assert current_status in [TicketStatus.VALIDATED, TicketStatus.READY]
 
-    @patch("src.texas811_poc.geocoding.GeocodingService.geocode_address")
+    @patch("texas811_poc.api_endpoints.geocoding_service.geocode_address")
     def test_geocoding_integration_in_workflow(
         self,
         mock_geocode,
@@ -389,7 +424,7 @@ class TestErrorRecoveryScenarios:
                 "work_description": "Corrected work description",  # Fix empty description
                 "caller_phone": "(214) 555-1234",  # Fix invalid phone
                 "caller_email": "valid@example.com",  # Fix invalid email
-                "work_start_date": "2025-09-15",  # Fix past date
+                "work_start_date": "2025-12-15",  # Fix past date
                 "gps_lat": 32.7767,  # Fix out-of-bounds GPS
                 "gps_lng": -96.7970,
             }
@@ -440,7 +475,7 @@ class TestErrorRecoveryScenarios:
         assert update_data["success"] is True
         assert update_data["ticket"]["remarks"] == "Updated after session recovery"
 
-    @patch("src.texas811_poc.geocoding.GeocodingService.geocode_address")
+    @patch("texas811_poc.api_endpoints.geocoding_service.geocode_address")
     def test_geocoding_failure_recovery(
         self,
         mock_geocode,
@@ -690,7 +725,7 @@ class TestRealWorkflowValidation:
         clarification_2 = {
             "session_id": extraction_result["session_id"],
             "work_description": "Install underground fiber optic cable for telecommunications upgrade",
-            "work_start_date": "2024-09-20",
+            "work_start_date": "2025-12-20",
             "excavator_company": "Smith Construction LLC",
         }
 
@@ -812,3 +847,430 @@ class TestRealWorkflowValidation:
             },
         )
         assert confirm_response.status_code == status.HTTP_200_OK
+
+
+class TestParcelEnrichmentIntegration:
+    """Integration tests for GIS parcel enrichment within the validation pipeline."""
+
+    @pytest.fixture
+    def valid_headers(self) -> dict[str, str]:
+        return {
+            "Authorization": "Bearer test-api-key-12345",
+            "Content-Type": "application/json",
+        }
+
+    @pytest.fixture
+    def sample_work_orders(self) -> dict[str, Any]:
+        """Load sample work order fixtures for parcel enrichment testing."""
+        fixtures_path = Path(__file__).parent / "fixtures" / "sample_work_orders.json"
+        with open(fixtures_path) as f:
+            return json.load(f)
+
+    @pytest.fixture
+    def mock_parcel_enrichment_success(self):
+        """Mock successful parcel enrichment for Harris County."""
+        return {
+            "subdivision": "SPRING VALLEY VILLAGE",
+            "lot": "12",
+            "block": "A",
+            "parcel_id": "ABC123456789",
+            "feature_found": True,
+            "matched_count": 1,
+            "arcgis_url": "https://hcad.org/arcgis/rest/services/PropertyData/MapServer/0",
+            "source_county": "Harris",
+        }
+
+    @pytest.fixture
+    def mock_parcel_enrichment_not_found(self):
+        """Mock parcel enrichment when no features are found."""
+        return {
+            "subdivision": None,
+            "lot": None,
+            "block": None,
+            "parcel_id": None,
+            "feature_found": False,
+            "matched_count": 0,
+            "arcgis_url": "https://hcad.org/arcgis/rest/services/PropertyData/MapServer/0",
+            "source_county": "Harris",
+        }
+
+    def test_successful_parcel_enrichment_integration(
+        self,
+        client: TestClient,
+        valid_headers: dict[str, str],
+        sample_work_orders: dict,
+        mock_parcel_enrichment_success: dict,
+    ):
+        """Test complete integration with successful parcel enrichment."""
+        work_order = sample_work_orders["valid_complete_work_order"].copy()
+        work_order["county"] = "Harris"  # Use supported county
+
+        # Create ticket - should trigger both geocoding and parcel enrichment
+        create_response = client.post(
+            "/tickets/create", headers=valid_headers, json=work_order
+        )
+
+        assert create_response.status_code == status.HTTP_201_CREATED
+        create_data = create_response.json()
+
+        # Verify geocoding worked (coordinates should be populated)
+        assert create_data["gps_lat"] is not None
+        assert create_data["gps_lng"] is not None
+
+        # Verify parcel data is included in response
+        ticket = create_data
+        assert "parcel_info" in ticket
+        parcel_info = ticket["parcel_info"]
+
+        assert parcel_info["feature_found"] is True
+        assert parcel_info["subdivision"] == "SPRING VALLEY VILLAGE"
+        assert parcel_info["lot"] == "12"
+        assert parcel_info["block"] == "A"
+        assert parcel_info["parcel_id"] == "ABC123456789"
+        assert parcel_info["source_county"] == "Harris"
+        assert parcel_info["enrichment_attempted"] is True
+        assert parcel_info["enrichment_timestamp"] is not None
+
+    @patch("texas811_poc.api_endpoints.geocoding_service.geocode_address")
+    @patch("texas811_poc.api_endpoints.enrichParcelFromGIS")
+    def test_parcel_enrichment_not_found_graceful_handling(
+        self,
+        mock_parcel_enrich,
+        mock_geocode,
+        client: TestClient,
+        valid_headers: dict[str, str],
+        sample_work_orders: dict,
+        mock_parcel_enrichment_not_found: dict,
+    ):
+        """Test graceful handling when parcel data is not found."""
+        # Mock successful geocoding
+        mock_geocode.return_value = {
+            "latitude": 29.7604,
+            "longitude": -95.3698,
+            "formatted_address": "1234 Main Street, Houston, TX 77002",
+            "confidence": 0.95,
+        }
+
+        # Mock parcel enrichment with no features found
+        mock_parcel_enrich.return_value = mock_parcel_enrichment_not_found
+
+        work_order = sample_work_orders["valid_complete_work_order"].copy()
+        work_order["county"] = "Harris"
+
+        # Create ticket
+        create_response = client.post(
+            "/tickets/create", headers=valid_headers, json=work_order
+        )
+
+        assert create_response.status_code == status.HTTP_201_CREATED
+        create_data = create_response.json()
+
+        # Verify parcel enrichment was attempted but no data found
+        ticket = create_data
+        assert "parcel_info" in ticket
+        parcel_info = ticket["parcel_info"]
+
+        assert parcel_info["feature_found"] is False
+        assert parcel_info["subdivision"] is None
+        assert parcel_info["lot"] is None
+        assert parcel_info["block"] is None
+        assert parcel_info["parcel_id"] is None
+        assert parcel_info["matched_count"] == 0
+        assert parcel_info["enrichment_attempted"] is True
+
+        # Ticket should still be created successfully
+        assert create_data["success"] is True
+        assert create_data["county"] == "Harris"
+
+    @patch("texas811_poc.api_endpoints.geocoding_service.geocode_address")
+    @patch("texas811_poc.api_endpoints.enrichParcelFromGIS")
+    def test_parcel_enrichment_failure_graceful_degradation(
+        self,
+        mock_parcel_enrich,
+        mock_geocode,
+        client: TestClient,
+        valid_headers: dict[str, str],
+        sample_work_orders: dict,
+    ):
+        """Test graceful degradation when parcel enrichment fails completely."""
+        # Mock successful geocoding
+        mock_geocode.return_value = {
+            "latitude": 29.7604,
+            "longitude": -95.3698,
+            "formatted_address": "1234 Main Street, Houston, TX 77002",
+            "confidence": 0.95,
+        }
+
+        # Mock parcel enrichment failure
+        mock_parcel_enrich.side_effect = Exception(
+            "Network error connecting to GIS service"
+        )
+
+        work_order = sample_work_orders["valid_complete_work_order"].copy()
+        work_order["county"] = "Harris"
+
+        # Create ticket - should succeed despite parcel enrichment failure
+        create_response = client.post(
+            "/tickets/create", headers=valid_headers, json=work_order
+        )
+
+        assert create_response.status_code == status.HTTP_201_CREATED
+        create_data = create_response.json()
+
+        # Verify parcel enrichment was attempted
+        mock_parcel_enrich.assert_called_once()
+
+        # Ticket should be created successfully without parcel data
+        ticket = create_data
+        parcel_info = ticket.get("parcel_info")
+
+        # Parcel info should be None or indicate failure
+        if parcel_info is not None:
+            assert parcel_info["feature_found"] is False
+            assert parcel_info["enrichment_attempted"] is True
+
+        # Core ticket data should be intact
+        assert create_data["success"] is True
+        assert create_data["gps_lat"] == 29.7604  # Geocoding should still work
+        assert create_data["gps_lng"] == -95.3698
+
+    @patch("texas811_poc.api_endpoints.geocoding_service.geocode_address")
+    @patch("texas811_poc.api_endpoints.enrichParcelFromGIS")
+    def test_unsupported_county_parcel_enrichment(
+        self,
+        mock_parcel_enrich,
+        mock_geocode,
+        client: TestClient,
+        valid_headers: dict[str, str],
+        sample_work_orders: dict,
+    ):
+        """Test parcel enrichment with unsupported county."""
+        # Mock successful geocoding
+        mock_geocode.return_value = {
+            "latitude": 30.2672,
+            "longitude": -97.7431,
+            "formatted_address": "123 Main St, Austin, TX 78701",
+            "confidence": 0.92,
+        }
+
+        # Mock parcel enrichment for unsupported county
+        mock_parcel_enrich.return_value = {
+            "subdivision": None,
+            "lot": None,
+            "block": None,
+            "parcel_id": None,
+            "feature_found": False,
+            "matched_count": 0,
+            "arcgis_url": "",
+            "source_county": "Travis",
+        }
+
+        work_order = sample_work_orders["valid_complete_work_order"].copy()
+        work_order["county"] = "Travis"  # Unsupported county
+        work_order["city"] = "Austin"
+
+        # Create ticket
+        create_response = client.post(
+            "/tickets/create", headers=valid_headers, json=work_order
+        )
+
+        assert create_response.status_code == status.HTTP_201_CREATED
+        create_data = create_response.json()
+
+        # Verify parcel enrichment was called
+        mock_parcel_enrich.assert_called_once_with(30.2672, -97.7431, "Travis")
+
+        # Verify graceful handling of unsupported county
+        ticket = create_data
+        parcel_info = ticket["parcel_info"]
+
+        assert parcel_info["feature_found"] is False
+        assert parcel_info["source_county"] == "Travis"
+        assert parcel_info["arcgis_url"] == ""  # No URL for unsupported county
+
+        # Ticket should still process successfully
+        assert create_data["success"] is True
+        assert create_data["county"] == "Travis"
+
+    def test_all_supported_counties_parcel_integration(
+        self,
+        client: TestClient,
+        valid_headers: dict[str, str],
+        sample_work_orders: dict,
+    ):
+        """Test parcel enrichment integration with all supported counties."""
+        supported_counties = ["Harris", "Fort Bend", "Galveston", "Liberty"]
+
+        # Test coordinates for each county (approximate center points)
+        county_coordinates = {
+            "Harris": (29.7604, -95.3698),  # Houston
+            "Fort Bend": (29.5844, -95.6890),  # Sugar Land
+            "Galveston": (29.2669, -94.7749),  # Galveston City
+            "Liberty": (30.0582, -94.7955),  # Liberty City
+        }
+
+        for county in supported_counties:
+            with patch(
+                "src.texas811_poc.geocoding.GeocodingService.geocode_address"
+            ) as mock_geocode:
+                with patch(
+                    "src.texas811_poc.gis.parcel_enrichment.enrichParcelFromGIS"
+                ) as mock_parcel_enrich:
+
+                    lat, lng = county_coordinates[county]
+
+                    # Mock geocoding for this county
+                    mock_geocode.return_value = {
+                        "latitude": lat,
+                        "longitude": lng,
+                        "formatted_address": f"123 Main St, {county} County, TX",
+                        "confidence": 0.90,
+                    }
+
+                    # Mock successful parcel enrichment
+                    mock_parcel_enrich.return_value = {
+                        "subdivision": f"TEST SUBDIVISION {county.upper()}",
+                        "lot": "1",
+                        "block": "1",
+                        "parcel_id": f"{county.upper()}123456",
+                        "feature_found": True,
+                        "matched_count": 1,
+                        "arcgis_url": f"https://{county.lower()}-gis.example.com/service",
+                        "source_county": county,
+                    }
+
+                    work_order = sample_work_orders["valid_complete_work_order"].copy()
+                    work_order["county"] = county
+                    work_order["session_id"] = f"test-session-{county.lower()}"
+
+                    # Create ticket
+                    create_response = client.post(
+                        "/tickets/create", headers=valid_headers, json=work_order
+                    )
+
+                    assert (
+                        create_response.status_code == status.HTTP_201_CREATED
+                    ), f"Failed for {county} county"
+                    create_data = create_response.json()
+
+                    # Verify parcel enrichment was called with correct parameters
+                    mock_parcel_enrich.assert_called_once_with(lat, lng, county)
+
+                    # Verify parcel data in response
+                    parcel_info = create_data["parcel_info"]
+                    assert (
+                        parcel_info["feature_found"] is True
+                    ), f"No parcel data for {county}"
+                    assert parcel_info["source_county"] == county
+                    assert (
+                        parcel_info["subdivision"]
+                        == f"TEST SUBDIVISION {county.upper()}"
+                    )
+                    assert parcel_info["parcel_id"] == f"{county.upper()}123456"
+
+    @patch("texas811_poc.api_endpoints.geocoding_service.geocode_address")
+    @patch("texas811_poc.api_endpoints.enrichParcelFromGIS")
+    def test_parcel_enrichment_in_update_workflow(
+        self,
+        mock_parcel_enrich,
+        mock_geocode,
+        client: TestClient,
+        valid_headers: dict[str, str],
+        sample_work_orders: dict,
+        mock_parcel_enrichment_success: dict,
+    ):
+        """Test parcel enrichment when coordinates are updated after creation."""
+        work_order = sample_work_orders["work_order_missing_fields"].copy()
+        work_order["county"] = "Harris"
+
+        # Create ticket without GPS coordinates
+        create_response = client.post(
+            "/tickets/create", headers=valid_headers, json=work_order
+        )
+
+        assert create_response.status_code == status.HTTP_201_CREATED
+        ticket_id = create_response.json()["ticket_id"]
+
+        # Mock geocoding and parcel enrichment for update
+        mock_geocode.return_value = {
+            "latitude": 29.7604,
+            "longitude": -95.3698,
+            "formatted_address": "1234 Updated Address, Houston, TX 77002",
+            "confidence": 0.95,
+        }
+
+        mock_parcel_enrich.return_value = mock_parcel_enrichment_success
+
+        # Update with new address - should trigger geocoding and parcel enrichment
+        update_data = {
+            "session_id": work_order["session_id"],
+            "address": "1234 Updated Address, Houston, TX 77002",
+            "cross_street": "Near Commerce Street",
+        }
+
+        update_response = client.post(
+            f"/tickets/{ticket_id}/update", headers=valid_headers, json=update_data
+        )
+
+        assert update_response.status_code == status.HTTP_200_OK
+        update_data_response = update_response.json()
+
+        # Verify both geocoding and parcel enrichment were called
+        mock_geocode.assert_called_once()
+        mock_parcel_enrich.assert_called_once_with(29.7604, -95.3698, "Harris")
+
+        # Verify updated ticket has parcel information
+        ticket = update_data_response
+        assert "parcel_info" in ticket
+        parcel_info = ticket["parcel_info"]
+
+        assert parcel_info["feature_found"] is True
+        assert parcel_info["subdivision"] == "SPRING VALLEY VILLAGE"
+        assert parcel_info["enrichment_attempted"] is True
+
+    @patch("texas811_poc.api_endpoints.geocoding_service.geocode_address")
+    @patch("src.texas811_poc.gis.parcel_enrichment.enrichParcelFromGIS")
+    def test_parcel_enrichment_performance_integration(
+        self,
+        mock_parcel_enrich,
+        mock_geocode,
+        client: TestClient,
+        valid_headers: dict[str, str],
+        sample_work_orders: dict,
+        mock_parcel_enrichment_success: dict,
+    ):
+        """Test that parcel enrichment doesn't significantly impact API performance."""
+        # Mock fast responses
+        mock_geocode.return_value = {
+            "latitude": 29.7604,
+            "longitude": -95.3698,
+            "formatted_address": "1234 Main Street, Houston, TX 77002",
+            "confidence": 0.95,
+        }
+
+        mock_parcel_enrich.return_value = mock_parcel_enrichment_success
+
+        work_order = sample_work_orders["valid_complete_work_order"].copy()
+        work_order["county"] = "Harris"
+
+        # Measure performance with parcel enrichment
+        start_time = time.time()
+        create_response = client.post(
+            "/tickets/create", headers=valid_headers, json=work_order
+        )
+        processing_time = time.time() - start_time
+
+        assert create_response.status_code == status.HTTP_201_CREATED
+
+        # Should still meet performance requirements (<1 second for integration)
+        assert (
+            processing_time < 1.0
+        ), f"Parcel enrichment caused slow response: {processing_time:.3f}s"
+
+        # Verify parcel enrichment was included
+        create_data = create_response.json()
+        assert create_data["parcel_info"]["feature_found"] is True
+
+        # Verify both services were called
+        mock_geocode.assert_called_once()
+        mock_parcel_enrich.assert_called_once()

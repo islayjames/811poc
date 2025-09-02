@@ -124,6 +124,43 @@ class AuditEventModel(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
 
+class ParcelInfoModel(BaseModel):
+    """Model for parcel information from ReportAll USA API enrichment."""
+
+    subdivision: str | None = Field(
+        None, description="Subdivision name from legal description"
+    )
+    lot: str | None = Field(None, description="Lot information from legal description")
+    block: str | None = Field(
+        None, description="Block information from legal description"
+    )
+    parcel_id: str | None = Field(
+        None, description="Parcel/account ID from ReportAll USA"
+    )
+    owner: str | None = Field(
+        None, description="Property owner name from ReportAll USA"
+    )
+    address: str | None = Field(None, description="Property address from ReportAll USA")
+    feature_found: bool = Field(
+        False, description="Whether parcel data was found in ReportAll USA"
+    )
+    matched_count: int = Field(
+        0, description="Number of features returned from ReportAll USA query"
+    )
+    arcgis_url: str | None = Field(
+        None, description="ReportAll USA endpoint URL used for query"
+    )
+    source_county: str | None = Field(None, description="County used for GIS lookup")
+    enrichment_attempted: bool = Field(
+        False, description="Whether parcel enrichment was attempted"
+    )
+    enrichment_timestamp: datetime | None = Field(
+        None, description="When parcel enrichment was performed"
+    )
+
+    model_config = ConfigDict(use_enum_values=True)
+
+
 class TicketModel(BaseModel):
     """
     Main ticket model representing work order data and Texas811 fields.
@@ -229,6 +266,9 @@ class TicketModel(BaseModel):
     )
     geometry: GeometryModel | None = Field(
         None, description="Generated geometry for work area"
+    )
+    parcel_info: ParcelInfoModel | None = Field(
+        None, description="GIS parcel enrichment data"
     )
 
     # Calculated Fields (populated by backend)

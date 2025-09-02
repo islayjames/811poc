@@ -16,6 +16,7 @@ Key features:
 - Submission packet generation
 """
 
+import asyncio
 import logging
 import time
 import uuid
@@ -30,16 +31,28 @@ from texas811_poc.api_models import (
     ConfirmTicketResponse,
     CreateTicketRequest,
     CreateTicketResponse,
+    ParcelComparisonMetrics,
+    ParcelEnrichmentResult,
+    ParcelEnrichRequest,
+    ParcelEnrichResponse,
     UpdateTicketRequest,
     UpdateTicketResponse,
     ValidationError,
 )
 from texas811_poc.compliance import ComplianceCalculator
 from texas811_poc.config import settings
-from texas811_poc.geocoding import GeocodingService, GeofenceBuilder, GeometryGenerator
+from texas811_poc.geocoding import (
+    GeocodingService,
+    GeofenceBuilder,
+    GeometryGenerator,
+    calculate_haversine_distance,
+)
+from texas811_poc.gis.parcel_enrichment import enrichParcelFromGIS
 from texas811_poc.models import (
     AuditAction,
     AuditEventModel,
+    GeometryModel,
+    ParcelInfoModel,
     TicketModel,
     TicketStatus,
     ValidationSeverity,
@@ -179,9 +192,128 @@ def log_response(
 # Compliance calculations are now handled by ComplianceCalculator
 
 
+async def enrich_parcel_data(
+    lat: float, lng: float, county: str | None
+) -> ParcelInfoModel:
+    """Enrich ticket with parcel information from GIS systems.
+
+    Args:
+        lat: Latitude coordinate
+        lng: Longitude coordinate
+        county: County name for parcel lookup
+
+    Returns:
+        ParcelInfoModel with enrichment data
+    """
+    logger.info(
+        f"Attempting parcel enrichment for coordinates {lat:.4f}, {lng:.4f} in {county} County"
+    )
+
+    try:
+        # Call the GIS parcel enrichment service
+        parcel_result = await enrichParcelFromGIS(lat, lng, county)
+
+        # Convert to ParcelInfoModel with additional metadata
+        parcel_info = ParcelInfoModel(
+            subdivision=parcel_result.get("subdivision"),
+            lot=parcel_result.get("lot"),
+            block=parcel_result.get("block"),
+            parcel_id=parcel_result.get("parcel_id"),
+            owner=parcel_result.get("owner"),
+            address=parcel_result.get("address"),
+            feature_found=parcel_result.get("feature_found", False),
+            matched_count=parcel_result.get("matched_count", 0),
+            arcgis_url=parcel_result.get("arcgis_url"),
+            source_county=parcel_result.get("source_county"),
+            enrichment_attempted=True,
+            enrichment_timestamp=datetime.now(UTC),
+        )
+
+        if parcel_info.feature_found:
+            logger.info(
+                f"Successfully enriched parcel data: {parcel_info.parcel_id} in {parcel_info.subdivision}"
+            )
+        else:
+            logger.info(f"No parcel data found for coordinates in {county} County")
+
+        return parcel_info
+
+    except Exception as e:
+        logger.error(f"Parcel enrichment failed for {county} County: {str(e)}")
+
+        # Return default parcel info indicating attempted enrichment
+        return ParcelInfoModel(
+            subdivision=None,
+            lot=None,
+            block=None,
+            parcel_id=None,
+            feature_found=False,
+            matched_count=0,
+            arcgis_url=None,
+            source_county=county,
+            enrichment_attempted=True,
+            enrichment_timestamp=datetime.now(UTC),
+        )
+
+
 # Geocoding and geometry utilities
+async def process_geocoding_and_enrichment(
+    ticket_data: dict[str, Any],
+) -> dict[str, Any]:
+    """Process geocoding and parcel enrichment for ticket address.
+
+    Args:
+        ticket_data: Ticket data dictionary
+
+    Returns:
+        Updated ticket data with geocoded coordinates, geometry, and parcel data
+    """
+    try:
+        address = ticket_data.get("address")
+        if not address:
+            return ticket_data
+
+        # Skip geocoding if coordinates already provided
+        if ticket_data.get("gps_lat") and ticket_data.get("gps_lng"):
+            logger.info("GPS coordinates already provided, skipping geocoding")
+            lat, lng = ticket_data["gps_lat"], ticket_data["gps_lng"]
+        else:
+            # Geocode address
+            geocode_result = geocoding_service.geocode_address(address)
+
+            # Update ticket data
+            lat = geocode_result["latitude"]
+            lng = geocode_result["longitude"]
+            ticket_data["gps_lat"] = lat
+            ticket_data["gps_lng"] = lng
+
+            # Generate geometry
+            geometry = geometry_generator.create_point(
+                lat,
+                lng,
+                confidence=geocode_result["confidence"],
+                source="geocoded_address",
+            )
+
+            ticket_data["geometry"] = geometry
+
+            logger.info(f"Geocoded address: {address} -> {lat:.4f}, {lng:.4f}")
+
+        # Enrich with parcel data if coordinates are available
+        if lat is not None and lng is not None:
+            county = ticket_data.get("county")
+            parcel_info = await enrich_parcel_data(lat, lng, county)
+            ticket_data["parcel_info"] = parcel_info.model_dump()
+
+    except Exception as e:
+        logger.warning(f"Geocoding and enrichment failed for address '{address}': {e}")
+        # Continue without geocoding/enrichment
+
+    return ticket_data
+
+
 def process_geocoding(ticket_data: dict[str, Any]) -> dict[str, Any]:
-    """Process geocoding for ticket address.
+    """Legacy synchronous geocoding function - maintained for backwards compatibility.
 
     Args:
         ticket_data: Ticket data dictionary
@@ -189,42 +321,13 @@ def process_geocoding(ticket_data: dict[str, Any]) -> dict[str, Any]:
     Returns:
         Updated ticket data with geocoded coordinates and geometry
     """
+    # Run the async version synchronously
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
-        address = ticket_data.get("address")
-        if not address:
-            return ticket_data
-
-        # Skip if coordinates already provided
-        if ticket_data.get("gps_lat") and ticket_data.get("gps_lng"):
-            logger.info("GPS coordinates already provided, skipping geocoding")
-            return ticket_data
-
-        # Geocode address
-        geocode_result = geocoding_service.geocode_address(address)
-
-        # Update ticket data
-        ticket_data["gps_lat"] = geocode_result["latitude"]
-        ticket_data["gps_lng"] = geocode_result["longitude"]
-
-        # Generate geometry
-        geometry = geometry_generator.create_point(
-            geocode_result["latitude"],
-            geocode_result["longitude"],
-            confidence=geocode_result["confidence"],
-            source="geocoded_address",
-        )
-
-        ticket_data["geometry"] = geometry
-
-        logger.info(
-            f"Geocoded address: {address} -> {geocode_result['latitude']:.4f}, {geocode_result['longitude']:.4f}"
-        )
-
-    except Exception as e:
-        logger.warning(f"Geocoding failed for address '{address}': {e}")
-        # Continue without geocoding
-
-    return ticket_data
+        return loop.run_until_complete(process_geocoding_and_enrichment(ticket_data))
+    finally:
+        loop.close()
 
 
 def generate_submission_packet(ticket: TicketModel) -> dict[str, Any]:
@@ -343,8 +446,8 @@ async def create_ticket(
         # Convert request to ticket data
         ticket_data = ticket_request.model_dump(exclude_unset=True)
 
-        # Process geocoding if needed
-        ticket_data = process_geocoding(ticket_data)
+        # Process geocoding and parcel enrichment if needed
+        ticket_data = await process_geocoding_and_enrichment(ticket_data)
 
         # Calculate compliance dates using new compliance calculator
         created_time = datetime.now(UTC)
@@ -407,6 +510,7 @@ async def create_ticket(
             gps_lat=ticket.gps_lat,
             gps_lng=ticket.gps_lng,
             geometry=ticket.geometry,
+            parcel_info=ticket.parcel_info,
             validation_gaps=ticket.validation_gaps,
             next_prompt=next_prompt,
             lawful_start_date=ticket.lawful_start_date,
@@ -504,21 +608,30 @@ async def update_ticket(
         # Update timestamp
         ticket.updated_at = datetime.now(UTC)
 
-        # Reprocess geocoding if address changed
+        # Reprocess geocoding and parcel enrichment if address/location changed
         if (
             "address" in updated_fields
             or "gps_lat" in updated_fields
             or "gps_lng" in updated_fields
+            or "county" in updated_fields
         ):
             ticket_data = ticket.model_dump()
-            ticket_data = process_geocoding(ticket_data)
-            # Update ticket with any new geocoding results
+            ticket_data = await process_geocoding_and_enrichment(ticket_data)
+            # Update ticket with any new geocoding and parcel results
             if "gps_lat" in ticket_data:
                 ticket.gps_lat = ticket_data["gps_lat"]
             if "gps_lng" in ticket_data:
                 ticket.gps_lng = ticket_data["gps_lng"]
-            if "geometry" in ticket_data:
-                ticket.geometry = ticket_data["geometry"]
+            if "geometry" in ticket_data and ticket_data["geometry"] is not None:
+                geometry_data = ticket_data["geometry"]
+                if isinstance(geometry_data, GeometryModel):
+                    ticket.geometry = geometry_data
+                elif isinstance(geometry_data, dict):
+                    ticket.geometry = GeometryModel(**geometry_data)
+                else:
+                    ticket.geometry = geometry_data
+            if "parcel_info" in ticket_data and ticket_data["parcel_info"]:
+                ticket.parcel_info = ParcelInfoModel(**ticket_data["parcel_info"])
 
         # Re-run validation
         validation_result = validation_engine.validate_ticket(ticket)
@@ -612,6 +725,7 @@ async def update_ticket(
             explosives_used=ticket.explosives_used,
             hand_digging_only=ticket.hand_digging_only,
             geometry=ticket.geometry,
+            parcel_info=ticket.parcel_info,
             validation_gaps=ticket.validation_gaps,
             next_prompt=next_prompt,
             lawful_start_date=ticket.lawful_start_date,
@@ -892,3 +1006,211 @@ async def get_session_tickets(
     """
     tickets = ticket_storage.search_tickets(session_id=session_id)
     return tickets
+
+
+# Parcel Enrichment Router
+parcel_router = APIRouter(prefix="/parcels", tags=["Parcels"])
+
+
+@parcel_router.post(
+    "/enrich",
+    tags=["Parcels"],
+    summary="Enrich parcel data from address or GPS coordinates",
+    description=(
+        "Provides detailed parcel enrichment by querying GIS databases. "
+        "Accepts address, GPS coordinates, or both for comparison analysis. "
+        "Returns parcel ownership, legal descriptions, and comparison metrics."
+    ),
+    response_description="Enriched parcel data with optional comparison analysis",
+    response_model=ParcelEnrichResponse,
+)
+async def enrich_parcel_endpoint(
+    request: ParcelEnrichRequest,
+    api_key: str = Depends(verify_api_key),
+) -> ParcelEnrichResponse:
+    """
+    Enrich parcel data from address, GPS coordinates, or both.
+
+    This endpoint provides detailed parcel information by:
+    1. Geocoding addresses to GPS coordinates (if address provided)
+    2. Querying GIS systems for parcel data at coordinates
+    3. Comparing results when both address and GPS are provided
+
+    Args:
+        request: Parcel enrichment request with address and/or GPS coordinates
+        api_key: Verified API key
+
+    Returns:
+        Detailed parcel enrichment response with comparison metrics
+
+    Raises:
+        HTTPException: If enrichment fails or invalid input provided
+    """
+    start_time = time.time()
+    request_id = str(uuid.uuid4())
+
+    try:
+        logger.info(f"Parcel enrichment request {request_id}: {request}")
+
+        # Initialize response data
+        address_enrichment = None
+        gps_enrichment = None
+        both_provided = bool(
+            request.address
+            and request.gps_lat is not None
+            and request.gps_lng is not None
+        )
+
+        # Process address geocoding + enrichment
+        if request.address:
+            try:
+                # Geocode the address
+                geocode_result = geocoding_service.geocode_address(request.address)
+                geocoded_lat = geocode_result["latitude"]
+                geocoded_lng = geocode_result["longitude"]
+                geocoding_confidence = geocode_result.get("confidence", 0.0)
+
+                # Enrich with parcel data
+                parcel_data = await enrichParcelFromGIS(
+                    geocoded_lat, geocoded_lng, request.county
+                )
+
+                # Convert to ParcelInfoModel
+                parcel_info = (
+                    ParcelInfoModel(
+                        subdivision=parcel_data.get("subdivision"),
+                        lot=parcel_data.get("lot"),
+                        block=parcel_data.get("block"),
+                        parcel_id=parcel_data.get("parcel_id"),
+                        owner=parcel_data.get("owner"),
+                        address=parcel_data.get("address"),
+                        feature_found=parcel_data.get("feature_found", False),
+                        matched_count=parcel_data.get("matched_count", 0),
+                        raw_features=parcel_data.get("raw_features"),
+                    )
+                    if parcel_data.get("feature_found")
+                    else None
+                )
+
+                address_enrichment = ParcelEnrichmentResult(
+                    geocoded_location={"lat": geocoded_lat, "lng": geocoded_lng},
+                    geocoding_confidence=geocoding_confidence,
+                    coordinates_used={"lat": geocoded_lat, "lng": geocoded_lng},
+                    parcel_info=parcel_info,
+                )
+
+            except Exception as e:
+                logger.error(f"Address enrichment failed for {request.address}: {e}")
+                # Continue with partial results rather than failing completely
+
+        # Process GPS coordinates enrichment
+        if request.gps_lat is not None and request.gps_lng is not None:
+            try:
+                # Enrich with parcel data directly from GPS coordinates
+                parcel_data = await enrichParcelFromGIS(
+                    request.gps_lat, request.gps_lng, request.county
+                )
+
+                # Convert to ParcelInfoModel
+                parcel_info = (
+                    ParcelInfoModel(
+                        subdivision=parcel_data.get("subdivision"),
+                        lot=parcel_data.get("lot"),
+                        block=parcel_data.get("block"),
+                        parcel_id=parcel_data.get("parcel_id"),
+                        owner=parcel_data.get("owner"),
+                        address=parcel_data.get("address"),
+                        feature_found=parcel_data.get("feature_found", False),
+                        matched_count=parcel_data.get("matched_count", 0),
+                        raw_features=parcel_data.get("raw_features"),
+                    )
+                    if parcel_data.get("feature_found")
+                    else None
+                )
+
+                gps_enrichment = ParcelEnrichmentResult(
+                    coordinates_used={"lat": request.gps_lat, "lng": request.gps_lng},
+                    parcel_info=parcel_info,
+                )
+
+            except Exception as e:
+                logger.error(
+                    f"GPS enrichment failed for {request.gps_lat}, {request.gps_lng}: {e}"
+                )
+                # Continue with partial results rather than failing completely
+
+        # Calculate comparison metrics
+        comparison = ParcelComparisonMetrics(both_provided=both_provided)
+
+        if both_provided and address_enrichment and gps_enrichment:
+            addr_parcel = address_enrichment.parcel_info
+            gps_parcel = gps_enrichment.parcel_info
+
+            if addr_parcel and gps_parcel:
+                # Compare parcel IDs
+                comparison.parcel_id_match = (
+                    addr_parcel.parcel_id is not None
+                    and gps_parcel.parcel_id is not None
+                    and addr_parcel.parcel_id == gps_parcel.parcel_id
+                )
+
+                # Compare owners (case-insensitive)
+                comparison.owner_match = (
+                    addr_parcel.owner is not None
+                    and gps_parcel.owner is not None
+                    and addr_parcel.owner.lower() == gps_parcel.owner.lower()
+                )
+
+                # Compare addresses (case-insensitive)
+                comparison.address_match = (
+                    addr_parcel.address is not None
+                    and gps_parcel.address is not None
+                    and addr_parcel.address.lower() == gps_parcel.address.lower()
+                )
+
+                # Calculate distance between geocoded address and GPS coordinates
+                if address_enrichment.geocoded_location:
+                    geocoded_lat = address_enrichment.geocoded_location["lat"]
+                    geocoded_lng = address_enrichment.geocoded_location["lng"]
+                    comparison.distance_meters = calculate_haversine_distance(
+                        geocoded_lat, geocoded_lng, request.gps_lat, request.gps_lng
+                    )
+
+                # Overall assessment - same parcel if parcel ID matches or very close distance
+                comparison.same_parcel = comparison.parcel_id_match or (
+                    comparison.distance_meters is not None
+                    and comparison.distance_meters < 50
+                )  # 50 meters
+
+        # Build response
+        response = ParcelEnrichResponse(
+            success=True,
+            timestamp=datetime.now(UTC),
+            request_id=request_id,
+            address_provided=request.address,
+            gps_provided=(
+                {"lat": request.gps_lat, "lng": request.gps_lng}
+                if request.gps_lat is not None and request.gps_lng is not None
+                else None
+            ),
+            address_enrichment=address_enrichment,
+            gps_enrichment=gps_enrichment,
+            comparison=comparison,
+        )
+
+        processing_time = (time.time() - start_time) * 1000
+        logger.info(f"Parcel enrichment completed in {processing_time:.1f}ms")
+
+        return response
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        processing_time = (time.time() - start_time) * 1000
+        logger.error(f"Parcel enrichment failed: {e}", exc_info=True)
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to enrich parcel data: {str(e)}",
+        ) from e

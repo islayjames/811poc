@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 
 from texas811_poc.models import (
     GeometryModel,
+    ParcelInfoModel,
     TicketModel,
     TicketStatus,
     ValidationGapModel,
@@ -188,6 +189,11 @@ class CreateTicketResponse(APIResponse):
         None, description="Generated GeoJSON geometry for work area"
     )
 
+    # Parcel enrichment data
+    parcel_info: ParcelInfoModel | None = Field(
+        None, description="GIS parcel enrichment data from county systems"
+    )
+
     # Validation results
     validation_gaps: list[ValidationGapModel] = Field(
         description="Current validation gaps that need to be resolved"
@@ -290,6 +296,11 @@ class UpdateTicketResponse(APIResponse):
     hand_digging_only: bool | None = None
 
     geometry: GeometryModel | None = None
+
+    # Parcel enrichment data
+    parcel_info: ParcelInfoModel | None = Field(
+        None, description="GIS parcel enrichment data from county systems"
+    )
 
     # Updated validation results
     validation_gaps: list[ValidationGapModel] = Field(
@@ -429,3 +440,103 @@ class ResponseLogEntry(BaseModel):
     validation_gaps_count: int
     error_code: str | None
     timestamp: datetime
+
+
+# Parcel Enrichment Endpoint Models
+class ParcelEnrichRequest(BaseModel):
+    """Request model for POST /parcels/enrich endpoint."""
+
+    address: str | None = Field(
+        None,
+        description="Street address to geocode and enrich (optional if GPS provided)",
+        max_length=200,
+    )
+    gps_lat: float | None = Field(
+        None,
+        ge=-90.0,
+        le=90.0,
+        description="GPS latitude to enrich directly (optional if address provided)",
+    )
+    gps_lng: float | None = Field(
+        None,
+        ge=-180.0,
+        le=180.0,
+        description="GPS longitude to enrich directly (optional if address provided)",
+    )
+    county: str | None = Field(
+        None,
+        description="County name to help with address geocoding (optional)",
+        max_length=50,
+    )
+
+    def model_post_init(self, __context):
+        """Validate that at least one input method is provided."""
+        if not self.address and (self.gps_lat is None or self.gps_lng is None):
+            raise ValueError("Must provide either address or both gps_lat and gps_lng")
+
+
+class ParcelEnrichmentResult(BaseModel):
+    """Model for individual enrichment results (address or GPS)."""
+
+    geocoded_location: dict[str, float] | None = Field(
+        None, description="Geocoded coordinates {lat, lng} if address was provided"
+    )
+    geocoding_confidence: float | None = Field(
+        None,
+        ge=0.0,
+        le=1.0,
+        description="Confidence score for geocoding (0.0-1.0)",
+    )
+    coordinates_used: dict[str, float] | None = Field(
+        None, description="Final coordinates used for parcel enrichment {lat, lng}"
+    )
+    parcel_info: ParcelInfoModel | None = Field(
+        None, description="GIS parcel enrichment data from county systems"
+    )
+
+
+class ParcelComparisonMetrics(BaseModel):
+    """Model for comparison metrics when both address and GPS are provided."""
+
+    both_provided: bool = Field(
+        description="Whether both address and GPS were provided"
+    )
+    parcel_id_match: bool | None = Field(
+        None, description="Whether parcel IDs match between address and GPS results"
+    )
+    owner_match: bool | None = Field(
+        None, description="Whether owners match between address and GPS results"
+    )
+    address_match: bool | None = Field(
+        None, description="Whether addresses match between address and GPS results"
+    )
+    distance_meters: float | None = Field(
+        None,
+        ge=0.0,
+        description="Distance in meters between geocoded address and GPS coordinates",
+    )
+    same_parcel: bool | None = Field(
+        None, description="Overall assessment: do results represent the same parcel?"
+    )
+
+
+class ParcelEnrichResponse(APIResponse):
+    """Response model for successful parcel enrichment."""
+
+    address_provided: str | None = Field(
+        None, description="Original address from request"
+    )
+    gps_provided: dict[str, float] | None = Field(
+        None, description="Original GPS coordinates from request {lat, lng}"
+    )
+
+    address_enrichment: ParcelEnrichmentResult | None = Field(
+        None, description="Enrichment results from address geocoding"
+    )
+    gps_enrichment: ParcelEnrichmentResult | None = Field(
+        None, description="Enrichment results from GPS coordinates"
+    )
+
+    comparison: ParcelComparisonMetrics = Field(
+        description="Comparison metrics and analysis"
+    )
