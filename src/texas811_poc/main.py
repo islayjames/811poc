@@ -82,6 +82,16 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url="/docs",  # Enable docs in production for POC testing
     redoc_url="/redoc",  # Enable redoc in production for POC testing
+    servers=[
+        {
+            "url": "https://texas811-poc-production.up.railway.app",
+            "description": "Production server",
+        },
+        {
+            "url": "http://localhost:8000",
+            "description": "Development server",
+        },
+    ],
     openapi_tags=[
         {
             "name": "Health",
