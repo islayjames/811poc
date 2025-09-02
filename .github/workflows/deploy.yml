@@ -182,3 +182,4 @@ jobs:
         echo "❌ Deployment to Railway failed!"
         echo "Please check the logs and Railway dashboard for more details."
         exit 1
+# Trigger deployment with new Project Token
