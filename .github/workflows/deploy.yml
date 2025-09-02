@@ -107,8 +107,11 @@ jobs:
     - name: Deploy to Railway
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        RAILWAY_PROJECT: texas811-poc
+        RAILWAY_ENVIRONMENT: production
+        RAILWAY_SERVICE: api
       run: |
-        railway up --service api
+        railway up
 
     - name: Wait for deployment
       run: sleep 30
