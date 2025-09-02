@@ -88,7 +88,6 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
-    container: ghcr.io/railwayapp/cli:latest
     needs: [test, build]
     if: github.ref == 'refs/heads/main'
     environment: production
@@ -102,12 +101,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Link Railway project
+    - name: Install Railway CLI
       run: |
-        railway link ${{ env.RAILWAY_PROJECT_ID }} --environment ${{ env.RAILWAY_ENVIRONMENT }}
+        curl -fsSL https://railway.app/install.sh | sh
+        echo "$HOME/.railway/bin" >> $GITHUB_PATH
 
     - name: Deploy to Railway
       run: |
+        railway login --token ${{ secrets.RAILWAY_TOKEN }}
+        railway link ${{ env.RAILWAY_PROJECT_ID }} --environment ${{ env.RAILWAY_ENVIRONMENT }}
         railway up --service=${{ env.RAILWAY_SERVICE }}
 
     - name: Wait for deployment
