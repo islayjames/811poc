@@ -108,8 +108,7 @@ jobs:
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       run: |
-        railway link 29fd5b29-f71d-4921-8ee1-284a818024ef
-        railway up --service texas811-poc
+        railway up --service api
 
     - name: Wait for deployment
       run: sleep 30
