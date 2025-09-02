@@ -101,10 +101,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Link Railway project
-      run: |
-        railway link ${{ env.RAILWAY_PROJECT_ID }}
-
     - name: Deploy to Railway
       run: |
         railway up --service=${{ env.RAILWAY_SERVICE }}
