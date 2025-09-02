@@ -107,9 +107,9 @@ jobs:
     - name: Deploy to Railway
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        RAILWAY_PROJECT: texas811-poc
-        RAILWAY_ENVIRONMENT: production
-        RAILWAY_SERVICE: api
+        RAILWAY_PROJECT_ID: 29fd5b29-f71d-4921-8ee1-284a818024ef
+        RAILWAY_ENVIRONMENT_ID: production
+        RAILWAY_SERVICE_ID: api
       run: |
         railway up
 
