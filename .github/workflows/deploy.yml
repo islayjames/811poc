@@ -99,11 +99,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Link to Railway project
-      run: railway link --project 29fd5b29-f71d-4921-8ee1-284a818024ef --environment production --service texas811-poc
-
     - name: Deploy to Railway
-      run: railway up
+      run: railway up --service texas811-poc
 
     - name: Wait for deployment
       run: sleep 30
