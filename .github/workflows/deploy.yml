@@ -95,11 +95,16 @@ jobs:
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       RAILWAY_PROJECT_ID: 29fd5b29-f71d-4921-8ee1-284a818024ef
+      RAILWAY_ENVIRONMENT: production
       RAILWAY_SERVICE: texas811-poc
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Link Railway project
+      run: |
+        railway link ${{ env.RAILWAY_PROJECT_ID }} --environment ${{ env.RAILWAY_ENVIRONMENT }}
 
     - name: Deploy to Railway
       run: |
