@@ -87,8 +87,9 @@ class GeocodingService:
             params = {
                 "access_token": self.api_key,
                 "country": "US",
-                "bbox": "-107.0,25.0,-93.0,37.0",  # Texas bounds
                 "limit": 1,
+                # NOTE: Removed Texas bbox constraint to allow accurate nationwide geocoding
+                # Original bbox "-107.0,25.0,-93.0,37.0" was forcing incorrect results
             }
 
             # Make API request
@@ -104,12 +105,19 @@ class GeocodingService:
 
             feature = data["features"][0]
             center = feature["center"]
+            formatted_address = feature["place_name"]
+            relevance = feature.get("relevance", 0.8)
+
+            # Validate that geocoded result matches input address
+            confidence = self._validate_geocoded_address(
+                address, formatted_address, relevance
+            )
 
             return {
                 "latitude": center[1],
                 "longitude": center[0],
-                "confidence": feature.get("relevance", 0.8),
-                "formatted_address": feature["place_name"],
+                "confidence": confidence,
+                "formatted_address": formatted_address,
                 "source": "mapbox_geocoding",
             }
 
@@ -194,6 +202,118 @@ class GeocodingService:
             "confidence": 0.7,
             "source": "mock_reverse_geocoding",
         }
+
+    def _validate_geocoded_address(
+        self, input_address: str, geocoded_address: str, base_relevance: float
+    ) -> float:
+        """Validate that geocoded address matches input address and adjust confidence.
+
+        Args:
+            input_address: Original address provided by user
+            geocoded_address: Address returned by geocoding service
+            base_relevance: Relevance score from geocoding service
+
+        Returns:
+            Adjusted confidence score based on address matching
+        """
+        # Normalize addresses for comparison
+        input_normalized = (
+            input_address.lower().replace(",", "").replace(".", "").split()
+        )
+        geocoded_normalized = (
+            geocoded_address.lower().replace(",", "").replace(".", "").split()
+        )
+
+        # Extract key components for validation
+        input_words = set(input_normalized)
+        geocoded_words = set(geocoded_normalized)
+
+        # Check for city/state mismatches that indicate wrong location
+        # Look for state codes in input
+        state_codes = {
+            "al",
+            "ak",
+            "az",
+            "ar",
+            "ca",
+            "co",
+            "ct",
+            "de",
+            "fl",
+            "ga",
+            "hi",
+            "id",
+            "il",
+            "in",
+            "ia",
+            "ks",
+            "ky",
+            "la",
+            "me",
+            "md",
+            "ma",
+            "mi",
+            "mn",
+            "ms",
+            "mo",
+            "mt",
+            "ne",
+            "nv",
+            "nh",
+            "nj",
+            "nm",
+            "ny",
+            "nc",
+            "nd",
+            "oh",
+            "ok",
+            "or",
+            "pa",
+            "ri",
+            "sc",
+            "sd",
+            "tn",
+            "tx",
+            "ut",
+            "vt",
+            "va",
+            "wa",
+            "wv",
+            "wi",
+            "wy",
+        }
+
+        input_states = input_words.intersection(state_codes)
+        geocoded_states = geocoded_words.intersection(state_codes)
+
+        # Severe penalty if states don't match
+        if (
+            input_states
+            and geocoded_states
+            and not input_states.intersection(geocoded_states)
+        ):
+            return min(base_relevance * 0.2, 0.3)  # Very low confidence for wrong state
+
+        # Check for city name matches (simple heuristic)
+        # Look for significant words (length > 3) that should be preserved
+        significant_input_words = {w for w in input_words if len(w) > 3}
+        significant_geocoded_words = {w for w in geocoded_words if len(w) > 3}
+
+        if significant_input_words and significant_geocoded_words:
+            word_overlap = len(
+                significant_input_words.intersection(significant_geocoded_words)
+            )
+            word_total = len(significant_input_words)
+
+            if word_overlap == 0:
+                # No significant words match - likely wrong location
+                return min(base_relevance * 0.4, 0.4)
+            elif word_overlap < word_total * 0.5:
+                # Less than half of significant words match
+                return base_relevance * 0.7
+
+        # Return base relevance if validation passes
+        return base_relevance
 
 
 class CoordinateValidator:
