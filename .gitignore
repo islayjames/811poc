@@ -2,7 +2,7 @@ __pycache__/
 *.pyc
 .coverage
 coverage.json
-data/
+# data/  # Commented out to include sample data in deployment
 .env
 node_modules/
 scrape/backup/

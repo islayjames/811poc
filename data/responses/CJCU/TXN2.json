@@ -1,0 +1,12 @@
+{
+  "response_id": "4aa27470-7cd2-4afe-b9aa-c16e201a5efa",
+  "ticket_id": "CJCU",
+  "member_code": "TXN2",
+  "member_name": "TXN2",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": null,
+  "comment": null,
+  "created_at": "2025-09-03T17:59:27.821475Z",
+  "updated_at": "2025-09-03T17:59:27.821500Z"
+}

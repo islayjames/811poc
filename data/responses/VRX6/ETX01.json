@@ -1,0 +1,12 @@
+{
+  "response_id": "817bffb5-f31d-4499-954e-7d5ed0ca92a4",
+  "ticket_id": "VRX6",
+  "member_code": "ETX01",
+  "member_name": "Entergy Texas Inc",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": "Electric",
+  "comment": null,
+  "created_at": "2025-09-03T17:59:28.225306Z",
+  "updated_at": "2025-09-03T17:59:28.225318Z"
+}

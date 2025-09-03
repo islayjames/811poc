@@ -1,0 +1,12 @@
+{
+  "response_id": "f8adb8cd-b432-40df-802b-af892f96c672",
+  "ticket_id": "US28",
+  "member_code": "LIX",
+  "member_name": "LIX",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": null,
+  "comment": null,
+  "created_at": "2025-09-03T17:59:26.972104Z",
+  "updated_at": "2025-09-03T17:59:26.972126Z"
+}

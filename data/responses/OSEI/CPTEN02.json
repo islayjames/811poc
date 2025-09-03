@@ -1,0 +1,12 @@
+{
+  "response_id": "45075a82-3927-48b6-ba42-af3ec719efc8",
+  "ticket_id": "OSEI",
+  "member_code": "CPTEN02",
+  "member_name": "CenterPoint Energy",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": "Electric",
+  "comment": null,
+  "created_at": "2025-09-03T17:59:26.331170Z",
+  "updated_at": "2025-09-03T17:59:26.331180Z"
+}

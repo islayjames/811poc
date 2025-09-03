@@ -1,0 +1,5331 @@
+{
+  "date": "2025-09-02",
+  "events": [
+    {
+      "event_id": "3d5ffaa2-54a0-4c6d-b24f-850576fa2268",
+      "ticket_id": "297b8321-59b2-4391-b357-ae55e6f22052",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:45.496102Z",
+      "details": {
+        "request_id": "8964bf0d-cd89-4bd0-bb05-24ac5b6a20bd",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "eb09a697-fbbb-4684-b754-7846ae821c24",
+      "ticket_id": "de54a1ab-0938-42bf-9867-f1c9840fa95c",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:04:45.590138Z",
+      "details": {
+        "request_id": "62ed1a38-86d0-4d37-bd53-2272f6664994",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f6981241-c1b0-45c2-b9f1-18fb52e55419",
+      "ticket_id": "98116826-cfb9-4b18-b656-e73249c675df",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:04:45.605874Z",
+      "details": {
+        "request_id": "e61285aa-0f9a-4040-9d01-d221acbfba24",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "82681971-6800-4cec-acb3-546ed085e650",
+      "ticket_id": "30a85fc5-25cf-47b4-8a40-4787395af040",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:45.692021Z",
+      "details": {
+        "request_id": "20881bdc-62be-424a-8045-8c21c904be94",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "613c7a07-bab0-4b7c-9dbd-c6657baba71e",
+      "ticket_id": "4e43969f-e165-4702-8778-12ca95e69c05",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:04:45.848852Z",
+      "details": {
+        "request_id": "d4bb6600-d87c-422b-8e3d-fe72a3d11e61",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "06983f52-2b8d-463b-8c8f-518ea5bb816a",
+      "ticket_id": "593692d5-d023-4758-aae8-de7293234f0a",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:45.961973Z",
+      "details": {
+        "request_id": "373e38b9-7bda-46ca-9b45-7f5432b0c775",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "44a69b0c-49ff-45b0-9ebd-9639eac48ec4",
+      "ticket_id": "593692d5-d023-4758-aae8-de7293234f0a",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:45.978331Z",
+      "details": {
+        "request_id": "384a41c2-8f2b-4fc8-b4f8-792edfaca337",
+        "updated_fields": [
+          "cross_street",
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "78082012-ca48-43e5-b7cb-d11916490248",
+      "ticket_id": "dfb08bd3-476b-4f14-ba43-005aa48b6f6f",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:04:46.079449Z",
+      "details": {
+        "request_id": "c6e49cbc-1183-4731-81aa-b6af2ad97617",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "818b713b-7a42-4f97-bbdc-40355ad1fef9",
+      "ticket_id": "dfb08bd3-476b-4f14-ba43-005aa48b6f6f",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:04:46.095787Z",
+      "details": {
+        "request_id": "3099ac7d-33b4-45c5-8dc7-2ec20db96567",
+        "updated_fields": [
+          "city",
+          "address",
+          "work_description"
+        ],
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "393ab6de-196c-4959-a872-5f1e695b288b",
+      "ticket_id": "b3e751b5-d925-49ca-b5a8-0f982fb71edd",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.199825Z",
+      "details": {
+        "request_id": "2af718ec-6ed8-4c3e-9e01-feacc617da12",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "596f2d4b-a886-492e-8540-f7773e04453b",
+      "ticket_id": "07ae6868-be8d-4f10-8eca-78f993320459",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.322035Z",
+      "details": {
+        "request_id": "8fb835b6-90af-476c-aef0-3ed96ed1a444",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "04a3b693-4138-455a-b37a-c82cef533833",
+      "ticket_id": "07ae6868-be8d-4f10-8eca-78f993320459",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.337113Z",
+      "details": {
+        "request_id": "3d983b4b-6f06-44b6-b481-9ca1cff4d641",
+        "updated_fields": [
+          "cross_street",
+          "caller_name",
+          "caller_company",
+          "caller_phone"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1ee278c7-eba0-4bdd-8a37-f306b3a42247",
+      "ticket_id": "f5d1b4c6-c90a-4a9c-a52d-fa08baacc2bd",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.442135Z",
+      "details": {
+        "request_id": "e065646f-d1b7-4462-bb41-48fb6c7c8f27",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8822b331-98f1-49db-a6fd-cea03e199ed1",
+      "ticket_id": "f5d1b4c6-c90a-4a9c-a52d-fa08baacc2bd",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.454820Z",
+      "details": {
+        "request_id": "a49a1837-38da-4aeb-a79c-15ae88f5a255",
+        "updated_fields": [
+          "caller_name",
+          "caller_company",
+          "caller_phone"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "adb3f1ce-00d7-48d4-9870-ef2cc4e4f1f6",
+      "ticket_id": "f5d1b4c6-c90a-4a9c-a52d-fa08baacc2bd",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.471335Z",
+      "details": {
+        "request_id": "1cf411c9-1399-45bb-bab6-79a7e65e2340",
+        "final_validation_score": 0.7450980392156863,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "34a898aa-683b-4772-89c3-116fe7af0ab8",
+      "ticket_id": "c0c91cf4-9e79-48b2-896c-05561e86f653",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:04:46.572500Z",
+      "details": {
+        "request_id": "aa7ea067-4586-4b0c-a321-cc4c48791d92",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "129a71ec-68bd-4f6c-8ec4-b5a566fe7a52",
+      "ticket_id": "c0c91cf4-9e79-48b2-896c-05561e86f653",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:04:46.584928Z",
+      "details": {
+        "request_id": "8c5c0d74-1d08-4ae5-b33c-9939600f0b31",
+        "final_validation_score": 0.5098039215686274,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7b432562-f6c2-4194-9871-f6c831bc44ba",
+      "ticket_id": "e1d33877-ed01-429c-8766-d5c2b227cf13",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.692677Z",
+      "details": {
+        "request_id": "8abc6e56-c0bc-4e3c-8fc6-d6b2ae4792ea",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "16761a92-288a-46d9-8825-54389eefba70",
+      "ticket_id": "e1d33877-ed01-429c-8766-d5c2b227cf13",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.704728Z",
+      "details": {
+        "request_id": "d97f5b20-4717-4dd9-b16a-e6d4a7e6bce0",
+        "updated_fields": [
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b9462e85-b8df-4ddf-b0ce-49ebbf3a2123",
+      "ticket_id": "e1d33877-ed01-429c-8766-d5c2b227cf13",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.717004Z",
+      "details": {
+        "request_id": "39fe52ae-3c97-4f7a-bfad-b7a9338c8020",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ab4706aa-cd43-4dcf-999e-1e50ad166817",
+      "ticket_id": "d0006e47-4427-4d25-ba44-12090d1e3201",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.822994Z",
+      "details": {
+        "request_id": "da051adf-3c24-4088-b929-f455924e7a2b",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6a6e178c-3a72-4df7-8716-aed48a84db3c",
+      "ticket_id": "d0006e47-4427-4d25-ba44-12090d1e3201",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.834551Z",
+      "details": {
+        "request_id": "f1932636-8ff4-4ead-873a-2f3fcdecad14",
+        "updated_fields": [
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "179fe042-8692-482f-9a64-01cd5d4607f7",
+      "ticket_id": "d0006e47-4427-4d25-ba44-12090d1e3201",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.846205Z",
+      "details": {
+        "request_id": "1e0770bd-6b07-4ea1-8253-1559cb4ffbb1",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "af0ac60a-8815-4cea-9a1c-163afc759053",
+      "ticket_id": "a8f4cddb-96dd-4554-8ab9-1990c686fbbf",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.970923Z",
+      "details": {
+        "request_id": "e72a3296-d2a7-445f-b406-4a2edf9b2b9b",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "254b5dc9-5372-45e3-84b4-fde70972056e",
+      "ticket_id": "a8f4cddb-96dd-4554-8ab9-1990c686fbbf",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.981620Z",
+      "details": {
+        "request_id": "acbb6d3f-2ebf-45a2-82d1-84e2f983f55a",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6aa6975d-d23b-425d-84b0-1366cf8f7c3a",
+      "ticket_id": "a8f4cddb-96dd-4554-8ab9-1990c686fbbf",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:46.994924Z",
+      "details": {
+        "request_id": "155d6f0d-020c-4ff8-8f40-8a29e8682425",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f5c6c5e1-eafd-43af-82cb-229d93c04aa6",
+      "ticket_id": "7843b978-e453-4bbf-bceb-f8972e3f6ed5",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:47.100644Z",
+      "details": {
+        "request_id": "07c8c0a4-4739-4b11-ab4a-f33f06fe51c9",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "82ad2098-87c8-4723-b255-5d813345db21",
+      "ticket_id": "5971b457-8c33-4c0d-8a37-d3b7881cf3b8",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:47.272782Z",
+      "details": {
+        "request_id": "cf18739d-0273-4465-bccf-7b4541ab09a8",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2553cd22-a5d2-4876-95fc-1e1575ac993c",
+      "ticket_id": "a3a2e3d8-4eb1-49e4-8924-81c528bef854",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:04:47.371060Z",
+      "details": {
+        "request_id": "83b9e74d-a8eb-4e20-82c2-845b7ee8d9f5",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "352ae34d-e0cb-498f-bb45-4a7368f91821",
+      "ticket_id": "7061dd7a-fb62-496e-8700-a4ae6a46ebe5",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:47.474428Z",
+      "details": {
+        "request_id": "b0197b84-5b6a-4593-bdc7-9b7d31439052",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d7123781-b152-47d4-bf39-ad155baa521f",
+      "ticket_id": "7061dd7a-fb62-496e-8700-a4ae6a46ebe5",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:47.489233Z",
+      "details": {
+        "request_id": "06a3418f-d68f-4766-9c73-58442054265f",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "af0b0a57-8b38-48f5-86b4-1cfeafff7d8e",
+      "ticket_id": "7061dd7a-fb62-496e-8700-a4ae6a46ebe5",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:04:47.501173Z",
+      "details": {
+        "request_id": "63b525ba-44c8-4980-b032-f76c6861d2fa",
+        "final_validation_score": 0.5882352941176471,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "0566c15a-a603-498d-86de-5e47b6690f00",
+      "ticket_id": "ad2981b9-9348-446a-9461-0fe0c826a432",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:49.770612Z",
+      "details": {
+        "request_id": "509a5c1c-f28b-4b9f-957d-c767e9c440a1",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9f947c20-6a34-4f2e-8e43-2075e8f7fdea",
+      "ticket_id": "ad2981b9-9348-446a-9461-0fe0c826a432",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:49.783621Z",
+      "details": {
+        "request_id": "b9d9505d-5958-4897-9660-915c66063e5d",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a686bc78-8eb4-445d-98b4-30f24a191bca",
+      "ticket_id": "f12cf7d9-90c7-4402-8eb6-5c740905baaa",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:04:49.885380Z",
+      "details": {
+        "request_id": "867148d1-a2e2-4eb6-9432-fa4565b1734b",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "89bd8341-4d73-4c9e-a94d-de021bf72c2b",
+      "ticket_id": "f12cf7d9-90c7-4402-8eb6-5c740905baaa",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:04:49.903015Z",
+      "details": {
+        "request_id": "3db1aadd-ada3-432d-bb85-a45a6e7bb484",
+        "updated_fields": [
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c8be9128-a235-480e-a2c9-337d169e2088",
+      "ticket_id": "f12cf7d9-90c7-4402-8eb6-5c740905baaa",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:04:49.915170Z",
+      "details": {
+        "request_id": "28baf32a-90f0-4972-aa14-a0d063c00f7f",
+        "updated_fields": [
+          "caller_email",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9411764705882353,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8e46557e-0e8d-4f89-8bd0-94937c23830a",
+      "ticket_id": "e114511b-896a-4bf1-861c-be1ab6f4283e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:04:50.044892Z",
+      "details": {
+        "request_id": "7c78ae98-4baf-41b3-8fb5-3feb5d5b396b",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "27383881-dfa2-43d1-bfb1-820c47097867",
+      "ticket_id": "e114511b-896a-4bf1-861c-be1ab6f4283e",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:04:50.059218Z",
+      "details": {
+        "request_id": "b353ba0e-7fbc-4cca-b6c7-99defb1569ab",
+        "updated_fields": [
+          "cross_street",
+          "caller_name"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "495b5991-d456-41cf-80f1-e5bdac4b16b8",
+      "ticket_id": "e114511b-896a-4bf1-861c-be1ab6f4283e",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:04:50.076140Z",
+      "details": {
+        "request_id": "b33ead27-4cd5-4cac-bd04-ec833d905120",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "3f7999da-5b2c-4bc8-8aea-a2f1b66e52d9",
+      "ticket_id": "3f910eb8-4dbf-4abf-8a37-f5b43da29c21",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.181400Z",
+      "details": {
+        "request_id": "99833385-03cd-499f-83a3-2d560663a070",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "93518c87-4562-4de0-8f90-c16901c3debe",
+      "ticket_id": "8a64405b-0bb0-4348-be81-9c5bf7e790ba",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.358454Z",
+      "details": {
+        "request_id": "eb22871a-33b0-4604-a9f7-3807e4973ea3",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7a5517cf-2bb2-4b8b-9571-4bf8f7b2e0ba",
+      "ticket_id": "8a64405b-0bb0-4348-be81-9c5bf7e790ba",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.372468Z",
+      "details": {
+        "request_id": "36f60aee-5d8e-4de6-8a5e-f87b41182233",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b02707e9-7f0e-4b05-8fdb-7c3b624dc221",
+      "ticket_id": "c357cc2a-4e12-4a7e-8b56-5c95ee6cc0f4",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.490552Z",
+      "details": {
+        "request_id": "f5817150-3934-41d3-9c71-2a7d8c1b3633",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d78b8432-b5da-48b3-81ec-4a9edbf0ab4f",
+      "ticket_id": "c357cc2a-4e12-4a7e-8b56-5c95ee6cc0f4",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.506160Z",
+      "details": {
+        "request_id": "4644dff1-0409-43f5-a11b-093462d8e8de",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7a188b8c-438e-4c72-831c-6991666863b6",
+      "ticket_id": "540670e1-307c-4a8a-aefd-b5ccfdddc673",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.619601Z",
+      "details": {
+        "request_id": "c005cb8d-1e18-499d-88ad-69f049a57a51",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "84674ebe-f880-48e1-aef2-c3da95b8fa16",
+      "ticket_id": "e65eb367-caee-47d5-b94d-33c4401f5f14",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.724080Z",
+      "details": {
+        "request_id": "300857c2-f408-420b-ab16-9d8e0c174b86",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "963862a1-5d56-40b7-835c-4798c8845c78",
+      "ticket_id": "e65eb367-caee-47d5-b94d-33c4401f5f14",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.738606Z",
+      "details": {
+        "request_id": "374f0328-2a82-406c-a1de-d42558d6e230",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2f252b3d-2b97-420b-9a76-51d688ebea48",
+      "ticket_id": "e65eb367-caee-47d5-b94d-33c4401f5f14",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:04:50.750629Z",
+      "details": {
+        "request_id": "6b80677f-974d-4e17-9644-e1e70a9a7281",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "24ba2639-129a-44c1-80e3-8cd7531b18ad",
+      "ticket_id": "7405a37c-55c6-45be-92bc-71e9d286cacf",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-005-concurrent-1",
+      "timestamp": "2025-09-02T17:04:50.776105Z",
+      "details": {
+        "request_id": "b03a092d-1b20-4d1d-8ca6-5e640b60634d",
+        "validation_score": 0.8431372549019608,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2429efb0-043d-4632-a9a5-f2d7892c3b15",
+      "ticket_id": "37d8de90-747f-4007-b7c9-b9a30e81c9ba",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004-concurrent-2",
+      "timestamp": "2025-09-02T17:04:50.882297Z",
+      "details": {
+        "request_id": "dfc14667-34c1-49f6-a3bd-68f31197ec05",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "27e31828-d9fb-4a87-836d-db396b500bfa",
+      "ticket_id": "1737ecf5-0c09-4013-a4e4-85f76e85fa24",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:04:51.004252Z",
+      "details": {
+        "request_id": "30b5f843-afe8-4458-b7cf-c01c7132070b",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "45334aea-77f5-4ed6-8a36-8acfdeb65fb2",
+      "ticket_id": "1737ecf5-0c09-4013-a4e4-85f76e85fa24",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:04:51.019426Z",
+      "details": {
+        "request_id": "45a85dda-93be-4a5d-a268-d7df01b11397",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "0d9efd3f-1723-49b9-8638-d1c1d560f1e3",
+      "ticket_id": "1737ecf5-0c09-4013-a4e4-85f76e85fa24",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:04:51.031686Z",
+      "details": {
+        "request_id": "635cb20a-06f7-4063-88d4-d98c5ff26737",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b1f2018f-ae8e-4d0d-8183-ac25a700c587",
+      "ticket_id": "d607ca18-e428-455b-beaf-c1918e61391e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004",
+      "timestamp": "2025-09-02T17:04:51.139620Z",
+      "details": {
+        "request_id": "ba213dc1-feff-41fb-83df-a08dd4df311c",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "966b58d7-0a2b-4727-bb11-b6a32698502c",
+      "ticket_id": "b7cb25aa-3e36-4310-aef9-557f5aacbcd3",
+      "action": "ticket_created",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.481505Z",
+      "details": {
+        "request_id": "98e6f5f2-0566-4e77-91c1-2494cf987099",
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "52caad05-b8c3-40f6-96aa-2da54d8d5ea4",
+      "ticket_id": "fd891ac6-9872-454b-be50-e026d349e63c",
+      "action": "ticket_created",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.587169Z",
+      "details": {
+        "request_id": "dd45b178-16f6-47a1-a9c4-53ba90bc1dfb",
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "970032d6-84c0-40c5-8ef9-684f3d4774a6",
+      "ticket_id": "fd891ac6-9872-454b-be50-e026d349e63c",
+      "action": "ticket_updated",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.600863Z",
+      "details": {
+        "request_id": "1bf9e35c-004b-42b4-b026-b9cc4c061cfa",
+        "updated_fields": [
+          "cross_street",
+          "work_start_date"
+        ],
+        "validation_score": 0.9019607843137255,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "32b1a429-05ff-4397-acd3-ba4375bff260",
+      "ticket_id": "fd891ac6-9872-454b-be50-e026d349e63c",
+      "action": "submission_packet_created",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.613661Z",
+      "details": {
+        "request_id": "84d83082-904b-4dd4-87c9-05b048d45ad2",
+        "final_validation_score": 0.9019607843137255,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b149c0f6-ca9d-4d1a-ba27-084e31b3db55",
+      "ticket_id": "cc04e0d0-79ad-4bac-a055-954dadeffef1",
+      "action": "ticket_created",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.708620Z",
+      "details": {
+        "request_id": "925fe49c-510d-4478-85f6-12d0d3368048",
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "00e553dd-4c6e-4f79-be8c-4a6b2fb65854",
+      "ticket_id": "01a7c0c5-9fb2-4290-baba-dc429446039a",
+      "action": "ticket_created",
+      "user_id": "demo-error-recovery-1",
+      "timestamp": "2025-09-02T17:04:51.809758Z",
+      "details": {
+        "request_id": "8790fa53-4c92-4155-ba93-1d339d088f44",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "49354401-a51e-40de-afc1-c746ac2f1e5c",
+      "ticket_id": "bca852c4-8da4-4b95-89bd-dbc6fcb2e144",
+      "action": "ticket_created",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.923458Z",
+      "details": {
+        "request_id": "6dc5ca00-f25c-492c-8e65-b9f4cb882ba1",
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9cdd0cd1-a0a5-4065-8167-bfd10e04341e",
+      "ticket_id": "bca852c4-8da4-4b95-89bd-dbc6fcb2e144",
+      "action": "ticket_updated",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.940894Z",
+      "details": {
+        "request_id": "7b06eb42-4cd1-4e57-ada3-670b2b0433d0",
+        "updated_fields": [
+          "cross_street",
+          "work_start_date"
+        ],
+        "validation_score": 0.9019607843137255,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b21b67b6-8558-4143-b3ae-a2cdd02136f9",
+      "ticket_id": "bca852c4-8da4-4b95-89bd-dbc6fcb2e144",
+      "action": "submission_packet_created",
+      "user_id": "poc-demo-script-session",
+      "timestamp": "2025-09-02T17:04:51.956390Z",
+      "details": {
+        "request_id": "c16891b4-764f-4f51-84cd-0f60e8857543",
+        "final_validation_score": 0.9019607843137255,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "0f16afd1-bf48-4ff0-8eaf-d99e4934a8c2",
+      "ticket_id": "86fdcacc-3363-49a8-a0e5-a3a92084494d",
+      "action": "ticket_created",
+      "user_id": "premium-demo-validation",
+      "timestamp": "2025-09-02T17:04:52.064287Z",
+      "details": {
+        "request_id": "5b7f1394-9eaf-4a58-9aef-28bdc0e55d8e",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "468e2e9a-a4f5-468f-bdca-764e040f5fe3",
+      "ticket_id": "86fdcacc-3363-49a8-a0e5-a3a92084494d",
+      "action": "submission_packet_created",
+      "user_id": "premium-demo-validation",
+      "timestamp": "2025-09-02T17:04:52.077549Z",
+      "details": {
+        "request_id": "438778ee-722a-487c-beb6-7fac8d51ea79",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "555a5ea9-b83d-4a0f-8d17-3c9a93ecc016",
+      "ticket_id": "b5caa21c-701f-4234-834f-bf2fe01f1f66",
+      "action": "ticket_created",
+      "user_id": "gap-analysis-demo",
+      "timestamp": "2025-09-02T17:04:52.185582Z",
+      "details": {
+        "request_id": "54a42880-806e-417d-8440-7c996626a394",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7a13fd35-334e-412c-8e5d-c2b12d3f9f9c",
+      "ticket_id": "a4815954-4687-4548-9385-96628c150a5d",
+      "action": "ticket_created",
+      "user_id": "concurrent-demo-1",
+      "timestamp": "2025-09-02T17:04:52.292689Z",
+      "details": {
+        "request_id": "d4c26dff-eb52-4c94-ba77-c910158aa431",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "75b5d99e-6535-4c2c-95d7-f99dfb902416",
+      "ticket_id": "6378d4cd-10e0-438f-ba8b-d7c309916874",
+      "action": "ticket_created",
+      "user_id": "dashboard-integration-demo",
+      "timestamp": "2025-09-02T17:04:52.422915Z",
+      "details": {
+        "request_id": "c4aedf56-d4aa-4f15-8857-4b73e5ccb120",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d5091f7a-7ea0-4b21-ad01-943ed09daf79",
+      "ticket_id": "6378d4cd-10e0-438f-ba8b-d7c309916874",
+      "action": "submission_packet_created",
+      "user_id": "dashboard-integration-demo",
+      "timestamp": "2025-09-02T17:04:52.441125Z",
+      "details": {
+        "request_id": "53a372d3-3eac-47e4-a3aa-937a02490e4e",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "07fc50ac-4be6-4ec5-9aa7-da468ec4726b",
+      "ticket_id": "e92a7aa6-d248-4133-a4e9-6006dc444c2b",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:32:54.274293Z",
+      "details": {
+        "request_id": "6ef79db9-ce93-4ef4-9182-71b423c0cf6a",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1be32e92-4991-4e92-9ce0-ae30b36c2662",
+      "ticket_id": "51bb73d3-9916-4da5-84cd-609364b32111",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:32:58.031230Z",
+      "details": {
+        "request_id": "884b044b-9d91-4af3-8318-d7efd3207d27",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "acc490ee-78d3-4b5b-bbc5-1653ba2965e5",
+      "ticket_id": "8da70065-1790-4344-bf13-62217bad2630",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:33:01.692467Z",
+      "details": {
+        "request_id": "1afc8871-07fb-409c-aaf2-514d1dfe17a6",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "038b57f1-6ed5-4f63-bef2-4ae1523c1ee8",
+      "ticket_id": "cb085d49-a446-46e7-b29d-cf017399143e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:33:01.931370Z",
+      "details": {
+        "request_id": "89b933fb-f89b-4893-adeb-86a806c235c0",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8a47c86d-caac-4b4d-a0c1-57f4e93ff3d9",
+      "ticket_id": "4f997e13-4a2e-4a0c-bd6e-76f5ccbd7f84",
+      "action": "ticket_created",
+      "user_id": "test-session-harris",
+      "timestamp": "2025-09-02T17:33:05.666210Z",
+      "details": {
+        "request_id": "6475bdfc-219a-4e2f-ba07-ffacbc505df7",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "daea7d77-f8ef-4fda-a05c-e12dc18b719c",
+      "ticket_id": "a8e3d383-87c2-45e3-b3c2-86c54df3b259",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:33:09.507020Z",
+      "details": {
+        "request_id": "e162b801-4215-4dad-9fe1-74de7ad5022c",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2bd13432-8071-4db2-8e35-23812c8cb519",
+      "ticket_id": "a8e3d383-87c2-45e3-b3c2-86c54df3b259",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:33:13.101514Z",
+      "details": {
+        "request_id": "17ab8bc5-05d4-4381-9405-eac9176e0a06",
+        "updated_fields": [
+          "address",
+          "cross_street"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "946998d3-8e52-4156-8d20-ecd4e4d9cab5",
+      "ticket_id": "d8b03ad0-bc41-4ea6-be7b-4f4665258f76",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:33:16.755774Z",
+      "details": {
+        "request_id": "91a5792e-2753-40a0-a5d0-a0385b9ac6bc",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2f4ac741-d0e4-4f19-90a7-ea26959f473f",
+      "ticket_id": "77e93c06-24b8-4970-b84c-f47c054f584c",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:33:44.273038Z",
+      "details": {
+        "request_id": "031c213c-814c-42f6-b28c-5e62e3a94135",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "fd0d2107-920d-4a57-9a2c-0b04dd1c3d8c",
+      "ticket_id": "88f45160-4dda-4bff-9496-f0bb887346c3",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:34:31.966468Z",
+      "details": {
+        "request_id": "9d640b1a-8cd8-44e0-a6d4-3130ba537bb2",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ca3af70a-7ee6-4924-a888-31b1a251df51",
+      "ticket_id": "a473ee10-6873-40d3-880f-d4d86584f326",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:34:35.547702Z",
+      "details": {
+        "request_id": "40a5e22e-1c07-4e2d-ba73-3dc13a3709bd",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "99f2c10b-9f9d-4cba-be40-ed596ac6f4f9",
+      "ticket_id": "968b29d2-bc59-4344-a222-9dd66e6e1e67",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:34:35.577024Z",
+      "details": {
+        "request_id": "625142c4-3b41-4942-9764-927e13283ef1",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f3937597-96b8-43a2-b599-1c51100fd4c4",
+      "ticket_id": "fe635e8b-74e5-45bf-b9cc-e4eb140a009b",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:34:39.254244Z",
+      "details": {
+        "request_id": "fe8265ed-0927-4fb2-9484-3fcfbb7ca8fc",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "814a47ca-5cc2-4437-842d-50fda7c1c2dc",
+      "ticket_id": "4f7cf2db-dac6-4eb3-9d68-0cb004190ca2",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:34:42.882058Z",
+      "details": {
+        "request_id": "11f663aa-0b65-46f9-9470-6b711d1bedb0",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "e4342ff8-22a0-4727-b919-20b14db36add",
+      "ticket_id": "9a0e39c2-1e0e-427d-b608-4e3527aff61f",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:20.384222Z",
+      "details": {
+        "request_id": "d959190c-2d5f-479d-80bf-5cd6b2b32223",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c7790674-f9b6-4770-b63a-e22fdc170f52",
+      "ticket_id": "86455b0c-6f33-43d4-ad16-66ec2ead5fe8",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:36:23.949425Z",
+      "details": {
+        "request_id": "c11c8bbc-5d1c-4c01-a753-fd5971986dd8",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b4742c26-7614-4b28-85b3-afcd459aae76",
+      "ticket_id": "c5cf428d-a5d0-47f5-bb33-4c0659295402",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:36:23.970569Z",
+      "details": {
+        "request_id": "4c8e5198-f738-495d-80fd-eefd302d85dc",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "0440cfab-a580-4303-bdfe-687f62c79e27",
+      "ticket_id": "8bb20130-b4f6-44a5-972f-763c1284a868",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:27.538506Z",
+      "details": {
+        "request_id": "fd02e232-1843-4dc3-937e-52b8ec9220cd",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "eee41528-a9fa-4fc0-9458-8fdcfa55730f",
+      "ticket_id": "ed3e5e18-4591-4343-8c20-a24498a1e423",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:36:31.166461Z",
+      "details": {
+        "request_id": "727d8579-4e5a-4fa9-aca3-2dc0319052be",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "790ac547-7408-4521-b721-85f154af7cef",
+      "ticket_id": "097ed5fb-4de3-4e67-beeb-14ad7305563d",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:34.761716Z",
+      "details": {
+        "request_id": "1f0d55d6-bf9e-4b7b-ab2c-3c9a16969bbc",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "eb1c083c-fe43-444e-b11d-9515326d063d",
+      "ticket_id": "097ed5fb-4de3-4e67-beeb-14ad7305563d",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:34.783642Z",
+      "details": {
+        "request_id": "5b9f56d4-943d-44a4-888d-ca4d0cc0eaaa",
+        "updated_fields": [
+          "cross_street",
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1dbd6ebc-1fd8-423b-a684-a76f21326e8f",
+      "ticket_id": "d6c8bceb-faac-44d7-9b8e-47233e074423",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:36:38.355676Z",
+      "details": {
+        "request_id": "1e36f101-1bfd-4b29-9c19-f7920a8d7750",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cf4cfa0a-6c3c-4b7c-bc3b-4eb83e7f9d3c",
+      "ticket_id": "d6c8bceb-faac-44d7-9b8e-47233e074423",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:36:41.813819Z",
+      "details": {
+        "request_id": "e19f34c5-c3fc-473e-9c75-904235e31a38",
+        "updated_fields": [
+          "city",
+          "address",
+          "work_description"
+        ],
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "07218e52-9858-4206-b116-ba91b8b58e84",
+      "ticket_id": "24acb182-2d38-4ef9-99a2-a860fdef4cbd",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:45.394210Z",
+      "details": {
+        "request_id": "7c96afd4-9d02-4555-bb44-fae1bd099647",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "44ce9d2e-e3a6-49b8-8f50-3fb5837d6e64",
+      "ticket_id": "c6493fef-117a-4c95-8a05-3e18eab09844",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:48.963008Z",
+      "details": {
+        "request_id": "2ae4ff08-dff2-46ae-96dd-0e417eedf08f",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5e2de73a-7712-4bc4-87a9-37d64c6d0009",
+      "ticket_id": "c6493fef-117a-4c95-8a05-3e18eab09844",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:48.983766Z",
+      "details": {
+        "request_id": "aa70ba50-ff15-48d9-92a4-2756f4cce239",
+        "updated_fields": [
+          "cross_street",
+          "caller_name",
+          "caller_company",
+          "caller_phone"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "80af7688-b76d-443f-b695-9cbf65406d6f",
+      "ticket_id": "1c54c3b1-7785-4b3b-8bf4-03d69449d4b4",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:52.532007Z",
+      "details": {
+        "request_id": "dc96190a-110f-4e96-a787-1721e3c9d7ff",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "bcda797e-8bce-46ad-9784-a22a178106bb",
+      "ticket_id": "1c54c3b1-7785-4b3b-8bf4-03d69449d4b4",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:52.553537Z",
+      "details": {
+        "request_id": "c51ef696-e225-4470-9c37-00830a5a2084",
+        "updated_fields": [
+          "caller_name",
+          "caller_company",
+          "caller_phone"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6a4da897-8b49-4e06-990d-cf13dbccc09a",
+      "ticket_id": "1c54c3b1-7785-4b3b-8bf4-03d69449d4b4",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:36:52.570229Z",
+      "details": {
+        "request_id": "efb781c5-562b-4d01-a7e6-9e7c3c68d368",
+        "final_validation_score": 0.7450980392156863,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cefdcba5-c508-429a-b026-a9884daa388e",
+      "ticket_id": "52314367-7fd6-4631-891e-da29122330b1",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:36:56.200939Z",
+      "details": {
+        "request_id": "80ea0090-0ee4-4809-bead-1a868e047a6a",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6ea3bec3-4cec-4813-bf5b-52714f1b69e6",
+      "ticket_id": "52314367-7fd6-4631-891e-da29122330b1",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:36:56.266208Z",
+      "details": {
+        "request_id": "d635b476-7641-444d-93ff-c3e69064041a",
+        "final_validation_score": 0.5098039215686274,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ec7a4907-37c3-470e-8640-edd7b4ef0b30",
+      "ticket_id": "35a73027-7ee0-403a-ad52-931b67d46ea4",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:00.114537Z",
+      "details": {
+        "request_id": "291f5b75-69c1-4e94-89de-992151a10cd7",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7dc37362-c792-4058-aacc-bb6ee688834e",
+      "ticket_id": "35a73027-7ee0-403a-ad52-931b67d46ea4",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:00.136740Z",
+      "details": {
+        "request_id": "1b1e9c7f-b05c-4c89-bc8f-1769f2fc4bfb",
+        "updated_fields": [
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2fb44a80-c05a-4792-867c-5cc62c0757c8",
+      "ticket_id": "35a73027-7ee0-403a-ad52-931b67d46ea4",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:00.156494Z",
+      "details": {
+        "request_id": "db7f75f5-b273-48cd-82f8-4b609cda1e42",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "af092d31-c500-44a6-80c0-c123062bca60",
+      "ticket_id": "d2f33895-6063-4476-8d31-f8edc320c066",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:03.730641Z",
+      "details": {
+        "request_id": "4c359020-8879-4852-bfa6-8db24e32c8cc",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8fd5bceb-d9bb-4d71-a796-16154bc6cd20",
+      "ticket_id": "d2f33895-6063-4476-8d31-f8edc320c066",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:03.752369Z",
+      "details": {
+        "request_id": "1ded0865-7cba-4112-8a08-f6e65f4a3a4d",
+        "updated_fields": [
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "71e684e5-6d5b-4833-8447-f7b929b60090",
+      "ticket_id": "d2f33895-6063-4476-8d31-f8edc320c066",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:03.767700Z",
+      "details": {
+        "request_id": "f101691d-a893-4166-a7b6-6e47caa57c41",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d153117e-730d-4629-b573-808a69a661bd",
+      "ticket_id": "5b041006-c37c-4cf3-9926-aca15c97a365",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:07.409781Z",
+      "details": {
+        "request_id": "5b84681f-2615-46c5-bd58-1591e365a620",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "78de7db1-8194-4772-9bfa-504166b6893e",
+      "ticket_id": "5b041006-c37c-4cf3-9926-aca15c97a365",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:07.425128Z",
+      "details": {
+        "request_id": "396b2551-0f00-4ffb-b8aa-bea311f988f2",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b753ae94-06b2-4cba-b34e-427a6c815b50",
+      "ticket_id": "5b041006-c37c-4cf3-9926-aca15c97a365",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:07.438582Z",
+      "details": {
+        "request_id": "6c2422f7-c1b2-4c87-9d63-8bd8d8d656e6",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "549db774-1676-4dbc-b2d4-f7f96813cbe9",
+      "ticket_id": "05016c88-d5e2-4384-ac4c-317be194904c",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:10.992037Z",
+      "details": {
+        "request_id": "5277f8ab-55cd-41b1-94ae-aa793e857ccd",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f754fa0b-d983-43af-ade1-f0970eda8a8e",
+      "ticket_id": "ea49b139-7175-4c41-b1be-a52f222532e1",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:14.655172Z",
+      "details": {
+        "request_id": "2b77f6c5-5f92-4583-a98b-0afce7b1a471",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9f27c78b-e49d-482b-919e-21b042d27be3",
+      "ticket_id": "97dc9ea0-2621-4596-bf89-eaffc5a3f684",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:37:18.258117Z",
+      "details": {
+        "request_id": "5d07dbfa-433d-4a4a-bbc8-5a5646a2e075",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "e4361971-cb61-4d7e-9f6c-0d78d00f751b",
+      "ticket_id": "7107f1d2-930a-458c-ad35-6be9cc96236c",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:21.801531Z",
+      "details": {
+        "request_id": "802b3f43-8f48-4524-ab18-954dd70be530",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "36652725-f2cb-4046-89bd-fdd1db491307",
+      "ticket_id": "7107f1d2-930a-458c-ad35-6be9cc96236c",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:21.820452Z",
+      "details": {
+        "request_id": "676bb940-3b46-4db6-b7c7-3024b0cc0132",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "536feca6-940c-494e-9135-1f19d9ee0c9d",
+      "ticket_id": "7107f1d2-930a-458c-ad35-6be9cc96236c",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:37:21.834948Z",
+      "details": {
+        "request_id": "401229d4-661d-4aea-a989-82224f1e584a",
+        "final_validation_score": 0.5882352941176471,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ff6151c8-76d1-4886-9bbe-c179ef091d86",
+      "ticket_id": "6b2a3dff-7170-4fe8-b11d-0f27bcbc9f44",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:27.432025Z",
+      "details": {
+        "request_id": "a32ac840-1523-40ab-bae4-bf2cab4faa9f",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2ca8439f-6a55-4061-b3ff-6138b21625e8",
+      "ticket_id": "6b2a3dff-7170-4fe8-b11d-0f27bcbc9f44",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:27.445972Z",
+      "details": {
+        "request_id": "2d532b38-cc21-4c1f-ad2b-227fb3c07a05",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d714fa9a-6d98-4def-8745-44c3cf86defb",
+      "ticket_id": "e19d9eec-33dd-470d-a8fe-de752668948c",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:37:27.549336Z",
+      "details": {
+        "request_id": "0b9946a7-662f-45f4-a731-e7ea0743be5c",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5654de75-09ae-44e8-b24a-816e680157c0",
+      "ticket_id": "e19d9eec-33dd-470d-a8fe-de752668948c",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:37:27.563458Z",
+      "details": {
+        "request_id": "3ad65a82-40c5-4a37-a3a7-7f4e63a76be2",
+        "updated_fields": [
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f48fcb6c-4a2c-4a5e-9cff-918760b6f16d",
+      "ticket_id": "e19d9eec-33dd-470d-a8fe-de752668948c",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:37:27.577958Z",
+      "details": {
+        "request_id": "b6a239c8-0577-4343-84a4-f5bbf30c1582",
+        "updated_fields": [
+          "caller_email",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9411764705882353,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b4530d89-bbb0-4f2e-9a5a-78469a15fe50",
+      "ticket_id": "963da941-544d-47c3-b7c2-fe700a94c028",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:37:27.695318Z",
+      "details": {
+        "request_id": "c9eed7f9-be44-4ad0-8cad-559d437c3aca",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1ba19ae4-2fe7-4a2c-929e-0352087687f8",
+      "ticket_id": "963da941-544d-47c3-b7c2-fe700a94c028",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:37:27.711026Z",
+      "details": {
+        "request_id": "20870182-2d41-4022-ad1c-a0a0d9f6401c",
+        "updated_fields": [
+          "cross_street",
+          "caller_name"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9d2dc17d-349f-440a-891d-a4f0288ccba0",
+      "ticket_id": "963da941-544d-47c3-b7c2-fe700a94c028",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:37:27.723402Z",
+      "details": {
+        "request_id": "5f655cb9-c51f-45f1-82bc-1a2071a5b946",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "04e4af7b-f131-4802-aa1c-0c0eb8bec8f4",
+      "ticket_id": "05ecebb2-707c-42bd-89de-6d81069fb223",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:31.283685Z",
+      "details": {
+        "request_id": "7d4fc04a-eda0-4f68-9a00-f901c537cc66",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d883fbe4-4d69-4beb-9959-df72c81dfe94",
+      "ticket_id": "7604ef55-6787-4864-b5c0-bc14ebccc0a6",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:34.966197Z",
+      "details": {
+        "request_id": "9ee3a89d-f47f-41c1-b975-f75a95638f1d",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c743dbb9-7bd2-48ae-b9e6-e3df84f33784",
+      "ticket_id": "7604ef55-6787-4864-b5c0-bc14ebccc0a6",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:34.986705Z",
+      "details": {
+        "request_id": "ed1b35dc-87f0-45fe-804f-5452c5bcbeeb",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d79064d7-0077-4c12-b739-f83becf4ec8e",
+      "ticket_id": "c8c44785-00da-46ab-b459-32861143c2fe",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:38.590370Z",
+      "details": {
+        "request_id": "d1ede68b-a144-4541-a3f8-840829f5538b",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "be7418c6-3860-4034-9e45-33661bb8f899",
+      "ticket_id": "c8c44785-00da-46ab-b459-32861143c2fe",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:38.606725Z",
+      "details": {
+        "request_id": "efebdd32-4610-4d7f-8683-f7552f432063",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a8c28cea-f5fa-4213-b02f-0e0b589f8f9a",
+      "ticket_id": "7cef8b64-a26f-4bc9-8275-d642f92d3a39",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:42.240890Z",
+      "details": {
+        "request_id": "95bd6c44-c63d-4083-b7d3-55195a663d61",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8076315e-1d73-4457-a846-5cc8c702461b",
+      "ticket_id": "488612d9-2553-4139-9545-73d1de4e1919",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:37:45.827033Z",
+      "details": {
+        "request_id": "b2142e60-e366-4e02-be3d-db17e1e70af0",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cd0d26ca-5f06-4bff-bb8b-3e8656c56d0e",
+      "ticket_id": "90bef9c2-a9f4-4586-a7d0-4d3778192c5c",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-005-concurrent-1",
+      "timestamp": "2025-09-02T17:37:45.865501Z",
+      "details": {
+        "request_id": "f8a7077e-9dc6-4b00-8956-7744f7cc2e12",
+        "validation_score": 0.8431372549019608,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1993b475-d179-4bde-b3d7-c97006ee95d9",
+      "ticket_id": "f4792f3f-a711-4b1b-af21-29b59059030b",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004-concurrent-2",
+      "timestamp": "2025-09-02T17:37:45.991614Z",
+      "details": {
+        "request_id": "e6f6a9b9-09aa-46a6-a74e-e5497d13dd5d",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "4ad2b219-7a89-4d30-91a5-cb3626c88ae0",
+      "ticket_id": "14b6f2af-ed19-4a2e-b84d-c4d805b6b0b9",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001-concurrent-0",
+      "timestamp": "2025-09-02T17:37:49.440244Z",
+      "details": {
+        "request_id": "08484948-bbcf-4461-9245-e4e461c2583c",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "abab0e1c-54d9-4813-9727-da7b47e146ba",
+      "ticket_id": "e7dec95e-334a-493d-bb3b-612ea7b9ceb1",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:37:53.023910Z",
+      "details": {
+        "request_id": "d916b3ba-b7a9-4c92-b72e-b052ff813005",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a4a5c41b-71e4-4c87-955a-d48e3df7d198",
+      "ticket_id": "e7dec95e-334a-493d-bb3b-612ea7b9ceb1",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:37:56.491938Z",
+      "details": {
+        "request_id": "7a1a2f7e-0b2e-447d-a6ca-e926d9fb8a4e",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b19e52a7-47e0-4e1c-8137-3fe86b22d9ad",
+      "ticket_id": "e7dec95e-334a-493d-bb3b-612ea7b9ceb1",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:37:56.509864Z",
+      "details": {
+        "request_id": "d592a918-cb7b-41a2-94ce-bed34552217a",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6f2e7ad5-855c-4ff2-99f1-2dd97170600d",
+      "ticket_id": "abbb7b6c-d061-49de-86bf-ab6e929f4983",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004",
+      "timestamp": "2025-09-02T17:37:56.630600Z",
+      "details": {
+        "request_id": "6e10344f-6734-4898-8045-65d581d68855",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "319eb31f-2e02-4cfe-a492-65b75df36cb4",
+      "ticket_id": "0ae4edcd-d9d9-491c-aa23-86b5c85ab3f7",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:00.284193Z",
+      "details": {
+        "request_id": "6bf7a893-d6a1-4763-9fb0-21a5d43c2372",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b9571505-340e-4ffe-8d1b-4a1d7ef4b9d1",
+      "ticket_id": "403bc12d-edda-454e-a24a-48d0c9d84839",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:03.938048Z",
+      "details": {
+        "request_id": "58325b37-76d6-47cf-a5fa-7b19b59c4f43",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6e05dc56-dba0-4311-bd69-c2ccdbc2629b",
+      "ticket_id": "fcbbb113-516c-4a2a-9a41-0c13f6080849",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:07.503200Z",
+      "details": {
+        "request_id": "263c1234-6b4d-49b5-8d8e-c6b34f7ebc42",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "06e93c2b-9eb0-466c-81a8-edb79e1f62cc",
+      "ticket_id": "d7fad736-493c-4032-92bb-3b62d183ddcd",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:07.708991Z",
+      "details": {
+        "request_id": "ec03b6b1-0da5-4b28-acfc-6eb6182dc772",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "0ac348bb-f760-476c-9b65-a256bb3220b1",
+      "ticket_id": "1b95cf5a-353d-49b9-8d42-f776cb42cd03",
+      "action": "ticket_created",
+      "user_id": "test-session-harris",
+      "timestamp": "2025-09-02T17:38:11.351798Z",
+      "details": {
+        "request_id": "ea3173db-019f-45ad-bddf-dfd0c3dcec20",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "02f4b9a7-e0c2-41eb-bb7a-1299b1acb2e4",
+      "ticket_id": "1ce1df4a-5199-4abb-ab8f-dd41e6972a13",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:38:14.960187Z",
+      "details": {
+        "request_id": "8507422a-4d45-43ef-826e-fafa86df4e0d",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d0c301cc-aa12-4415-b493-addddb81c244",
+      "ticket_id": "c1f3f40b-3b7a-42b4-b5e6-0ba917e06481",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:25.318866Z",
+      "details": {
+        "request_id": "1a0b6d76-2bae-4342-83e4-d0ee0b747a74",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7bcad0f5-bc43-4a69-8bde-c9232aefa3c0",
+      "ticket_id": "c1f3f40b-3b7a-42b4-b5e6-0ba917e06481",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:25.339809Z",
+      "details": {
+        "request_id": "9982f9d0-674d-4674-8411-539654a50218",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2e639efd-68b2-4077-b6c7-27c7111b796d",
+      "ticket_id": "cc8de19c-895f-4429-9341-fcbf83d95f95",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:38:25.435104Z",
+      "details": {
+        "request_id": "b451dbd9-ffd3-4dec-ad12-f9c34f7833c1",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5155fad2-f295-4b4d-bdae-578e05564c73",
+      "ticket_id": "cc8de19c-895f-4429-9341-fcbf83d95f95",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:38:25.455604Z",
+      "details": {
+        "request_id": "3e73d344-b726-438d-bb99-c29ce12b60bc",
+        "updated_fields": [
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "599230ab-2fc8-40af-abcf-fe4abc217141",
+      "ticket_id": "cc8de19c-895f-4429-9341-fcbf83d95f95",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:38:25.470012Z",
+      "details": {
+        "request_id": "f17e233a-cde5-45ed-aa66-a424ad104cea",
+        "updated_fields": [
+          "caller_email",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9411764705882353,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a1a359c2-e126-4b40-8817-85e3970dd810",
+      "ticket_id": "568cc64b-ec6a-48ef-86f4-cb8508fd15b1",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:38:25.726425Z",
+      "details": {
+        "request_id": "e63f8653-cdce-412e-bedc-869a1bec3eb7",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7a77cfd0-9cbc-41c5-8f71-c9a5a2ba8699",
+      "ticket_id": "568cc64b-ec6a-48ef-86f4-cb8508fd15b1",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:38:25.739715Z",
+      "details": {
+        "request_id": "4ddcf40d-462c-417e-a293-41071e84d78d",
+        "updated_fields": [
+          "cross_street",
+          "caller_name"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c7a416a4-5afc-4e96-83b5-6f731b5cec6d",
+      "ticket_id": "568cc64b-ec6a-48ef-86f4-cb8508fd15b1",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:38:25.752364Z",
+      "details": {
+        "request_id": "3045efec-6296-4ace-84eb-5cfa6e4cce94",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a016a69e-d09c-40d5-8b20-5b73b3df5ffa",
+      "ticket_id": "faf79592-446c-4d30-8193-cf4622b55308",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:29.315083Z",
+      "details": {
+        "request_id": "4a1992a9-8ae2-43c3-a322-e6b65410ef87",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "4784f2e2-c455-476a-a3d7-bdeecca0f697",
+      "ticket_id": "885ed383-7303-4a69-8a1d-b389249fed2e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:32.922965Z",
+      "details": {
+        "request_id": "1f2c0892-aa53-4e26-a07b-217f07e33ba5",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f0f35213-c822-4434-95e3-0f6f5cc2bcc4",
+      "ticket_id": "885ed383-7303-4a69-8a1d-b389249fed2e",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:32.948586Z",
+      "details": {
+        "request_id": "704cdd02-7256-4bdd-93b7-d7af4801d2c4",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "862b58d2-03e9-42cf-bd3e-7f256c8f8367",
+      "ticket_id": "d851f3de-024a-44dc-9f2a-3f9a034bb1e2",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:36.534396Z",
+      "details": {
+        "request_id": "c26151d4-3a4d-46b0-aca8-5b561d0d9037",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "caedc299-a969-4714-853d-7002cc29c507",
+      "ticket_id": "d851f3de-024a-44dc-9f2a-3f9a034bb1e2",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:36.552572Z",
+      "details": {
+        "request_id": "e9f51af7-9c3f-44bd-b968-04b47061bddf",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "15bfa714-a47f-4f11-a203-32536a34ec01",
+      "ticket_id": "bf559ad9-1580-49b6-a635-0b87f9c6bb96",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:40.114701Z",
+      "details": {
+        "request_id": "deff298f-1eb7-4c04-ac15-2a98842fa25b",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "50c43c58-2fc1-4bb7-b7ff-2fcdf061499d",
+      "ticket_id": "1419c620-ec13-4049-9f9e-cb3a9387751e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:43.720937Z",
+      "details": {
+        "request_id": "259149c5-0cee-4f49-8e5a-c7c6e92ecfde",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f49c8070-f29c-4927-9871-8f55a6e4894c",
+      "ticket_id": "7ee64cf6-a6bb-4d01-b331-4781269544fe",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-005-concurrent-1",
+      "timestamp": "2025-09-02T17:38:43.767635Z",
+      "details": {
+        "request_id": "d0322a06-346d-4b11-bc1e-1c4784a4092a",
+        "validation_score": 0.8431372549019608,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "413b47de-dfd1-4fd2-87d6-e4460130a661",
+      "ticket_id": "0d44333d-cb08-4624-ae26-c05fff966948",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004-concurrent-2",
+      "timestamp": "2025-09-02T17:38:44.005607Z",
+      "details": {
+        "request_id": "92d58a92-0409-4be3-a9c5-97050fd061e7",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a0f9d3a0-c87a-4fd8-af74-11d23f9fdbc4",
+      "ticket_id": "8fd85b65-4096-4643-906e-f712c9ce5dbe",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001-concurrent-0",
+      "timestamp": "2025-09-02T17:38:47.325897Z",
+      "details": {
+        "request_id": "7d02319a-2a33-4754-8ac8-f86fc242af13",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "dc861748-fd6b-43fe-9dc7-0ebc16b5148e",
+      "ticket_id": "0ec748ba-26e3-46b1-aae0-b755cf0d288a",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:38:51.018311Z",
+      "details": {
+        "request_id": "77f24f0e-522f-4aaf-8712-c3be94346ce6",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "74a11fbe-39aa-491b-8a5f-cab68d0ddd2c",
+      "ticket_id": "0ec748ba-26e3-46b1-aae0-b755cf0d288a",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:38:54.492935Z",
+      "details": {
+        "request_id": "2491dbc0-a955-46c8-9b7c-e55bae2cd6e3",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "df48249b-3c2f-4351-a6e0-1c0fc9891f18",
+      "ticket_id": "0ec748ba-26e3-46b1-aae0-b755cf0d288a",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:38:54.505512Z",
+      "details": {
+        "request_id": "93513a02-8891-4c86-911b-0308502b0c48",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b043b131-801c-4e81-9bf9-224a5535ed6d",
+      "ticket_id": "c83cffdd-db12-46ba-827b-28a80d494a29",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004",
+      "timestamp": "2025-09-02T17:38:54.626503Z",
+      "details": {
+        "request_id": "8e239d0f-f9bc-4ff4-b32b-12b519a825f3",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "45fa08b6-f8cb-449b-b148-bee4fd289598",
+      "ticket_id": "0c48b590-6ae2-4ed1-9423-e4cb4d53d8df",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:38:58.477133Z",
+      "details": {
+        "request_id": "78f98156-1e68-4270-b1d5-e0c724d894ea",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9552e00c-d80f-42b2-bbfd-d5604336268e",
+      "ticket_id": "a0aafeac-e056-452c-ad6b-95ab66d0ab2b",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:39:02.071502Z",
+      "details": {
+        "request_id": "1a55d9f9-b0e5-4e9c-98aa-8402b773a44c",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c0da3dde-b3fc-48bc-9930-31528c833a43",
+      "ticket_id": "1d364f33-3a3e-40c1-bb7d-56983b2c89ca",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:39:05.630877Z",
+      "details": {
+        "request_id": "5ce2f12a-46db-4936-9d40-ab370d787f4a",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "209a8407-fc15-4613-a86c-5fc11c51a26a",
+      "ticket_id": "536dd544-db51-47ab-b2d2-b899c5bfd522",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:39:05.780420Z",
+      "details": {
+        "request_id": "36d2584f-8cd5-4967-b817-d02ac25fc78b",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b775994e-70c9-4e17-988b-2c48aabbc8f8",
+      "ticket_id": "2aced8ca-6223-4039-ba83-4e89bc047c01",
+      "action": "ticket_created",
+      "user_id": "test-session-harris",
+      "timestamp": "2025-09-02T17:39:09.425318Z",
+      "details": {
+        "request_id": "34ceb261-ef81-4928-99c1-6f95a36962b9",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "61f4ebef-6f5d-40ff-ae84-505032ce04bc",
+      "ticket_id": "a8fb3a15-45da-43a6-8e5c-98cb9a1e10d2",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:39:13.099081Z",
+      "details": {
+        "request_id": "66b6304b-2fcb-436a-b320-6a7bcf19591d",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1114ce52-d183-4528-be25-30794362397b",
+      "ticket_id": "a8fb3a15-45da-43a6-8e5c-98cb9a1e10d2",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:39:16.566419Z",
+      "details": {
+        "request_id": "16c5c0c1-6e0e-4b2e-9fd8-a6eb41c513b8",
+        "updated_fields": [
+          "address",
+          "cross_street"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "255f496f-5c3d-45f8-a332-438b71dfb58e",
+      "ticket_id": "e6bac551-a556-4993-99ed-d3ffeab3b65e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:39:20.180579Z",
+      "details": {
+        "request_id": "eb2d6017-0361-42bd-8dec-e748f4dc4ee5",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c9a522c6-7ca6-481c-b5b0-68d839cccb56",
+      "ticket_id": "e2537a76-4324-495e-a60a-4fe4adb802f4",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:39.082951Z",
+      "details": {
+        "request_id": "65555bce-4aa4-47ca-a47c-d450d5b1f818",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c6349834-c7c7-4b51-80f3-8cec214ca6ca",
+      "ticket_id": "e2537a76-4324-495e-a60a-4fe4adb802f4",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:39.114817Z",
+      "details": {
+        "request_id": "c4f239a1-516e-4737-944b-45c86a14d446",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "df7fd0b3-5968-46b5-a6b4-fb17ac361b0f",
+      "ticket_id": "89e518e1-adcd-4f82-9134-6dde333c2f5a",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:41:39.249982Z",
+      "details": {
+        "request_id": "9bbafb73-4143-4428-8dc7-d68cfcbc78c4",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a1a451d1-0d9c-456e-93d2-9a9a28e4eafe",
+      "ticket_id": "89e518e1-adcd-4f82-9134-6dde333c2f5a",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:41:39.280900Z",
+      "details": {
+        "request_id": "bfba5b81-11d3-4a4a-a760-9b3aef95a128",
+        "updated_fields": [
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b357218f-90a9-4f4e-946f-1ee974230de4",
+      "ticket_id": "89e518e1-adcd-4f82-9134-6dde333c2f5a",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:41:39.303710Z",
+      "details": {
+        "request_id": "5d6469c2-2b79-458c-8a71-614cd2507046",
+        "updated_fields": [
+          "caller_email",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9411764705882353,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "260bbd7c-bd76-4c93-9497-e5d67256e0d0",
+      "ticket_id": "152e66c7-3eb9-438a-a238-1e333cacf02c",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:41:39.487837Z",
+      "details": {
+        "request_id": "13131a4a-e769-413f-a711-55e48600ab80",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "dc8d953a-9d48-4288-aa74-fee828629ea7",
+      "ticket_id": "152e66c7-3eb9-438a-a238-1e333cacf02c",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:41:39.512434Z",
+      "details": {
+        "request_id": "da15deb8-1843-4055-a3ff-24fbb053c0a8",
+        "updated_fields": [
+          "cross_street",
+          "caller_name"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "e62f84a4-ce09-4214-b478-5f2b9989cb08",
+      "ticket_id": "152e66c7-3eb9-438a-a238-1e333cacf02c",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:41:39.539342Z",
+      "details": {
+        "request_id": "fbf78bfa-2ce1-4a8e-88bd-7a7fcdf08432",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "3f62c4f9-336a-4cbf-af25-1ab2c12b234d",
+      "ticket_id": "7841bc5c-870c-40b1-ad06-7ba4a8a16d90",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:43.129054Z",
+      "details": {
+        "request_id": "3cdce530-dc03-4a82-9d3a-76d711354416",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "60e8b5a5-6d8f-4e34-a078-d89a23edc630",
+      "ticket_id": "6dc9a6cf-51b6-47a3-8ee6-8ddfac094c6e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:46.764035Z",
+      "details": {
+        "request_id": "e4dd130d-c3ef-4a99-a1f9-592b01cb7533",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5dae37cc-97df-4e9c-9102-783c24d36608",
+      "ticket_id": "6dc9a6cf-51b6-47a3-8ee6-8ddfac094c6e",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:46.787255Z",
+      "details": {
+        "request_id": "67026fc3-08b1-46c2-a9e0-85b28e0a1ddf",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a12401d7-2381-4a94-ba74-d5ca15425e91",
+      "ticket_id": "90bd862a-96d9-48b6-b28d-a30163adaa05",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:50.438214Z",
+      "details": {
+        "request_id": "02617a27-3016-45f7-aa02-b6d2788e23b3",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "07fcddb6-403c-40e5-af84-730868955a6d",
+      "ticket_id": "90bd862a-96d9-48b6-b28d-a30163adaa05",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:50.460607Z",
+      "details": {
+        "request_id": "d6da5a4f-4fab-441b-9ad3-a3cfdef06702",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "60b3ecc3-8663-411c-a33b-b759da03524b",
+      "ticket_id": "3d82440c-2a06-4e32-9465-d23195a92856",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:54.048745Z",
+      "details": {
+        "request_id": "17005c1a-bd69-4738-b76c-8eec10e44578",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "60164da2-96e0-4069-be2f-1175b490955b",
+      "ticket_id": "0126bbc0-aa67-40ed-bfb3-c25d9ce23931",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:41:57.640194Z",
+      "details": {
+        "request_id": "0af4abdf-9efc-4700-9dbd-bd7f2c7b85b0",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "651588ff-70a4-46dd-b2d7-ba2c0a0e57f7",
+      "ticket_id": "73b79c4e-b1d7-4325-97aa-507d2bb15bda",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-005-concurrent-1",
+      "timestamp": "2025-09-02T17:41:57.692317Z",
+      "details": {
+        "request_id": "3b55a795-60ed-4854-bfe3-90101ae87fa7",
+        "validation_score": 0.8431372549019608,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "85c77998-f2d9-4cea-831d-56d687fa5dbd",
+      "ticket_id": "10a12679-3cf6-4009-ad0c-f554883db008",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004-concurrent-2",
+      "timestamp": "2025-09-02T17:41:57.803376Z",
+      "details": {
+        "request_id": "8e16369d-7a00-44de-952c-b568ed8c8906",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c0a9d29e-8729-4e05-9c96-1b30d76ebfe6",
+      "ticket_id": "ee28b58a-7f9a-4c2f-a1bb-0dea107ddbd9",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001-concurrent-0",
+      "timestamp": "2025-09-02T17:42:01.310124Z",
+      "details": {
+        "request_id": "b047069c-a00a-42a0-b3a9-53fcde4811e4",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6718d7e5-da0f-4e9b-bf08-d29e7c4046cc",
+      "ticket_id": "ba5cb228-6012-4036-8a69-4a3fa52fb248",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:42:05.024168Z",
+      "details": {
+        "request_id": "b98a4a92-bb37-4e7f-a1e4-463e6f0d34b9",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f23e0025-d812-4cfa-9958-dca6003e5b73",
+      "ticket_id": "ba5cb228-6012-4036-8a69-4a3fa52fb248",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:42:08.586337Z",
+      "details": {
+        "request_id": "8255e534-38c3-4b23-b67f-882589af42c3",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "190bfec9-985c-458d-94c8-18a8f16c03e1",
+      "ticket_id": "ba5cb228-6012-4036-8a69-4a3fa52fb248",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:42:08.605910Z",
+      "details": {
+        "request_id": "6fe499a4-2373-409f-94c0-6f7c8f0f168e",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c0898c96-fba6-4ad1-9f8f-29f79c6c17dd",
+      "ticket_id": "cdad60fc-2f65-40d6-a65a-bd8f1e0fe4ad",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004",
+      "timestamp": "2025-09-02T17:42:08.761845Z",
+      "details": {
+        "request_id": "14f303c4-cd91-49b5-82f1-96e368ca8bcf",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c14f6c89-4a0b-4f34-a381-27ae7fdcd3aa",
+      "ticket_id": "07abaa4d-a6da-4a02-a13e-8b6a43fc8cfd",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:42:12.545857Z",
+      "details": {
+        "request_id": "3ecaf1f3-2153-492d-b52e-3fd9251992c3",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1ee6abf3-9ac7-4b25-9d6b-0d9517ab3efa",
+      "ticket_id": "f81b89ed-19a1-4edc-bb09-26e71293c1e3",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:42:16.182122Z",
+      "details": {
+        "request_id": "1aaf8215-b62a-4180-8fd6-28289363b40a",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d2ea0b0d-4ed0-4ffa-945d-a72c8ae1b2f7",
+      "ticket_id": "8e4d5245-c3a7-4bc2-9ff4-66b90f389622",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:42:19.803778Z",
+      "details": {
+        "request_id": "08014399-5671-42cf-b0ae-9b42ec8f8529",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ed26bfb4-1faa-4b39-8448-16ef11885410",
+      "ticket_id": "abb3a6d3-90d3-4239-9e1b-4e41ce3c54fa",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:42:20.017895Z",
+      "details": {
+        "request_id": "9fc7daae-7297-4237-a596-9ae92d5aaa45",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2beffcd9-c9ff-4a82-afde-a116424b2b9b",
+      "ticket_id": "7097b2a4-ca6a-4a9c-bd9b-6fcd86ae76a4",
+      "action": "ticket_created",
+      "user_id": "test-session-harris",
+      "timestamp": "2025-09-02T17:42:23.788416Z",
+      "details": {
+        "request_id": "657cab09-d386-486f-8fb5-e213ce45081c",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b8cf3f12-936c-45d8-b88c-f76ad54a04de",
+      "ticket_id": "0d308277-5d76-470b-bad3-a0373a7a9a85",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:42:27.503036Z",
+      "details": {
+        "request_id": "51513ca0-9dee-4cf2-969d-ca214ad0d7a7",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "aaf262e5-bef0-4d20-823a-cebabd2760ab",
+      "ticket_id": "0d308277-5d76-470b-bad3-a0373a7a9a85",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:42:31.027213Z",
+      "details": {
+        "request_id": "aab4a4f6-5029-4c20-bbf7-95709414e89c",
+        "updated_fields": [
+          "address",
+          "cross_street"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cd00d71e-86ea-48b6-924e-d01dc2d9ac27",
+      "ticket_id": "12428e7b-d2fe-4383-8d4b-e8f1fd8406cf",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:42:34.749597Z",
+      "details": {
+        "request_id": "75c7d0f7-9aef-453d-b296-863b72205992",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9f6ce110-4ed4-431f-9f46-07eba2bd01cd",
+      "ticket_id": "9031c290-817f-4095-8f45-9978ce85a678",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:45:33.429475Z",
+      "details": {
+        "request_id": "25de96c7-8a3a-467b-a552-292047c16af0",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a890ea22-d032-43d1-871e-c42ebb46ac76",
+      "ticket_id": "9031c290-817f-4095-8f45-9978ce85a678",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:45:33.453347Z",
+      "details": {
+        "request_id": "3e4c2a61-8597-468e-82cc-01b5c551c05a",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "13703f65-ac54-48eb-8f41-717e367e3401",
+      "ticket_id": "535325a1-8135-4d2c-beb8-58137a23f2f1",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:45:44.657750Z",
+      "details": {
+        "request_id": "7424a28e-8f92-4869-8268-7f472b6b29e7",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "87758114-e750-4c90-88af-8f3f24b347f5",
+      "ticket_id": "d1c7c657-a292-4235-895c-a5c19b3526f6",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:46:22.815170Z",
+      "details": {
+        "request_id": "cda705a6-89e5-422e-800c-6ca40efd3a44",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cda844ad-2aef-4657-b99e-8c01d46c962e",
+      "ticket_id": "d97a64b0-7b2d-47e1-82f8-b7c02b7b5144",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:47:33.248106Z",
+      "details": {
+        "request_id": "f20ad2b8-1932-4b77-90ae-e3131f581280",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "4201276b-7c94-492c-8951-71f72ad9ef9d",
+      "ticket_id": "d97a64b0-7b2d-47e1-82f8-b7c02b7b5144",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:47:33.267129Z",
+      "details": {
+        "request_id": "70cc7e4d-80aa-46d6-bfc2-43f9e1b98e60",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "51216aa8-c636-46ae-aeea-8c5af7a3a96e",
+      "ticket_id": "bce99b0a-9863-4693-87db-74544a295b79",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:48:35.656330Z",
+      "details": {
+        "request_id": "5b8df2c4-e033-418a-844d-a52d694a300e",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "0e3fb07b-fc67-4d4e-ba15-bcbd4891073f",
+      "ticket_id": "bce99b0a-9863-4693-87db-74544a295b79",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:48:35.672222Z",
+      "details": {
+        "request_id": "1fc253e6-7b34-4d51-8aa1-b02466a06cd5",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a59666a0-9c9f-48e9-b7a1-97eaffa17f36",
+      "ticket_id": "10abf630-9858-4482-aa20-8c21ca174b23",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:49:12.956685Z",
+      "details": {
+        "request_id": "3eeaa14c-34a9-4f9a-8b91-2f1f73348fc7",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7800e8f3-bdf0-4e52-8d91-6a5dffe4362f",
+      "ticket_id": "10abf630-9858-4482-aa20-8c21ca174b23",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:49:12.971880Z",
+      "details": {
+        "request_id": "ab9330f1-7f4e-4d20-8f6c-4380269c55c7",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "34ddf393-262c-4d4b-b0a3-d75d99b30b1d",
+      "ticket_id": "c37f072e-a4e5-46a1-9474-1613db92121d",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:49:31.382962Z",
+      "details": {
+        "request_id": "cd7dba1e-b9a6-496c-ac3b-56bbd873ccf8",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1d0437a0-d7cf-41df-bc8a-5c6a7dd4147c",
+      "ticket_id": "c37f072e-a4e5-46a1-9474-1613db92121d",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:49:31.398667Z",
+      "details": {
+        "request_id": "1a01c700-c694-4a4d-b164-acf9723e0cb2",
+        "final_validation_score": 0.9607843137254902,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cc412ed1-3334-44ed-ab4e-b319f7ab8871",
+      "ticket_id": "2098ef19-77c9-4be4-a0b6-02a2e2bde332",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:49:53.153519Z",
+      "details": {
+        "request_id": "edf7b71c-9c2c-40f9-8b07-a20c2697c962",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "31010e68-9ca1-4f5e-8a88-bc590bf8d5b2",
+      "ticket_id": "2098ef19-77c9-4be4-a0b6-02a2e2bde332",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:49:53.173783Z",
+      "details": {
+        "request_id": "16e29836-0d46-4fd4-b7ae-3995f1b51525",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d800b679-6eef-4a60-8caa-f762f92fbc85",
+      "ticket_id": "e53881c0-69c1-4ad3-bd1c-db4588711994",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:50:10.740405Z",
+      "details": {
+        "request_id": "a3c75a29-6685-45b2-8a1c-0d4b35a36a9b",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "395fbac3-93b4-4d33-8c27-fff53fb846b0",
+      "ticket_id": "e53881c0-69c1-4ad3-bd1c-db4588711994",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:50:10.785022Z",
+      "details": {
+        "request_id": "c91220f7-9062-4ec1-a9d9-245a3595e644",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "acc710ea-f067-462f-83a8-f4c3ac4833bc",
+      "ticket_id": "e53881c0-69c1-4ad3-bd1c-db4588711994",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:50:10.801853Z",
+      "details": {
+        "request_id": "47e71039-307e-4227-911c-923336f44fa2",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2751c5e9-a23b-443f-8ba1-e9fbe656b1ba",
+      "ticket_id": "e53881c0-69c1-4ad3-bd1c-db4588711994",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:50:10.816873Z",
+      "details": {
+        "request_id": "c9dbee4a-480b-426f-a600-ad54af645380",
+        "final_validation_score": 0.9215686274509803,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b33da181-f002-4a1a-893b-2df14b1d29ae",
+      "ticket_id": "4711df19-e240-4d24-87aa-217b2784f745",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:51:44.807693Z",
+      "details": {
+        "request_id": "7ddacdc4-a09c-4eb7-8b0a-4a340b3d9fa3",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "13f3a440-d7ba-4fd6-b713-f7d62f5807d6",
+      "ticket_id": "4711df19-e240-4d24-87aa-217b2784f745",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:51:44.830290Z",
+      "details": {
+        "request_id": "1a812c8e-4a04-48b7-bf80-2ebcb1ff2c5e",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ecfe0e60-0240-47ec-b0dc-230337a2aa39",
+      "ticket_id": "484014f5-e09b-46f7-aa84-2968e212bef9",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:51:50.895402Z",
+      "details": {
+        "request_id": "216c383f-86c4-4466-9a35-ac719bc47bcc",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c995514d-a388-4792-a711-07cb29fa6f81",
+      "ticket_id": "484014f5-e09b-46f7-aa84-2968e212bef9",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:51:50.948759Z",
+      "details": {
+        "request_id": "e010ced8-8e0b-4397-94ac-3cdb6192b8b2",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c371b7c3-b8ed-47a8-989e-fd4dc9074ebf",
+      "ticket_id": "484014f5-e09b-46f7-aa84-2968e212bef9",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:51:50.967077Z",
+      "details": {
+        "request_id": "e72c7c83-95a9-46b2-972e-659786688ea7",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "33c2f89b-f2ff-46be-85be-a44aba7ae5bd",
+      "ticket_id": "484014f5-e09b-46f7-aa84-2968e212bef9",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:51:50.984523Z",
+      "details": {
+        "request_id": "284cd472-97a4-4cce-9700-8917847b2c7c",
+        "final_validation_score": 0.9215686274509803,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "25e7997f-1004-4d2a-9eee-c915dc3ec014",
+      "ticket_id": "34d6f9bd-43b2-4617-a863-22591e380de4",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:09.293544Z",
+      "details": {
+        "request_id": "33d80473-b2c9-4bb1-a4b0-51c371e88ae0",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "24dfe710-ba5d-411a-8cb1-3dd6454b8953",
+      "ticket_id": "fb94988f-8987-4efa-a1d0-212eb644443c",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:09.443925Z",
+      "details": {
+        "request_id": "d2d275e0-eabd-4a17-8a81-3005e3607083",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f4b49cce-8466-40f1-8e69-43205d8cc8e1",
+      "ticket_id": "1730be0b-d4ae-48a3-9cd9-7dbe18f48d84",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:09.496536Z",
+      "details": {
+        "request_id": "96b570eb-f03d-4a3f-b835-c4f77a227049",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "de2f3571-4b02-436b-b8b3-3ede0fcc726e",
+      "ticket_id": "d49d0517-2e76-4a4d-a0ef-1efd10da22c2",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:09.568416Z",
+      "details": {
+        "request_id": "c436ded5-1922-4c9d-835e-6f29af051988",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c3a5794d-746a-4196-b90e-2abc74870c22",
+      "ticket_id": "02cc12a5-3c19-44ba-b8b1-76aba5f62a5b",
+      "action": "ticket_created",
+      "user_id": "test-session-harris",
+      "timestamp": "2025-09-02T17:52:09.669448Z",
+      "details": {
+        "request_id": "2165a7bf-6b4b-4cf4-b775-906a0af7ee90",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "bc77d707-894d-4ac2-a769-f16adf1daea6",
+      "ticket_id": "8643dd42-8bf5-4c53-a4be-45a929817c0d",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:09.760523Z",
+      "details": {
+        "request_id": "f5e50553-93ef-4562-a284-556e304022cd",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "af102c99-e2ce-460a-a4c1-f5cfdaa70943",
+      "ticket_id": "8643dd42-8bf5-4c53-a4be-45a929817c0d",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:09.814154Z",
+      "details": {
+        "request_id": "17cd4440-6e5a-4830-809b-d08ceea741b6",
+        "updated_fields": [
+          "address",
+          "cross_street"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "67b594b3-1450-49b7-ac46-6ef5cf15d814",
+      "ticket_id": "0d21b29c-2ef6-400d-b9f2-5751a34a80f1",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:09.912250Z",
+      "details": {
+        "request_id": "ecc358e2-9ff5-4bd5-b745-987be20c0f4d",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "bb2e3beb-4227-49c7-9817-b61a18fea453",
+      "ticket_id": "4665f1bd-d698-4fff-9bb9-7f66f53dbe1e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:46.889152Z",
+      "details": {
+        "request_id": "eea5e6d6-c825-4a65-bb07-abb086150a4c",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "45615877-e8a9-4580-827a-c7108c9a5c24",
+      "ticket_id": "4665f1bd-d698-4fff-9bb9-7f66f53dbe1e",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:46.907793Z",
+      "details": {
+        "request_id": "f82b76c2-525e-42bb-b74c-fb31a54c9f55",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7cd5510f-6667-4770-b514-b7868163f214",
+      "ticket_id": "974cfec6-54b5-4a6e-bbab-6ce9424e1ab8",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:46.927404Z",
+      "details": {
+        "request_id": "4e37f8e5-1cb5-4b5b-b3ee-fdba7a7e5dfe",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "4818a991-c56b-4fbe-baf8-8a44a6740a2b",
+      "ticket_id": "974cfec6-54b5-4a6e-bbab-6ce9424e1ab8",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:46.944408Z",
+      "details": {
+        "request_id": "ed4a56bc-7b4b-491d-94d0-d5f68beb5b9d",
+        "updated_fields": [
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cb842672-28d6-4bd9-a2c4-5535121f43ef",
+      "ticket_id": "974cfec6-54b5-4a6e-bbab-6ce9424e1ab8",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:46.959417Z",
+      "details": {
+        "request_id": "24f7ecd2-4611-423a-9da6-f433e9843e2b",
+        "updated_fields": [
+          "caller_email",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9411764705882353,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7ca0da42-e151-4fc1-a939-70eb8b406a75",
+      "ticket_id": "974cfec6-54b5-4a6e-bbab-6ce9424e1ab8",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:46.972960Z",
+      "details": {
+        "request_id": "2d830cbf-316a-4463-aef8-6efa9fcb0a67",
+        "final_validation_score": 0.9411764705882353,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "4f7f8310-371a-4852-bad4-c86b909ef0e0",
+      "ticket_id": "b23028a1-8ad1-4ec8-b28e-baa149efdfe4",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:52:46.992489Z",
+      "details": {
+        "request_id": "6c5f2b02-ad1e-4b7c-9901-2455ee126c25",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a85d3e0b-0964-4c40-a21a-f80a5514662c",
+      "ticket_id": "b23028a1-8ad1-4ec8-b28e-baa149efdfe4",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:52:47.010671Z",
+      "details": {
+        "request_id": "9576f8f7-df99-4dd5-9869-63a7ddcca02d",
+        "updated_fields": [
+          "cross_street",
+          "caller_name"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "cfc3cc09-f47b-415f-b7c8-70053d423d87",
+      "ticket_id": "b23028a1-8ad1-4ec8-b28e-baa149efdfe4",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:52:47.023522Z",
+      "details": {
+        "request_id": "fa5969da-af99-4dcd-8087-bc7a718deb96",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ccfb4a43-0e16-4019-a96f-78ab34d0b124",
+      "ticket_id": "a3fbd1ab-55e5-4905-a12e-ed61ec75b592",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.065046Z",
+      "details": {
+        "request_id": "a0cb1024-42eb-4ad7-b20c-615f3edda974",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7fdb6a6c-ca7c-4b6b-b152-d45c5af430be",
+      "ticket_id": "7d593472-cb45-4bf6-9ed6-efa09fcf90b9",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.133766Z",
+      "details": {
+        "request_id": "a7962992-32cb-4603-831c-8a2380511a58",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b8960e57-4b6b-4645-9ee9-7d4f01865b65",
+      "ticket_id": "7d593472-cb45-4bf6-9ed6-efa09fcf90b9",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.150306Z",
+      "details": {
+        "request_id": "87fe1f60-f8a6-43e0-b37c-e66e1f3ae848",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6cbe9198-e779-47c9-bea9-547e9d9bc618",
+      "ticket_id": "f0be8aba-77f2-4e34-9ba7-a6e30995edd2",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.203046Z",
+      "details": {
+        "request_id": "f02cca96-cbb9-460a-b37b-8bd951dc5a9b",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d7267cd7-898c-45b3-95e5-f595e1d55930",
+      "ticket_id": "f0be8aba-77f2-4e34-9ba7-a6e30995edd2",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.218428Z",
+      "details": {
+        "request_id": "ffc6fa49-73e0-448e-a25b-186099d677a9",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "951199fb-3720-4305-9c3a-f089d540702b",
+      "ticket_id": "2ed10053-e667-4f5f-8696-251a50039c79",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.266966Z",
+      "details": {
+        "request_id": "036077e3-e31f-4792-900a-207195aa3d4c",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "625348fd-6faf-4374-894e-52a7589541a1",
+      "ticket_id": "a9bcdc02-5c45-4a98-b2c5-4cc822947222",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.308817Z",
+      "details": {
+        "request_id": "0c0e188a-941c-4f22-9bfa-8e479805a33f",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5b95e1a2-ee84-4e64-9fe8-1f6a8e72e1e2",
+      "ticket_id": "a9bcdc02-5c45-4a98-b2c5-4cc822947222",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.326941Z",
+      "details": {
+        "request_id": "8631b476-11ea-40ec-96a3-07258342b92b",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "798a456d-5b69-476e-ac8b-ab44496312f8",
+      "ticket_id": "a9bcdc02-5c45-4a98-b2c5-4cc822947222",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.341771Z",
+      "details": {
+        "request_id": "1d520405-93fa-4f90-bfa3-8dd820baffd4",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8779086b-9c5e-413c-bce3-8320cdafaea9",
+      "ticket_id": "c7d78cc7-8ef7-41ed-8a6b-2904c3c130ed",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004-concurrent-2",
+      "timestamp": "2025-09-02T17:52:47.372953Z",
+      "details": {
+        "request_id": "8013fbcb-ecfc-490b-ab48-8690a1bdeaed",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "52484888-d190-4f78-bdc5-9c99494b4f8c",
+      "ticket_id": "3150b4bc-e3b0-45c4-aa21-173ffb291ee9",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001-concurrent-0",
+      "timestamp": "2025-09-02T17:52:47.395500Z",
+      "details": {
+        "request_id": "ce55e9fb-ef62-44f5-8914-530f1f548a32",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "51cfb678-68bb-43d5-95ab-0961dd71248f",
+      "ticket_id": "6cac7daf-71c1-4446-9397-d23b2a153a2e",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:52:47.447420Z",
+      "details": {
+        "request_id": "6350ad00-44b2-48cd-ad51-0203cc2a9d0e",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "88b6dc22-b645-4f60-a653-8c564b4d05de",
+      "ticket_id": "6cac7daf-71c1-4446-9397-d23b2a153a2e",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:52:47.493628Z",
+      "details": {
+        "request_id": "d1c07d50-55af-40d9-9591-ea08b095862d",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "51e4fc1b-4e85-4ab1-bc0a-09d27968fd3a",
+      "ticket_id": "6cac7daf-71c1-4446-9397-d23b2a153a2e",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:52:47.512358Z",
+      "details": {
+        "request_id": "6995c848-0c5e-4641-9fc6-351fd16dd6a3",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "0279053b-7e52-460e-bb7b-b398a78b55d7",
+      "ticket_id": "6cac7daf-71c1-4446-9397-d23b2a153a2e",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:52:47.525303Z",
+      "details": {
+        "request_id": "9c334432-737d-4dfa-8e2f-b3605fe8854f",
+        "final_validation_score": 0.9215686274509803,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "e38a79d2-70e1-4745-b036-c3a2c980f227",
+      "ticket_id": "d342aeab-cfa4-4ed6-a8ae-1cbbf97bddbc",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004",
+      "timestamp": "2025-09-02T17:52:47.543482Z",
+      "details": {
+        "request_id": "d0dff8d0-cb3d-4aff-b339-f15ad6dc6d5d",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "87a5151c-7296-41d5-89b9-02162768c291",
+      "ticket_id": "d74e1d15-0bcd-4763-af82-4e143416f438",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-006",
+      "timestamp": "2025-09-02T17:52:47.567867Z",
+      "details": {
+        "request_id": "7a8be84c-978b-4b77-8348-417f23a9f2a7",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "4c544efb-e178-458f-b38b-1ee5f7abfb8c",
+      "ticket_id": "fa48d88c-27f8-4b80-8d03-abc2fd914c89",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.610147Z",
+      "details": {
+        "request_id": "067b955f-bb74-4575-aad2-0b96057dd381",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "7f4beaf9-2192-4004-a056-30ae267833be",
+      "ticket_id": "aa718db4-e38b-4264-81aa-92fefd722f0a",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.651240Z",
+      "details": {
+        "request_id": "135d6e20-57e8-4247-8fca-5dbc35f0be03",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1aa9e547-d647-4cfc-8ac6-d94def22d651",
+      "ticket_id": "09d99dbc-808c-4d33-b653-4ca85e630b35",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.696677Z",
+      "details": {
+        "request_id": "7d178351-c91e-42a0-894a-6e3500d3b5de",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "41c5f378-5de1-46f2-869b-e130073e667f",
+      "ticket_id": "ec02cb95-085f-404f-af91-cf0d7c628531",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.716341Z",
+      "details": {
+        "request_id": "0bd5306b-baf5-4346-af88-86152891c0e2",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "637bcbf5-056a-4405-9404-d83077930115",
+      "ticket_id": "63fcb95f-daec-4b39-8053-a6f7d28f5ac8",
+      "action": "ticket_created",
+      "user_id": "test-session-harris",
+      "timestamp": "2025-09-02T17:52:47.764525Z",
+      "details": {
+        "request_id": "77d9e5a7-8694-4e47-8fa8-8c73cf364740",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d0ff650d-302c-4bf6-8b5f-89408fb2b92a",
+      "ticket_id": "f53f31ff-c211-4e26-a4e8-f3058dc81c23",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:47.807293Z",
+      "details": {
+        "request_id": "0f8202d7-fa24-44d7-b321-375ea94705dc",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "6b562c75-c041-4f88-88ec-1d2266832ed1",
+      "ticket_id": "f53f31ff-c211-4e26-a4e8-f3058dc81c23",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:52:47.844925Z",
+      "details": {
+        "request_id": "2c0abfd7-12bc-41a9-a172-28f212f67674",
+        "updated_fields": [
+          "address",
+          "cross_street"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "777186c0-32f0-4387-b902-96d5b11172e5",
+      "ticket_id": "3bcf448f-2a58-4658-bab7-500a149dc576",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:52:47.888949Z",
+      "details": {
+        "request_id": "549f2655-5733-4da9-a9f8-cb36e77727a6",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1dd354a6-04b7-41dd-8fda-02bf0bb57d26",
+      "ticket_id": "2812dd84-7ca7-4798-b1da-51d28bdce2c9",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:40.989956Z",
+      "details": {
+        "request_id": "19a46e7c-2fdb-444e-ad64-f15ca9f1047d",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "08041bcd-eec8-468b-8181-b37c647e0578",
+      "ticket_id": "2812dd84-7ca7-4798-b1da-51d28bdce2c9",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.005911Z",
+      "details": {
+        "request_id": "74be8260-ddc7-4bb8-8b85-882eaaf40c2d",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "08f14306-be1d-493e-8baf-aff8b8907464",
+      "ticket_id": "4fbe5b63-143d-46c2-8146-e69c57a2cbad",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:53:41.024708Z",
+      "details": {
+        "request_id": "6af8f0ec-1499-4f85-ba79-a7f31c81e7f2",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "edc9af00-6db6-4458-a066-0a0d291b8d1c",
+      "ticket_id": "4fbe5b63-143d-46c2-8146-e69c57a2cbad",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:53:41.044127Z",
+      "details": {
+        "request_id": "9a3cd8ca-b4ff-4c6f-af83-f99263635a6f",
+        "updated_fields": [
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ae7bf828-11e0-44f1-8f2c-6a24fd0085d9",
+      "ticket_id": "4fbe5b63-143d-46c2-8146-e69c57a2cbad",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:53:41.059395Z",
+      "details": {
+        "request_id": "3fd72a0d-ceb3-4a6c-8d62-86ddb1e2e273",
+        "updated_fields": [
+          "caller_email",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9411764705882353,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "15f37b41-5ea5-4152-b66a-da634333bc70",
+      "ticket_id": "4fbe5b63-143d-46c2-8146-e69c57a2cbad",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:53:41.073169Z",
+      "details": {
+        "request_id": "37a7dc2f-a3c4-4a7a-9e78-5eb387611716",
+        "final_validation_score": 0.9411764705882353,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5f93591d-45f4-41ef-8236-15f19b94bd34",
+      "ticket_id": "401ea914-a376-40e1-92c9-61ef776631d2",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:53:41.127036Z",
+      "details": {
+        "request_id": "1bd1d370-08c6-4704-b4a7-29d3b8f5755a",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b3e86e3c-939d-4450-b20d-0e83980d0d9f",
+      "ticket_id": "401ea914-a376-40e1-92c9-61ef776631d2",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:53:41.144749Z",
+      "details": {
+        "request_id": "5a6d53af-f62a-43cc-9258-148b9b1442e9",
+        "updated_fields": [
+          "cross_street",
+          "caller_name"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d46dde98-9f75-4241-8fe2-7395cc721161",
+      "ticket_id": "401ea914-a376-40e1-92c9-61ef776631d2",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-007",
+      "timestamp": "2025-09-02T17:53:41.161414Z",
+      "details": {
+        "request_id": "7838e601-cf2a-40ae-9381-c826ad3f6a9c",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "2a5a1b1c-7cff-45dd-894c-57ac122b826b",
+      "ticket_id": "d4cc23a8-0b00-4053-aa6b-04db77d383b5",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.232233Z",
+      "details": {
+        "request_id": "c6357e0a-1c12-4262-9edd-cfcf521d4996",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1c3c0824-46d0-4dd8-bbc0-03e0c0347c34",
+      "ticket_id": "4cacf420-0cec-4328-885b-3c717594a1e4",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.326397Z",
+      "details": {
+        "request_id": "05acb06d-f7f7-4e39-b732-b22c0ffc144a",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "82c8e7d9-1676-4bc4-8eff-affcac193cb8",
+      "ticket_id": "4cacf420-0cec-4328-885b-3c717594a1e4",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.343146Z",
+      "details": {
+        "request_id": "1cd5a380-10db-4d73-b2ef-196192591523",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c91dd78a-7e40-4432-86ff-27b8541f06fe",
+      "ticket_id": "894051c2-cc7c-4d1b-a11d-9e4e96282b6d",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.421961Z",
+      "details": {
+        "request_id": "8e261329-1067-469a-8cec-5335c9db6d18",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "3a93962c-facb-46c6-9ceb-f0fd209c2e17",
+      "ticket_id": "894051c2-cc7c-4d1b-a11d-9e4e96282b6d",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.437425Z",
+      "details": {
+        "request_id": "78ec5ca2-95ac-4195-ab17-72e80da96892",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "734564c3-dc48-4a86-94a2-c03e203a8f2a",
+      "ticket_id": "a05ced37-31dd-4cae-ba1c-968acbcb8e7e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.492403Z",
+      "details": {
+        "request_id": "6877c7b2-120b-4c02-ba19-ed28abb18c1b",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c8c6f933-6288-4af9-a1c2-06978bffad37",
+      "ticket_id": "ba4e02c6-3c37-4aae-8609-c76a652b3dd8",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.550342Z",
+      "details": {
+        "request_id": "740d2c2c-a46b-413c-a253-888985f3d888",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ced6fdfc-3960-4224-b232-b9d73e7e9387",
+      "ticket_id": "ba4e02c6-3c37-4aae-8609-c76a652b3dd8",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.566549Z",
+      "details": {
+        "request_id": "f76eff55-5847-4b4a-99de-e806ce07bf9b",
+        "updated_fields": [
+          "remarks"
+        ],
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f96f8360-19b0-4471-b49b-b0fa3d15662b",
+      "ticket_id": "ba4e02c6-3c37-4aae-8609-c76a652b3dd8",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.581834Z",
+      "details": {
+        "request_id": "72009d4d-eb19-4ec3-a746-075e2430255a",
+        "final_validation_score": 1.0,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f419819b-27c5-4919-a80f-7f22558b0502",
+      "ticket_id": "5ecb1804-b299-4018-bf57-1ccde2e9432b",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004-concurrent-2",
+      "timestamp": "2025-09-02T17:53:41.614644Z",
+      "details": {
+        "request_id": "510db85c-1d9a-45c5-af07-5fb45dec0192",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "61b13341-360e-4fb7-a10b-7a098f92f456",
+      "ticket_id": "d3f65857-ae3d-45dc-87b3-c5f80855b7d1",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001-concurrent-0",
+      "timestamp": "2025-09-02T17:53:41.642159Z",
+      "details": {
+        "request_id": "711520a5-8a8f-4f95-a158-6878527cc2ca",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "40d85472-7f62-4ce8-95df-e236d657b775",
+      "ticket_id": "3bbc6d6f-bc07-49b1-a652-185535cd4ba6",
+      "action": "ticket_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:53:41.730197Z",
+      "details": {
+        "request_id": "7d793fc3-f643-4e39-8499-1e9e4adc75d3",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "3a9ac8cd-01e8-41fc-9325-7fac372b061b",
+      "ticket_id": "3bbc6d6f-bc07-49b1-a652-185535cd4ba6",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:53:41.775706Z",
+      "details": {
+        "request_id": "8e1af95d-e725-480f-baa0-22a2696d11b3",
+        "updated_fields": [
+          "address",
+          "cross_street",
+          "caller_company"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5a7ec93c-2b19-4168-9d74-3e0883201c97",
+      "ticket_id": "3bbc6d6f-bc07-49b1-a652-185535cd4ba6",
+      "action": "ticket_updated",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:53:41.793737Z",
+      "details": {
+        "request_id": "23c5726e-dc1f-42ed-887d-02f8406808ec",
+        "updated_fields": [
+          "work_description",
+          "excavator_company",
+          "work_start_date"
+        ],
+        "validation_score": 0.9215686274509803,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8c524f39-52a4-48e7-93ff-90be335f2615",
+      "ticket_id": "3bbc6d6f-bc07-49b1-a652-185535cd4ba6",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-pdf-extraction-001",
+      "timestamp": "2025-09-02T17:53:41.812543Z",
+      "details": {
+        "request_id": "65cd3679-a5f3-4b86-9acd-f370590124c6",
+        "final_validation_score": 0.9215686274509803,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f179910d-fce3-47b5-9040-67d28aabbf7c",
+      "ticket_id": "853a8840-f9d9-4708-87d8-78a1da077c15",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-004",
+      "timestamp": "2025-09-02T17:53:41.883426Z",
+      "details": {
+        "request_id": "78349202-5086-487d-84f3-77a997a040ec",
+        "validation_score": 0.9607843137254902,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "d252af79-a093-4ab3-8a65-ba001e533881",
+      "ticket_id": "58edc4a5-4c4e-4397-af5a-cea85c146d71",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-006",
+      "timestamp": "2025-09-02T17:53:41.925439Z",
+      "details": {
+        "request_id": "2a9c42e4-1e31-42b8-a8ad-d044ddc8122b",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a15e2698-4338-4711-8617-f670f25b357e",
+      "ticket_id": "f4b50efe-602a-41fc-bca9-37b7339d807d",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:41.986311Z",
+      "details": {
+        "request_id": "6e08b67a-6751-47c6-8452-1a3407eb0923",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "da6db44e-0555-4d85-8e04-08bff2d9f431",
+      "ticket_id": "27e1c3ba-8768-42c5-98ed-67f3d2e6204f",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:42.062648Z",
+      "details": {
+        "request_id": "3c9ba081-97af-4715-b2b7-1d88447a991d",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "efc81fa4-524a-422d-ab7e-bb42ac9b1353",
+      "ticket_id": "ddbdf2ca-be48-4993-b7c5-e559ad67aae1",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:42.109130Z",
+      "details": {
+        "request_id": "68f393a1-741c-4a58-bb29-081ef9e326b8",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5306640d-d2c4-4a43-982a-f9c52eaa08cf",
+      "ticket_id": "0416e035-2709-431f-9880-3d22593ea72e",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:42.190152Z",
+      "details": {
+        "request_id": "fcfc45d2-56f0-4b62-8e4a-17292b63eca5",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c0ef0e17-66b9-413d-8606-c01546d526b7",
+      "ticket_id": "0d558b82-d82a-4e96-b683-0307ceed1d33",
+      "action": "ticket_created",
+      "user_id": "test-session-harris",
+      "timestamp": "2025-09-02T17:53:42.312469Z",
+      "details": {
+        "request_id": "4685b81a-c9be-4f5c-8aa3-8c533642ebe9",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "e31f2eb9-62b9-48c7-87ff-c9d5f7f9693c",
+      "ticket_id": "d816aced-119c-4848-a0bd-6a8e2614e7e8",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:53:42.408855Z",
+      "details": {
+        "request_id": "b62bac07-e9a8-4b1c-bf93-53a817e620eb",
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "3d22dc94-02c2-473f-ba8b-f58c4651fe35",
+      "ticket_id": "d816aced-119c-4848-a0bd-6a8e2614e7e8",
+      "action": "ticket_updated",
+      "user_id": "customgpt-integration-test-002",
+      "timestamp": "2025-09-02T17:53:42.461917Z",
+      "details": {
+        "request_id": "7e8f7b22-bd1f-46b9-b963-e8ec464147a1",
+        "updated_fields": [
+          "address",
+          "cross_street"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "298701ad-3d82-4ac7-8b12-a7cfd1f08ee5",
+      "ticket_id": "b77fc61b-4c55-47a9-946f-8b12498ce460",
+      "action": "ticket_created",
+      "user_id": "customgpt-integration-test-001",
+      "timestamp": "2025-09-02T17:53:42.566338Z",
+      "details": {
+        "request_id": "0e9b33b6-2d7d-4339-80b3-00b7f5301273",
+        "validation_score": 1.0,
+        "gaps_count": 0
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9a66e684-097f-4c5c-9c0b-a090bffab5cc",
+      "ticket_id": "69240434-6793-400d-87e8-9728e221867a",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.282247Z",
+      "details": {
+        "request_id": "69e5d538-88b6-4e9e-8803-f5fa937dcd2e",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5eab278b-230a-4314-a143-7441130017bf",
+      "ticket_id": "ab4c0b0a-736a-48c7-8691-4373f15b6dd8",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:54:12.337293Z",
+      "details": {
+        "request_id": "6e1b3490-3c92-4408-bad5-52d8e693ad20",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "81937b31-8c5a-458a-b4de-7dc0ef368d8f",
+      "ticket_id": "c4c6e369-5724-409c-b23b-7a80025f01b3",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:54:12.361592Z",
+      "details": {
+        "request_id": "3d4ab9dd-5218-4ef3-88a7-234f75e3bf2e",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "954e7349-0531-44bf-ba80-4ae4d574577c",
+      "ticket_id": "4df60b6a-0710-4360-8af5-6b206b57d09c",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.419921Z",
+      "details": {
+        "request_id": "3b5942f0-d746-42e3-b7bd-3c086da1a894",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "23399e23-f64f-4e2e-a95f-25dbcf2185b6",
+      "ticket_id": "85771e77-62c7-4aa4-9495-21d1a743f794",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:54:12.562356Z",
+      "details": {
+        "request_id": "7c0cbf2e-9c6b-487d-be44-741c4c85df9e",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "28a3ad5d-9ea2-4c45-adaa-cd752b64ab5e",
+      "ticket_id": "8739ece3-bb5d-4102-961e-f28d82e96ebc",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.616088Z",
+      "details": {
+        "request_id": "5fbbfe6b-13e3-4cbc-b226-72748e2935da",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "5ec7f455-ca1b-4216-a096-13b23b0374e4",
+      "ticket_id": "8739ece3-bb5d-4102-961e-f28d82e96ebc",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.638468Z",
+      "details": {
+        "request_id": "2a648fb6-d3a1-401d-9401-c6cfcb84f434",
+        "updated_fields": [
+          "cross_street",
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "46d29ecd-a30a-413c-9acc-115534bdad69",
+      "ticket_id": "16985c9f-c44e-4b33-a01c-8ff610d57d88",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:54:12.684684Z",
+      "details": {
+        "request_id": "079a6397-0ddd-4881-ba44-13a8826aecfb",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c2ac6d5b-c472-4422-9034-c3b43c2a2e47",
+      "ticket_id": "16985c9f-c44e-4b33-a01c-8ff610d57d88",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:54:12.729094Z",
+      "details": {
+        "request_id": "2c355486-5fd8-4642-9196-9fe4d913bd73",
+        "updated_fields": [
+          "city",
+          "address",
+          "work_description"
+        ],
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "1a06b184-0ee5-46c4-afa2-ac1d1640e341",
+      "ticket_id": "860b974d-2494-4687-bb65-eab4115f8e1c",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.795805Z",
+      "details": {
+        "request_id": "31a1bdc8-05ce-4143-b681-b17307594bb9",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "bfd9a999-8f41-40e7-b742-67ecdaf1d85e",
+      "ticket_id": "2e3d690b-0c8b-42cb-b2c2-e638dd97c35b",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.849430Z",
+      "details": {
+        "request_id": "97ff3d32-1466-42a0-a9af-444a2b4c7a62",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "36398c84-c33a-4876-b055-6ba7037df667",
+      "ticket_id": "2e3d690b-0c8b-42cb-b2c2-e638dd97c35b",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.867931Z",
+      "details": {
+        "request_id": "b259a68a-4803-4518-a63f-7f3a0302eb5d",
+        "updated_fields": [
+          "cross_street",
+          "caller_name",
+          "caller_company",
+          "caller_phone"
+        ],
+        "validation_score": 0.8235294117647058,
+        "gaps_count": 1
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "fddda3da-16fc-4889-8fe0-f7ec7e792483",
+      "ticket_id": "c70804b7-ce98-4a23-befc-59492be939ff",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.917599Z",
+      "details": {
+        "request_id": "4a6e859a-c157-4926-8cb1-09ff5ad7cf3c",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "4ee89e5f-d41f-4771-bb95-55524e1c118c",
+      "ticket_id": "c70804b7-ce98-4a23-befc-59492be939ff",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.935343Z",
+      "details": {
+        "request_id": "0a23fffa-4b2c-4cae-b569-96f925299d20",
+        "updated_fields": [
+          "caller_name",
+          "caller_company",
+          "caller_phone"
+        ],
+        "validation_score": 0.7450980392156863,
+        "gaps_count": 2
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b68ed001-b76b-47cf-b5bc-2a1431f7c7e6",
+      "ticket_id": "c70804b7-ce98-4a23-befc-59492be939ff",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:12.953781Z",
+      "details": {
+        "request_id": "9c1d991e-e767-480f-8d43-742a3ab26a9a",
+        "final_validation_score": 0.7450980392156863,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f8a7c578-2390-4ff5-a1da-0f0d480b5805",
+      "ticket_id": "26b220a9-fa90-492b-bc8a-274a070168d5",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:54:13.005657Z",
+      "details": {
+        "request_id": "e1a2cbcc-9ce6-4bf5-9c19-154e40df62a2",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "223abf29-a525-4281-a803-a8d08abb9b5c",
+      "ticket_id": "26b220a9-fa90-492b-bc8a-274a070168d5",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-789",
+      "timestamp": "2025-09-02T17:54:13.023134Z",
+      "details": {
+        "request_id": "0b2ccfd9-2b99-4822-83fe-d40ebbe50b27",
+        "final_validation_score": 0.5098039215686274,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "babbc9d6-1003-48f0-b82b-44cebaf68f8b",
+      "ticket_id": "4b1c964a-c669-4b81-afcb-8428deb99b68",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.078501Z",
+      "details": {
+        "request_id": "b73e4bb1-035a-4bb0-9a0b-3d4f271ad54e",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "e3f747a5-4e98-4e9e-9124-98dd31593b72",
+      "ticket_id": "4b1c964a-c669-4b81-afcb-8428deb99b68",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.099315Z",
+      "details": {
+        "request_id": "713bf50c-38be-4714-b73f-605bdde914c8",
+        "updated_fields": [
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a51650f3-b8d2-44e3-8e92-7b463449dfb3",
+      "ticket_id": "4b1c964a-c669-4b81-afcb-8428deb99b68",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.117467Z",
+      "details": {
+        "request_id": "ee313add-f68c-44ad-add6-4e96564edfdb",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "f0651be5-176b-44e8-b7ad-e684988f1009",
+      "ticket_id": "1cbebc99-80db-4939-aa93-09726a5aafea",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.181383Z",
+      "details": {
+        "request_id": "ee194f74-dff6-4e6b-a2e2-f56608227f3c",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "168f64f9-d5b5-4d88-80ec-410497c66dd3",
+      "ticket_id": "1cbebc99-80db-4939-aa93-09726a5aafea",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.199718Z",
+      "details": {
+        "request_id": "728d9cc5-7737-46fc-95f6-2cdc74776e3e",
+        "updated_fields": [
+          "caller_name",
+          "caller_phone"
+        ],
+        "validation_score": 0.6666666666666666,
+        "gaps_count": 3
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a347465f-525a-40a3-8746-ccc4f7d69d5b",
+      "ticket_id": "1cbebc99-80db-4939-aa93-09726a5aafea",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.220008Z",
+      "details": {
+        "request_id": "de9d322a-10da-4444-9720-0cce93b8efbe",
+        "final_validation_score": 0.6666666666666666,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "b87ded88-8dc2-48f4-a6da-af8a24871577",
+      "ticket_id": "1aae3d8e-d7aa-4708-b2b8-0a731ab03529",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.342813Z",
+      "details": {
+        "request_id": "994ecf3e-f776-4c8b-b8ce-4a43702098f5",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "3f467c4a-4ced-475e-b015-044e83156764",
+      "ticket_id": "1aae3d8e-d7aa-4708-b2b8-0a731ab03529",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.362370Z",
+      "details": {
+        "request_id": "12a53b66-c0b7-412a-99a5-b3e3c88a1c73",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "caa8acd5-2ee7-4c4e-86d0-6f617a65228d",
+      "ticket_id": "1aae3d8e-d7aa-4708-b2b8-0a731ab03529",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.381299Z",
+      "details": {
+        "request_id": "607173cb-c8b9-4438-a9d3-1e0c5af083c1",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ca6f2d0e-4671-44d9-a9eb-3a5438ac6907",
+      "ticket_id": "f0105f6a-91ad-48fa-ad50-47c91a999106",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.437285Z",
+      "details": {
+        "request_id": "725adf7e-6896-42e8-a9f8-5afba3a60cb3",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9eb53a6e-e4c9-4235-a90a-8f8cba981a0d",
+      "ticket_id": "8f2a40eb-1127-4407-9318-4fd51cc7eca8",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.569178Z",
+      "details": {
+        "request_id": "2a244d23-d926-4be8-9688-6768a46815fe",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "9c3de4af-8dea-415e-ae2b-33e8319e76bc",
+      "ticket_id": "430fe2cd-b870-4a48-acd0-9b472d11ef02",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-456",
+      "timestamp": "2025-09-02T17:54:13.639423Z",
+      "details": {
+        "request_id": "31803d1b-8f63-498d-b803-ff54dfc28e15",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "ab1d6d43-7405-4fb6-8b18-2766f7b81a43",
+      "ticket_id": "89396972-b069-4a03-8e7b-9b3e332e02fa",
+      "action": "ticket_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.695879Z",
+      "details": {
+        "request_id": "e59bab71-1b68-4ae5-a4c1-ab16d054837a",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "a98c7bc4-cd5e-4c69-b3bc-99be07e0b6bb",
+      "ticket_id": "89396972-b069-4a03-8e7b-9b3e332e02fa",
+      "action": "ticket_updated",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.717936Z",
+      "details": {
+        "request_id": "c2430566-7820-4385-95c8-6c49c2a603ba",
+        "updated_fields": [
+          "caller_name"
+        ],
+        "validation_score": 0.5882352941176471,
+        "gaps_count": 4
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "c53cb7a5-89c1-491e-8a26-c6ea794244c4",
+      "ticket_id": "89396972-b069-4a03-8e7b-9b3e332e02fa",
+      "action": "submission_packet_created",
+      "user_id": "customgpt-session-123",
+      "timestamp": "2025-09-02T17:54:13.736798Z",
+      "details": {
+        "request_id": "8f4a57b8-dc49-4e42-9484-57f3620b8dd4",
+        "final_validation_score": 0.5882352941176471,
+        "packet_generated": true,
+        "confirm_accuracy": true
+      },
+      "ip_address": "testclient",
+      "user_agent": "testclient"
+    },
+    {
+      "event_id": "8e20c139-3867-44fa-b027-1f2bb4d31fd0",
+      "ticket_id": "79e4d2bf-0481-4eae-99ac-15c0964a1d96",
+      "action": "ticket_created",
+      "user_id": "test-validation-session",
+      "timestamp": "2025-09-02T18:03:14.883280Z",
+      "details": {
+        "request_id": "13bb7284-0d4d-40c9-9732-52df016ee90c",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "0df958a4-dfa0-491b-a15d-04037916e748",
+      "ticket_id": "690a3ed3-5f39-4412-ac02-4fd5c492c091",
+      "action": "ticket_created",
+      "user_id": "test-gps-session",
+      "timestamp": "2025-09-02T18:08:02.218448Z",
+      "details": {
+        "request_id": "8470cb21-c166-45fb-9a8b-a66177c50000",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "c60a61f7-5482-45fb-ab93-32a31b3686fb",
+      "ticket_id": "7edbe33a-e524-4a8d-b5e9-2b80f728bcd5",
+      "action": "ticket_created",
+      "user_id": "test-downtown-gps",
+      "timestamp": "2025-09-02T18:08:13.187377Z",
+      "details": {
+        "request_id": "6b12eb5a-5fea-41ae-b452-d233222f7b16",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "fed3e823-e9f3-480f-8e38-6648ed0a9261",
+      "ticket_id": "7ce15935-e520-45e2-b8fe-8976621bd46d",
+      "action": "ticket_created",
+      "user_id": "test-precise-coords",
+      "timestamp": "2025-09-02T18:14:29.354810Z",
+      "details": {
+        "request_id": "5e124360-dde4-4a88-9586-70efd2abcd86",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "b6ef27ee-b167-4326-87c5-5029c40722ad",
+      "ticket_id": "cd0e587f-71f3-4004-96ac-cfcd053ae73a",
+      "action": "ticket_created",
+      "user_id": "test-fort-bend-coords",
+      "timestamp": "2025-09-02T18:14:39.850028Z",
+      "details": {
+        "request_id": "67389ee6-8f18-4cd8-a85b-142ad02d2b32",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "4214d037-11dc-44ee-a4c5-f1d1c1a62d67",
+      "ticket_id": "d7ed8884-5679-4866-bfff-05c7a8920a79",
+      "action": "ticket_created",
+      "user_id": "test-ssl-bypass",
+      "timestamp": "2025-09-02T18:20:00.310006Z",
+      "details": {
+        "request_id": "743fb45d-82c1-413e-b8d8-6a754b06f3bc",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "88636619-f4d4-48e5-8fd3-afb112cc9971",
+      "ticket_id": "d4f0698f-2b42-4317-9497-5f24e8c93b36",
+      "action": "ticket_created",
+      "user_id": "test-session-123",
+      "timestamp": "2025-09-02T18:27:34.525213Z",
+      "details": {
+        "request_id": "6d11b613-44d4-4ebe-a146-4db58c2d58fc",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "2b49c80a-1a41-4d4a-867a-163942aa1643",
+      "ticket_id": "4270830f-5f05-4ac6-9bb7-7c19b8d69ce6",
+      "action": "ticket_created",
+      "user_id": "test-session-123",
+      "timestamp": "2025-09-02T18:27:40.547916Z",
+      "details": {
+        "request_id": "21a215e7-4dca-4cd4-9f37-bb3c21d447ca",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "b2d7e31a-4986-49cc-b449-75547eec4b34",
+      "ticket_id": "a1e0fcfd-ded0-4ff7-b8dd-9dc4337619ae",
+      "action": "ticket_created",
+      "user_id": "test-url-fix",
+      "timestamp": "2025-09-02T18:28:06.868023Z",
+      "details": {
+        "request_id": "432983e8-63f2-4087-91c6-5f06dc3a30f6",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "b7c8e3fd-dadc-46ec-bdf8-ac84b86a5fe8",
+      "ticket_id": "b820335a-ea7c-47b0-888f-24a327d62e2f",
+      "action": "ticket_created",
+      "user_id": "test-fort-bend",
+      "timestamp": "2025-09-02T18:28:39.093938Z",
+      "details": {
+        "request_id": "2dd1f7f5-44ad-4d4c-9570-d196ec1f4bcd",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "411c99d2-582b-4c5d-bd76-217808dde9fb",
+      "ticket_id": "eae65985-fef6-4019-b478-f8ed1c791471",
+      "action": "ticket_created",
+      "user_id": "test-new-hcad-endpoint",
+      "timestamp": "2025-09-02T18:34:31.144215Z",
+      "details": {
+        "request_id": "1b290bb3-0c98-494a-ac54-fb1f579efe10",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "ae2bec7c-163d-4464-b1cb-1c71c53b18ab",
+      "ticket_id": "1b80837c-36d4-42dc-9902-053bd4ae369f",
+      "action": "ticket_created",
+      "user_id": "test-hcad-namespace",
+      "timestamp": "2025-09-02T18:35:39.267486Z",
+      "details": {
+        "request_id": "00a9682f-3bc3-49c5-9f12-ed040ce4e96b",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "a23dfac6-55f4-4350-9592-c5317d78ef0d",
+      "ticket_id": "44d4891f-1253-4662-b2e0-a880537ef2c7",
+      "action": "ticket_created",
+      "user_id": "test-reportall-integration",
+      "timestamp": "2025-09-02T19:22:38.511234Z",
+      "details": {
+        "request_id": "3a108caf-7dc2-4574-a386-eca1e70e0a0e",
+        "validation_score": 0.6078431372549019,
+        "gaps_count": 4
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "8e744af8-658d-48e1-86f2-133de4f8c5f3",
+      "ticket_id": "c02d0c6a-c9e0-430a-af73-19c65c45dd41",
+      "action": "ticket_created",
+      "user_id": "sess-3416trout-harris",
+      "timestamp": "2025-09-02T23:38:44.104948Z",
+      "details": {
+        "request_id": "b191a4ff-0a19-4932-bf4f-026451bc41af",
+        "validation_score": 0.8627450980392157,
+        "gaps_count": 1
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "829e1c0d-b026-44b3-992a-94efeaab63d4",
+      "ticket_id": "ea3aea07-f983-4fcb-8fda-5d83ee565e9d",
+      "action": "ticket_created",
+      "user_id": "sess-3416trout-harris",
+      "timestamp": "2025-09-02T23:42:14.508275Z",
+      "details": {
+        "request_id": "90aba1fe-f007-4a98-96a9-18db3328cc6d",
+        "validation_score": 0.8627450980392157,
+        "gaps_count": 1
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "d006fb58-5927-44c3-825f-a7a4dd8d04cc",
+      "ticket_id": "b429b1f4-0b29-486c-996e-de975b3ce290",
+      "action": "ticket_created",
+      "user_id": "sess-3416trout-harris-test",
+      "timestamp": "2025-09-02T23:44:05.371158Z",
+      "details": {
+        "request_id": "25192808-94dd-41b6-89a3-639a55027f9e",
+        "validation_score": 0.5098039215686274,
+        "gaps_count": 5
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    },
+    {
+      "event_id": "1be08daf-611e-44ee-b3ec-8e1a4e3eb3ee",
+      "ticket_id": "161c7a53-d2e1-4404-876e-4265d15cea5f",
+      "action": "ticket_created",
+      "user_id": "sess-3416trout-harris-final-test",
+      "timestamp": "2025-09-02T23:44:52.520664Z",
+      "details": {
+        "request_id": "9303bf5e-2762-4294-983b-4b8d89a28c30",
+        "validation_score": 0.8627450980392157,
+        "gaps_count": 1
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "curl/8.5.0"
+    }
+  ]
+}

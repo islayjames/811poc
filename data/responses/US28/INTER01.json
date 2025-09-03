@@ -1,0 +1,12 @@
+{
+  "response_id": "249b45fa-0668-4279-af37-ae7a77bde39a",
+  "ticket_id": "US28",
+  "member_code": "INTER01",
+  "member_name": "INTER01",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": null,
+  "comment": null,
+  "created_at": "2025-09-03T17:59:27.224880Z",
+  "updated_at": "2025-09-03T17:59:27.224890Z"
+}

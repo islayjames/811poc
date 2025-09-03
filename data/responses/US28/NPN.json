@@ -1,0 +1,12 @@
+{
+  "response_id": "14e8fa39-52cb-497d-90e9-be030133ccd8",
+  "ticket_id": "US28",
+  "member_code": "NPN",
+  "member_name": "NPN",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": null,
+  "comment": null,
+  "created_at": "2025-09-03T17:59:27.127240Z",
+  "updated_at": "2025-09-03T17:59:27.127252Z"
+}

@@ -1,0 +1,12 @@
+{
+  "response_id": "ab663dc1-c8c1-4d0f-990f-807a56bcee1c",
+  "ticket_id": "EXOB",
+  "member_code": "CSL",
+  "member_name": "CSL",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": null,
+  "comment": null,
+  "created_at": "2025-09-03T17:59:28.452581Z",
+  "updated_at": "2025-09-03T17:59:28.452592Z"
+}

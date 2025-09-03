@@ -1,0 +1,12 @@
+{
+  "response_id": "c4193566-08a0-400b-88b1-b86336621dcf",
+  "ticket_id": "YDM7",
+  "member_code": "CPTEN01",
+  "member_name": "CenterPoint Energy",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": "Electric",
+  "comment": null,
+  "created_at": "2025-09-03T17:59:26.100969Z",
+  "updated_at": "2025-09-03T17:59:26.100992Z"
+}

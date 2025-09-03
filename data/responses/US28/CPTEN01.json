@@ -1,0 +1,12 @@
+{
+  "response_id": "fbc3516a-05a6-4070-bf67-b18bc2abc0a9",
+  "ticket_id": "US28",
+  "member_code": "CPTEN01",
+  "member_name": "CenterPoint Energy",
+  "status": "clear",
+  "user_name": "sync-import",
+  "facilities": "Electric",
+  "comment": null,
+  "created_at": "2025-09-03T17:59:26.999350Z",
+  "updated_at": "2025-09-03T17:59:26.999361Z"
+}
