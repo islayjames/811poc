@@ -1,0 +1,28 @@
+# Development and debug files
+debug-*.js
+test-*.js
+*.spec.js
+*.png
+*.md
+recordings/
+test-results/
+playwright-report/
+.claude/
+tests/
+
+# Archive files
+archived-development-files-*.zip
+scrape-backup-*.zip
+
+# Old versions
+texas811-production-scraper.js
+texas811-production-scraper-*.js
+!texas811-production-scraper-final.js
+
+# Playwright config (regenerated as needed)
+playwright.config.js
+
+# Other temp files
+--options
+*.log
+*.tmp

@@ -355,27 +355,35 @@ export const api = {
     const params = new URLSearchParams()
 
     if (filters.status?.length) {
-      // Backend expects single status filter, take first one
-      params.set("status", filters.status[0].toLowerCase())
+      filters.status.forEach(s => params.append("status", s))
     }
     if (filters.city) params.set("city", filters.city)
     if (filters.county) params.set("county", filters.county)
     if (filters.q) params.set("q", filters.q)
+    if (filters.page) params.set("page", filters.page.toString())
+    if (filters.pageSize) params.set("pageSize", filters.pageSize.toString())
+    if (filters.sort) params.set("sort", filters.sort)
+    if (filters.dir) params.set("dir", filters.dir)
+
+    // Old params for compatibility
     if (filters.limit) params.set("limit", filters.limit.toString())
     if (filters.offset) params.set("offset", filters.offset.toString())
 
     const queryString = params.toString()
-    const endpoint = `dashboard/tickets${queryString ? `?${queryString}` : ""}`
 
-    const backendResponse = await apiRequest<BackendTicketListResponse>(endpoint)
+    // Use the Next.js API route as a proxy instead of direct backend call
+    const response = await fetch(`/api/tickets${queryString ? `?${queryString}` : ""}`, {
+      headers: {
+        "Accept": "application/json"
+      }
+    })
 
-    // Map backend response to frontend format
-    return {
-      tickets: backendResponse.tickets.map(mapBackendTicketToFrontend),
-      total: backendResponse.total_count,
-      limit: backendResponse.page_size,
-      offset: (backendResponse.page - 1) * backendResponse.page_size,
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new ApiError(response.status, errorText || `Failed to fetch tickets`)
     }
+
+    return response.json()
   },
 
   // Get single ticket detail
@@ -384,8 +392,19 @@ export const api = {
       return mockGetTicket(id)
     }
 
-    const backendResponse = await apiRequest<BackendTicketDetailResponse>(`dashboard/tickets/${id}`)
-    return mapBackendDetailToFrontend(backendResponse)
+    // Use the Next.js API route as a proxy instead of direct backend call
+    const response = await fetch(`/api/tickets/${id}`, {
+      headers: {
+        "Accept": "application/json"
+      }
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new ApiError(response.status, errorText || `Failed to fetch ticket`)
+    }
+
+    return response.json()
   },
 
   // Confirm ticket (ValidPendingConfirm -> Ready)
@@ -394,11 +413,19 @@ export const api = {
       return mockStatusAction(id, "confirm")
     }
 
-    // Backend uses mark-submitted endpoint for confirm action
-    await apiRequest(`dashboard/tickets/${id}/mark-submitted`, {
+    // Use Next.js API route - backend uses mark-submitted endpoint for confirm action
+    const response = await fetch(`/api/tickets/${id}/confirm`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ submission_reference: `CONFIRMED-${Date.now()}`, notes: "Confirmed via dashboard" })
     })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new ApiError(response.status, errorText || `Failed to confirm ticket`)
+    }
   },
 
   // Mark ticket as submitted (Ready -> Submitted)
@@ -407,10 +434,19 @@ export const api = {
       return mockStatusAction(id, "mark-submitted")
     }
 
-    await apiRequest(`dashboard/tickets/${id}/mark-submitted`, {
+    // Use Next.js API route
+    const response = await fetch(`/api/tickets/${id}/submit`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ submission_reference: `SUBMITTED-${Date.now()}`, notes: "Marked as submitted via dashboard" })
     })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new ApiError(response.status, errorText || `Failed to mark ticket as submitted`)
+    }
   },
 
   // Mark responses received (Submitted -> ResponsesIn)
@@ -419,10 +455,19 @@ export const api = {
       return mockStatusAction(id, "mark-responses-in")
     }
 
-    await apiRequest(`dashboard/tickets/${id}/mark-responses-in`, {
+    // Use Next.js API route
+    const response = await fetch(`/api/tickets/${id}/responses`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ response_count: 1, all_clear: true, notes: "Responses received via dashboard" })
     })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new ApiError(response.status, errorText || `Failed to mark responses received`)
+    }
   },
 
   // Cancel ticket (any status -> Cancelled)
@@ -431,10 +476,19 @@ export const api = {
       return mockStatusAction(id, "cancel")
     }
 
-    await apiRequest(`dashboard/tickets/${id}`, {
+    // Use Next.js API route
+    const response = await fetch(`/api/tickets/${id}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ reason: "Cancelled via dashboard", confirm_deletion: false })
     })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new ApiError(response.status, errorText || `Failed to cancel ticket`)
+    }
   },
 }
 
