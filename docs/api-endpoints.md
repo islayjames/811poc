@@ -141,6 +141,169 @@ Confirm a ticket for submission after validation is complete.
 }
 ```
 
+
+## Response Tracking Endpoints
+
+The response tracking endpoints allow utility members to submit their responses (clear/not clear) to locate tickets and retrieve comprehensive response information.
+
+**Key Features**:
+- Supports multiple utility member responses per ticket
+- Automatic status progression: submitted → in_progress → responses_in
+- Dynamic member addition when unknown utilities respond
+- Case-insensitive member code handling
+- Upsert behavior for response updates
+
+### POST /tickets/{ticket_id}/responses/{member_code}
+
+Submit or update a utility member response to a ticket.
+
+**Purpose**: Allows utility members to submit their responses (clear/not clear) to locate tickets. Supports upsert behavior and automatic member management.
+
+**Path Parameters:**
+- `ticket_id` (string, required): Unique ticket identifier
+- `member_code` (string, required): Short code identifying the utility member (case-insensitive)
+
+**Request Body:**
+```json
+{
+  "member_name": "Texas Gas Service",
+  "status": "clear",
+  "user_name": "john.doe@texasgas.com",
+  "facilities": "No facilities in work area",
+  "comment": "All clear for excavation"
+}
+```
+
+**Request Fields:**
+- `member_name` (string, required): Name of utility member providing response
+- `status` (string, required): Response status - either "clear" or "not_clear"
+- `user_name` (string, required): Name/email of user submitting response
+- `facilities` (string, optional): Description of facilities in work area
+- `comment` (string, optional): Additional comments or instructions
+
+**Response (201 Created or 200 OK):**
+```json
+{
+  "success": true,
+  "timestamp": "2025-09-02T10:35:00Z",
+  "request_id": "uuid-v4-string",
+  "data": {
+    "response_id": "generated-uuid",
+    "ticket_id": "original-ticket-id",
+    "member_code": "TGS",
+    "member_name": "Texas Gas Service",
+    "status": "clear",
+    "user_name": "john.doe@texasgas.com",
+    "facilities": "No facilities in work area",
+    "comment": "All clear for excavation",
+    "created_at": "2025-09-02T10:35:00Z",
+    "updated_at": "2025-09-02T10:35:00Z",
+    "ticket_status_updated": true,
+    "new_ticket_status": "responses_in"
+  }
+}
+```
+
+**Status Progression Logic:**
+- When first response is submitted: ticket status changes from "submitted" to "in_progress"
+- When all expected members have responded: ticket status changes to "responses_in"
+- Unknown members are automatically added to expected_members list
+
+**Error Responses:**
+- `404 Not Found`: Ticket not found
+- `400 Bad Request`: Invalid request data
+- `422 Unprocessable Entity`: Validation error (invalid status value, etc.)
+
+### GET /tickets/{ticket_id}/responses
+
+Retrieve all member responses for a ticket with summary statistics.
+
+**Purpose**: Get comprehensive response information including expected members, received responses, and summary statistics.
+
+**Path Parameters:**
+- `ticket_id` (string, required): Unique ticket identifier
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "timestamp": "2025-09-02T10:35:00Z",
+  "request_id": "uuid-v4-string",
+  "data": {
+    "ticket_id": "original-ticket-id",
+    "expected_members": [
+      {
+        "code": "TGS",
+        "name": "Texas Gas Service",
+        "contact": "811@texasgas.com"
+      },
+      {
+        "code": "CEP",
+        "name": "CenterPoint Energy",
+        "contact": "locates@centerpointenergy.com"
+      }
+    ],
+    "responses": [
+      {
+        "response_id": "response-uuid-1",
+        "member_code": "TGS",
+        "member_name": "Texas Gas Service",
+        "status": "clear",
+        "user_name": "john.doe@texasgas.com",
+        "facilities": "No facilities in work area",
+        "comment": "All clear for excavation",
+        "created_at": "2025-09-02T10:35:00Z",
+        "updated_at": "2025-09-02T10:35:00Z"
+      },
+      {
+        "response_id": "response-uuid-2",
+        "member_code": "CEP",
+        "member_name": "CenterPoint Energy",
+        "status": "not_clear",
+        "user_name": "jane.smith@centerpointenergy.com",
+        "facilities": "Underground electric lines present",
+        "comment": "Call before digging - lines marked",
+        "created_at": "2025-09-02T11:15:00Z",
+        "updated_at": "2025-09-02T11:15:00Z"
+      }
+    ],
+    "summary": {
+      "ticket_id": "original-ticket-id",
+      "total_expected": 2,
+      "total_received": 2,
+      "clear_count": 1,
+      "not_clear_count": 1,
+      "pending_members": [],
+      "is_complete": true,
+      "all_clear": false,
+      "completion_percentage": 100.0
+    }
+  }
+}
+```
+
+**Response Fields:**
+- `expected_members`: List of utility members expected to respond based on ticket location
+- `responses`: All responses received, sorted by response date (most recent first)
+- `summary`: Aggregate statistics and completion status
+  - `total_expected`: Number of expected responses
+  - `total_received`: Number of responses actually received
+  - `clear_count`: Number of "clear" responses
+  - `not_clear_count`: Number of "not clear" responses
+  - `pending_members`: List of members who haven't responded yet
+  - `is_complete`: Whether all expected members have responded
+  - `all_clear`: Whether all responses are "clear" status
+  - `completion_percentage`: Percentage of expected responses received
+
+**Error Responses:**
+- `404 Not Found`: Ticket not found
+
+**Notes:**
+- Member codes are normalized to uppercase for consistency
+- Unknown members submitting responses are automatically added to expected_members
+- Response timestamps use UTC timezone
+- Responses support upsert behavior - submitting for same member_code updates existing response
+
 ## Parcel Enrichment Endpoint
 
 ### POST /parcels/enrich
