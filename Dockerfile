@@ -37,6 +37,9 @@ ENV PYTHONPATH="/app/src"
 # Create data directories
 RUN mkdir -p /data /app/data
 
+# Copy data files (tickets and responses)
+COPY data/ /data/
+
 # Expose port
 EXPOSE 8000
 
