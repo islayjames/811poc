@@ -308,9 +308,6 @@ class UpdateTicketResponse(APIResponse):
     work_duration_days: int | None = None
     work_type: str | None = None
 
-    # Additional Details
-    remarks: str | None = None
-
     # Work Method Flags
     white_lining_complete: bool | None = None
     boring_crossing: bool | None = None

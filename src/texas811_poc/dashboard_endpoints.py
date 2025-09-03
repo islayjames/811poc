@@ -105,7 +105,11 @@ class TicketDetailResponse(BaseModel):
     work_start_date: date | None = None
     work_duration_days: int | None = None
     work_type: str | None = None
+    driving_directions: str | None = None
+    marking_instructions: str | None = None
     remarks: str | None = None
+    geometry: dict | None = None
+    parcel_info: dict | None = None
     gps_lat: float | None = None
     gps_lng: float | None = None
     lawful_start_date: date | None = None
@@ -469,7 +473,11 @@ async def get_ticket_detail(
             work_start_date=ticket.work_start_date,
             work_duration_days=ticket.work_duration_days,
             work_type=ticket.work_type,
+            driving_directions=ticket.driving_directions,
+            marking_instructions=ticket.marking_instructions,
             remarks=ticket.remarks,
+            geometry=ticket.geometry.model_dump() if ticket.geometry else None,
+            parcel_info=ticket.parcel_info.model_dump() if ticket.parcel_info else None,
             gps_lat=ticket.gps_lat,
             gps_lng=ticket.gps_lng,
             lawful_start_date=ticket.lawful_start_date,

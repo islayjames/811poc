@@ -684,31 +684,43 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                 {showMoreSummary && (
                   <div className="mt-6 pt-6 border-t">
                     <h4 className="text-base font-semibold mb-3">Additional Details</h4>
-                    <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 max-w-prose">
+                    <dl className="grid grid-cols-1 gap-y-4 max-w-none">
                       {ticket.site?.subdivision && (
-                        <>
-                          <dt className="text-sm text-muted-foreground">Subdivision</dt>
+                        <div className="flex flex-col">
+                          <dt className="text-sm text-muted-foreground font-medium mb-1">Subdivision</dt>
                           <dd className="text-sm">{ticket.site.subdivision}</dd>
-                        </>
+                        </div>
                       )}
                       {ticket.site?.lot_block && (
-                        <>
-                          <dt className="text-sm text-muted-foreground">Lot/Block</dt>
+                        <div className="flex flex-col">
+                          <dt className="text-sm text-muted-foreground font-medium mb-1">Lot/Block</dt>
                           <dd className="text-sm">{ticket.site.lot_block}</dd>
-                        </>
+                        </div>
                       )}
                       {ticket.site?.driving_directions && (
-                        <>
-                          <dt className="text-sm text-muted-foreground">Driving Directions</dt>
-                          <dd className="text-sm">{ticket.site.driving_directions}</dd>
-                        </>
+                        <div className="flex flex-col">
+                          <dt className="text-sm text-muted-foreground font-medium mb-1">Driving Directions</dt>
+                          <dd className="text-sm leading-relaxed">{ticket.site.driving_directions}</dd>
+                        </div>
+                      )}
+                      {ticket.site?.marking_instructions && (
+                        <div className="flex flex-col">
+                          <dt className="text-sm text-muted-foreground font-medium mb-1">Marking Instructions</dt>
+                          <dd className="text-sm leading-relaxed">{ticket.site.marking_instructions}</dd>
+                        </div>
+                      )}
+                      {ticket.site?.remarks && (
+                        <div className="flex flex-col">
+                          <dt className="text-sm text-muted-foreground font-medium mb-1">Additional Remarks</dt>
+                          <dd className="text-sm leading-relaxed">{ticket.site.remarks}</dd>
+                        </div>
                       )}
                     </dl>
                   </div>
                 )}
 
                 {/* Show more/less toggle */}
-                {(ticket.site?.subdivision || ticket.site?.lot_block || ticket.site?.driving_directions) && (
+                {(ticket.site?.subdivision || ticket.site?.lot_block || ticket.site?.driving_directions || ticket.site?.marking_instructions || ticket.site?.remarks) && (
                   <div className="mt-4 pt-4 border-t">
                     <button
                       onClick={() => setShowMoreSummary(!showMoreSummary)}

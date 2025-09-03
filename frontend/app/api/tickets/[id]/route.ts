@@ -77,7 +77,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           lat: backendData.gps_lat,
           lng: backendData.gps_lng
         },
-        driving_directions: null,
+        driving_directions: backendData.driving_directions,
+        marking_instructions: backendData.marking_instructions,
+        remarks: backendData.remarks,
         work_area_description: backendData.work_description,
         site_marked_white: backendData.white_lining_complete || false,
       },

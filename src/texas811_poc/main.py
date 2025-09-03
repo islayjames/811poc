@@ -93,7 +93,7 @@ app = FastAPI(
             "description": "Development server",
         },
     ],
-    openapi_version="3.0.0",  # Force OpenAPI 3.0.0 for OpenAI compatibility
+    openapi_version="3.1.0",  # Use OpenAPI 3.1.0 for OpenAI tools compatibility
     openapi_tags=[
         {
             "name": "Health",
@@ -201,7 +201,7 @@ def convert_anyof_to_nullable(schema_dict: dict) -> dict:
 
 
 def custom_openapi():
-    """Generate OpenAPI 3.0 compatible schema."""
+    """Generate OpenAPI 3.1.0 compatible schema for OpenAI tools."""
     if app.openapi_schema:
         return app.openapi_schema
 
@@ -213,16 +213,43 @@ def custom_openapi():
         servers=app.servers,
     )
 
-    # Force OpenAPI version to 3.0.0
-    openapi_schema["openapi"] = "3.0.0"
+    # Force OpenAPI version to 3.1.0 for OpenAI tools
+    openapi_schema["openapi"] = "3.1.0"
 
-    # Convert anyOf patterns to nullable
-    openapi_schema = convert_anyof_to_nullable(openapi_schema)
+    # Keep anyOf patterns for OpenAPI 3.1.0 compatibility
+    # Do not convert to nullable format - OpenAI tools prefer anyOf
+    # openapi_schema = convert_anyof_to_nullable(openapi_schema)
 
     # Add security schemes
     openapi_schema["components"]["securitySchemes"] = {
         "HTTPBearer": {"type": "http", "scheme": "bearer"}
     }
+
+    # Add top-level tags array for proper OpenAPI structure
+    openapi_schema["tags"] = [
+        {
+            "name": "Health",
+            "description": "Health check and readiness endpoints for monitoring",
+        },
+        {
+            "name": "Tickets",
+            "description": "Core ticket management endpoints for CustomGPT integration",
+        },
+        {
+            "name": "Parcels",
+            "description": "Parcel enrichment endpoints for GIS data analysis and comparison",
+        },
+        {
+            "name": "Dashboard & Manual Operations",
+            "description": "Dashboard endpoints for ticket viewing and manual operations",
+        },
+    ]
+
+    # Add x-openai-isConsequential: false to all endpoints for OpenAI tools
+    for path_data in openapi_schema.get("paths", {}).values():
+        for method_data in path_data.values():
+            if isinstance(method_data, dict) and "operationId" in method_data:
+                method_data["x-openai-isConsequential"] = False
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema

@@ -56,6 +56,8 @@ export type TicketDetail = {
     lot_block: string | null
     gps: { lat: number | null; lng: number | null }
     driving_directions: string | null
+    marking_instructions: string | null
+    remarks: string | null
     work_area_description: string
     site_marked_white: boolean
   }
@@ -218,6 +220,8 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       lot_block: null,
       gps: { lat: 30.50828, lng: -97.6789 },
       driving_directions: "From E Old Settlers Blvd, north 150 ft on Heritage Center Cir; pole on east ROW.",
+      marking_instructions: "Mark 75 ft along east ROW centered on pole; front easement only.",
+      remarks: "Coordinate with city traffic control for lane closure",
       work_area_description: "Mark 75 ft along east ROW centered on pole; front easement only.",
       site_marked_white: true,
     },
@@ -271,6 +275,8 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       lot_block: null,
       gps: { lat: 30.4271, lng: -97.7438 },
       driving_directions: null,
+      marking_instructions: "Mark entry and exit points for bore; 5-foot radius around each point.",
+      remarks: null,
       work_area_description: "Bore 60 ft crossing of sidewalk at McNeil Dr near Pond Springs Rd.",
       site_marked_white: true,
     },
@@ -317,7 +323,9 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       subdivision: null,
       lot_block: null,
       gps: { lat: 32.6618, lng: -97.2694 },
-      driving_directions: null,
+      driving_directions: "From Sun Valley Dr, east on E Loop 820 S to property entrance",
+      marking_instructions: "Mark 100 ft trench route along south property line from driveway to fence.",
+      remarks: null,
       work_area_description: "Mark 100 ft along south property line from driveway east to fence corner.",
       site_marked_white: false,
     },
@@ -364,6 +372,8 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       lot_block: null,
       gps: { lat: 27.7734, lng: -97.3982 },
       driving_directions: null,
+      marking_instructions: "Mark 30 ft radius around pole; include guy wire anchors if present.",
+      remarks: null,
       work_area_description: "Locate 30 ft radius around existing pole on east side of Ayers St.",
       site_marked_white: true,
     },
@@ -418,6 +428,8 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       lot_block: null,
       gps: { lat: 31.7573, lng: -106.4827 },
       driving_directions: null,
+      marking_instructions: "Mark bore path 60 ft wide crossing S San Antonio St; include entry/exit pits.",
+      remarks: "Night work preferred to minimize traffic impact",
       work_area_description: "Bore crossing of S San Antonio St at 7th Ave; 60 ft wide swath.",
       site_marked_white: true,
     },
@@ -463,7 +475,9 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       subdivision: null,
       lot_block: null,
       gps: { lat: 32.8124, lng: -96.944 },
-      driving_directions: null,
+      driving_directions: "From N Rogers Rd intersection, south shoulder 200 ft past traffic light",
+      marking_instructions: "Mark 30 ft radius around valve box; avoid traffic lanes if possible.",
+      remarks: null,
       work_area_description: "Mark 30 ft radius centered on valve box on south shoulder.",
       site_marked_white: false,
     },
@@ -506,7 +520,9 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       subdivision: null,
       lot_block: null,
       gps: { lat: 31.5594, lng: -97.1479 },
-      driving_directions: null,
+      driving_directions: "From Jefferson Ave, north on N 19th St to second house on left",
+      marking_instructions: "Mark fence post locations every 6-8 ft along 120 ft rear property line.",
+      remarks: "Property owner will be present during work",
       work_area_description: "Mark rear property line—120 ft east-west; backyard only.",
       site_marked_white: true,
     },
@@ -546,6 +562,8 @@ export const MOCK_TICKET_BY_ID: Record<string, TicketDetail> = {
       lot_block: null,
       gps: { lat: 35.2089, lng: -101.8345 },
       driving_directions: null,
+      marking_instructions: null,
+      remarks: null,
       work_area_description: "Design marks along frontage only.",
       site_marked_white: false,
     },
