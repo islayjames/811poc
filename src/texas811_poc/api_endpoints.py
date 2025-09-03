@@ -35,6 +35,7 @@ from texas811_poc.api_models import (
     ParcelEnrichmentResult,
     ParcelEnrichRequest,
     ParcelEnrichResponse,
+    ResponseRetrievalResponse,
     UpdateTicketRequest,
     UpdateTicketResponse,
     ValidationError,
@@ -48,15 +49,20 @@ from texas811_poc.geocoding import (
     calculate_haversine_distance,
 )
 from texas811_poc.gis.parcel_enrichment import enrichParcelFromGIS
+from texas811_poc.member_management import handle_unknown_member
 from texas811_poc.models import (
     AuditAction,
     AuditEventModel,
     GeometryModel,
+    MemberResponseDetail,
+    MemberResponseRequest,
     ParcelInfoModel,
+    ResponseSummary,
     TicketModel,
     TicketStatus,
     ValidationSeverity,
 )
+from texas811_poc.status_calculator import calculate_ticket_status
 from texas811_poc.storage import create_storage_instances
 from texas811_poc.validation import ValidationEngine
 
@@ -72,8 +78,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Initialize services
-ticket_storage, audit_storage, backup_manager = create_storage_instances(
-    settings.data_root
+ticket_storage, audit_storage, response_storage, backup_manager = (
+    create_storage_instances(settings.data_root)
 )
 validation_engine = ValidationEngine()
 geocoding_service = GeocodingService()
@@ -1009,6 +1015,371 @@ async def get_session_tickets(
     """
     tickets = ticket_storage.search_tickets(session_id=session_id)
     return tickets
+
+
+# Helper functions for response processing
+
+
+def generate_response_summary(
+    ticket: TicketModel, responses: list[MemberResponseDetail]
+) -> ResponseSummary:
+    """Generate response summary for a ticket."""
+    expected_count = len(ticket.expected_members) if ticket.expected_members else 0
+    received_count = len(responses)
+
+    clear_count = sum(1 for r in responses if r.status == "clear")
+    not_clear_count = sum(1 for r in responses if r.status == "not_clear")
+
+    return ResponseSummary(
+        ticket_id=ticket.ticket_id,
+        total_expected=expected_count,
+        total_received=received_count,
+        clear_count=clear_count,
+        not_clear_count=not_clear_count,
+    )
+
+
+@router.post(
+    "/{ticket_id}/responses/{member_code}",
+    summary="Submit member response to ticket",
+    description=(
+        "Submits a utility member response (clear/not clear) to a ticket. "
+        "Supports upsert behavior - creates new response or updates existing. "
+        "Automatically handles unknown members by adding them to expected_members. "
+        "Updates ticket status based on response tracking logic."
+    ),
+    response_description="Response submission confirmation with updated ticket status",
+    responses={
+        201: {"description": "Response created successfully"},
+        200: {"description": "Response updated successfully"},
+        400: {"description": "Invalid request data"},
+        404: {"description": "Ticket not found"},
+        422: {"description": "Validation error"},
+    },
+)
+async def submit_member_response(
+    request: Request,
+    ticket_id: str,
+    member_code: str,
+    response_request: MemberResponseRequest,
+    api_key: str = Depends(verify_api_key),
+):
+    """Submit or update a utility member response to a ticket.
+
+    This endpoint allows utility members to submit their responses (clear/not clear)
+    to locate tickets. It supports upsert behavior and automatic member management.
+
+    Args:
+        request: FastAPI request object
+        ticket_id: Unique ticket identifier
+        member_code: Short code identifying the utility member
+        response_request: Response submission data
+        api_key: Verified API key
+
+    Returns:
+        Response submission confirmation with updated ticket status
+
+    Raises:
+        HTTPException: If ticket not found or validation fails
+    """
+    start_time = time.time()
+    request_id = generate_request_id()
+
+    try:
+        # Load existing ticket
+        ticket = ticket_storage.load_ticket(ticket_id)
+        if not ticket:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Ticket {ticket_id} not found",
+            )
+
+        # Log request
+        log_request(
+            request, "submit_response", request_id, ticket.session_id, ticket_id
+        )
+
+        # Check if member is unknown and handle it
+        member_codes = [m.member_code.upper() for m in (ticket.expected_members or [])]
+        if member_code.upper() not in member_codes:
+            logger.info(
+                f"Unknown member {member_code} submitting response for ticket {ticket_id}"
+            )
+            ticket = handle_unknown_member(
+                ticket, member_code, response_request.member_name
+            )
+
+        # Check if response already exists (for upsert behavior)
+        existing_response = response_storage.load_response(ticket_id, member_code)
+        is_update = existing_response is not None
+
+        # Create response detail
+        response_detail = MemberResponseDetail(
+            response_id=(
+                existing_response.response_id
+                if existing_response
+                else str(uuid.uuid4())
+            ),
+            ticket_id=ticket_id,
+            member_code=member_code.upper(),
+            member_name=response_request.member_name,
+            status=response_request.status,
+            facilities=response_request.facilities,
+            comment=response_request.comment,
+            user_name=response_request.user_name,
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC) if is_update else None,
+        )
+
+        # Save response
+        response_storage.save_response(response_detail)
+
+        # Load all responses for status calculation
+        all_responses = response_storage.load_ticket_responses(ticket_id)
+
+        # Update ticket status based on responses
+        new_status = calculate_ticket_status(ticket, all_responses)
+        if new_status != ticket.status:
+            ticket.status = new_status
+            ticket.updated_at = datetime.now(UTC)
+            ticket_storage.save_ticket(ticket)
+
+        # Generate response summary
+        response_summary = generate_response_summary(ticket, all_responses)
+
+        # Create audit event
+        audit_action = (
+            AuditAction.MEMBER_RESPONSE_UPDATED
+            if is_update
+            else AuditAction.MEMBER_RESPONSE_SUBMITTED
+        )
+        audit_event = AuditEventModel(
+            ticket_id=ticket_id,
+            action=audit_action,
+            user_id=response_request.user_name,
+            details={
+                "request_id": request_id,
+                "member_code": member_code,
+                "member_name": response_request.member_name,
+                "response_status": response_request.status,
+                "is_update": is_update,
+                "new_ticket_status": new_status,
+            },
+            ip_address=request.client.host if request.client else None,
+            user_agent=request.headers.get("user-agent"),
+        )
+        audit_storage.save_audit_event(audit_event)
+
+        # Build response - always use the new calculated status
+        response_data = {
+            "success": True,
+            "timestamp": datetime.now(UTC).isoformat(),
+            "request_id": request_id,
+            "ticket_id": ticket_id,
+            "ticket_status": new_status,  # Always the calculated new status
+            "response": response_detail.model_dump(mode="json"),
+            "response_summary": response_summary.model_dump(mode="json"),
+        }
+
+        # Log response
+        processing_time = (time.time() - start_time) * 1000
+        response_code = status.HTTP_200_OK if is_update else status.HTTP_201_CREATED
+        log_response(request_id, response_code, processing_time)
+
+        # Return response with appropriate status code
+        from fastapi.responses import JSONResponse
+
+        return JSONResponse(
+            content=response_data,
+            status_code=response_code,
+        )
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        processing_time = (time.time() - start_time) * 1000
+        log_response(
+            request_id,
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            processing_time,
+            error_code="response_submission_failed",
+        )
+
+        logger.error(f"Response submission failed: {e}", exc_info=True)
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to submit response: {str(e)}",
+        ) from e
+
+
+@router.get(
+    "/{ticket_id}/responses",
+    response_model=ResponseRetrievalResponse,
+    summary="Get member responses for ticket",
+    description=(
+        "Retrieves all member responses for a ticket including expected members, "
+        "actual responses received, and summary statistics. "
+        "Responses are sorted chronologically by response date. "
+        "Calculates pending members by comparing expected vs actual responses."
+    ),
+    response_description="Complete response data with summary statistics",
+    responses={
+        200: {"description": "Response data retrieved successfully"},
+        404: {"description": "Ticket not found"},
+        401: {"description": "Invalid API key"},
+    },
+)
+async def get_ticket_responses(
+    request: Request,
+    ticket_id: str,
+    api_key: str = Depends(verify_api_key),
+) -> ResponseRetrievalResponse:
+    """Get all member responses for a ticket.
+
+    This endpoint retrieves comprehensive response information for a ticket:
+    - Expected members list from ticket
+    - All responses received (sorted by date)
+    - Summary statistics (totals, clear/not clear counts, pending members)
+
+    Args:
+        request: FastAPI request object
+        ticket_id: Unique ticket identifier
+        api_key: Verified API key
+
+    Returns:
+        Complete response data with summary statistics
+
+    Raises:
+        HTTPException: If ticket not found
+    """
+    start_time = time.time()
+    request_id = generate_request_id()
+
+    try:
+        # Load existing ticket
+        ticket = ticket_storage.load_ticket(ticket_id)
+        if not ticket:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Ticket {ticket_id} not found",
+            )
+
+        # Log request
+        log_request(request, "get_responses", request_id, ticket.session_id, ticket_id)
+
+        # Load all responses for this ticket
+        all_responses = response_storage.load_ticket_responses(ticket_id)
+
+        # Sort responses by created_at (chronological order)
+        sorted_responses = sorted(all_responses, key=lambda r: r.created_at)
+
+        # Convert expected members to serializable format
+        expected_members = []
+        if ticket.expected_members:
+            for member in ticket.expected_members:
+                expected_members.append(
+                    {
+                        "member_code": member.member_code,
+                        "member_name": member.member_name,
+                        "added_at": (
+                            member.added_at.isoformat() if member.added_at else None
+                        ),
+                    }
+                )
+
+        # Convert responses to serializable format
+        responses = []
+        for response in sorted_responses:
+            responses.append(
+                {
+                    "response_id": response.response_id,
+                    "member_code": response.member_code,
+                    "member_name": response.member_name,
+                    "response_date": response.created_at.isoformat(),
+                    "status": response.status,
+                    "facilities": response.facilities,
+                    "comment": response.comment,
+                    "user_name": response.user_name,
+                }
+            )
+
+        # Generate response summary with pending members calculation
+        response_summary = generate_response_summary_with_pending(
+            ticket, sorted_responses
+        )
+
+        # Build response
+        response_data = ResponseRetrievalResponse(
+            success=True,
+            timestamp=datetime.now(UTC),
+            request_id=request_id,
+            ticket_id=ticket_id,
+            expected_members=expected_members,
+            responses=responses,
+            summary=response_summary.model_dump(),
+        )
+
+        # Log response
+        processing_time = (time.time() - start_time) * 1000
+        log_response(request_id, status.HTTP_200_OK, processing_time)
+
+        return response_data
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        processing_time = (time.time() - start_time) * 1000
+        log_response(
+            request_id,
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            processing_time,
+            error_code="response_retrieval_failed",
+        )
+
+        logger.error(f"Response retrieval failed: {e}", exc_info=True)
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve responses: {str(e)}",
+        ) from e
+
+
+def generate_response_summary_with_pending(
+    ticket: TicketModel, responses: list[MemberResponseDetail]
+) -> ResponseSummary:
+    """Generate response summary including pending members calculation."""
+    expected_count = len(ticket.expected_members) if ticket.expected_members else 0
+    received_count = len(responses)
+
+    clear_count = sum(1 for r in responses if r.status == "clear")
+    not_clear_count = sum(1 for r in responses if r.status == "not_clear")
+
+    # Calculate pending members - those expected but not yet responded
+    responded_codes = {r.member_code.upper() for r in responses}
+    pending_members = []
+
+    if ticket.expected_members:
+        for member in ticket.expected_members:
+            if member.member_code.upper() not in responded_codes:
+                pending_members.append(
+                    {
+                        "member_code": member.member_code,
+                        "member_name": member.member_name,
+                    }
+                )
+
+    # Create custom summary with pending members
+    return ResponseSummary(
+        ticket_id=ticket.ticket_id,
+        total_expected=expected_count,
+        total_received=received_count,
+        clear_count=clear_count,
+        not_clear_count=not_clear_count,
+        pending_members=pending_members,
+    )
 
 
 # Parcel Enrichment Router

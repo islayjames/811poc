@@ -559,3 +559,19 @@ class ParcelEnrichResponse(APIResponse):
     comparison: ParcelComparisonMetrics = Field(
         description="Comparison metrics and analysis"
     )
+
+
+# Response Retrieval API Models
+class ResponseRetrievalResponse(APIResponse):
+    """Response model for GET /tickets/{ticket_id}/responses endpoint."""
+
+    ticket_id: str = Field(..., description="ID of the ticket")
+    expected_members: list[dict[str, Any]] = Field(
+        default_factory=list,
+        description="List of expected utility members for this location",
+    )
+    responses: list[dict[str, Any]] = Field(
+        default_factory=list,
+        description="List of member responses sorted by response date",
+    )
+    summary: dict[str, Any] = Field(..., description="Response summary statistics")

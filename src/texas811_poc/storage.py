@@ -22,6 +22,7 @@ from typing import Any
 from texas811_poc.models import (
     AuditAction,
     AuditEventModel,
+    MemberResponseDetail,
     TicketModel,
     TicketStatus,
 )
@@ -451,9 +452,121 @@ class BackupManager:
 
 
 # Utility functions for common storage operations
+class MemberResponseStorage(JSONStorage):
+    """Storage operations for member responses."""
+
+    def __init__(self, base_path: Path):
+        """Initialize member response storage."""
+        super().__init__(base_path)
+        self.responses_dir = self.base_path / "responses"
+        self.responses_dir.mkdir(parents=True, exist_ok=True)
+
+    def save_response(self, response: MemberResponseDetail) -> None:
+        """
+        Save member response to storage.
+
+        Args:
+            response: Member response to save
+        """
+        file_path = self.get_response_file_path(
+            response.ticket_id, response.member_code
+        )
+        response_data = response.model_dump(mode="json")
+        self.save_json(response_data, file_path, create_backup=True)
+
+    def load_response(
+        self, ticket_id: str, member_code: str
+    ) -> MemberResponseDetail | None:
+        """
+        Load member response from storage.
+
+        Args:
+            ticket_id: ID of associated ticket
+            member_code: Member code of responding utility
+
+        Returns:
+            Member response model or None if not found
+        """
+        file_path = self.get_response_file_path(ticket_id, member_code)
+
+        if not file_path.exists():
+            return None
+
+        try:
+            response_data = self.load_json(file_path)
+            if response_data:
+                return MemberResponseDetail(**response_data)
+            return None
+        except Exception:
+            return None
+
+    def load_ticket_responses(self, ticket_id: str) -> list[MemberResponseDetail]:
+        """
+        Load all responses for a specific ticket.
+
+        Args:
+            ticket_id: ID of ticket
+
+        Returns:
+            List of member responses for the ticket
+        """
+        responses = []
+        ticket_responses_dir = self.responses_dir / ticket_id
+
+        if not ticket_responses_dir.exists():
+            return responses
+
+        for response_file in ticket_responses_dir.iterdir():
+            if response_file.is_file() and response_file.suffix == ".json":
+                try:
+                    response_data = self.load_json(response_file)
+                    if response_data:
+                        responses.append(MemberResponseDetail(**response_data))
+                except Exception:
+                    continue  # Skip corrupted response files
+
+        return responses
+
+    def delete_response(self, ticket_id: str, member_code: str) -> bool:
+        """
+        Delete member response from storage.
+
+        Args:
+            ticket_id: ID of associated ticket
+            member_code: Member code of responding utility
+
+        Returns:
+            True if response was deleted, False if not found
+        """
+        file_path = self.get_response_file_path(ticket_id, member_code)
+
+        if not file_path.exists():
+            return False
+
+        try:
+            file_path.unlink()
+
+            # Clean up empty ticket directory
+            ticket_dir = file_path.parent
+            if ticket_dir.exists() and not any(ticket_dir.iterdir()):
+                ticket_dir.rmdir()
+
+            return True
+        except OSError as e:
+            raise StorageError(
+                f"Failed to delete response {ticket_id}/{member_code}: {e}"
+            ) from e
+
+    def get_response_file_path(self, ticket_id: str, member_code: str) -> Path:
+        """Get file path for member response JSON file."""
+        ticket_dir = self.responses_dir / ticket_id
+        ticket_dir.mkdir(parents=True, exist_ok=True)
+        return ticket_dir / f"{member_code.upper()}.json"
+
+
 def create_storage_instances(
     base_path: str | Path,
-) -> tuple[TicketStorage, AuditStorage, BackupManager]:
+) -> tuple[TicketStorage, AuditStorage, MemberResponseStorage, BackupManager]:
     """
     Create all storage instances with shared base path.
 
@@ -461,10 +574,15 @@ def create_storage_instances(
         base_path: Base directory for all storage
 
     Returns:
-        Tuple of (ticket_storage, audit_storage, backup_manager)
+        Tuple of (ticket_storage, audit_storage, response_storage, backup_manager)
     """
     path = Path(base_path)
-    return (TicketStorage(path), AuditStorage(path), BackupManager(path))
+    return (
+        TicketStorage(path),
+        AuditStorage(path),
+        MemberResponseStorage(path),
+        BackupManager(path),
+    )
 
 
 def migrate_storage_format(old_path: Path, new_path: Path) -> None:

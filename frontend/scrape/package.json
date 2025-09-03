@@ -1,0 +1,20 @@
+{
+  "name": "scrape",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "record": "node record-session.js",
+    "codegen": "node codegen-record.js",
+    "annotate": "node annotate-recording.js",
+    "install-browsers": "npx playwright install",
+    "show-report": "npx playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

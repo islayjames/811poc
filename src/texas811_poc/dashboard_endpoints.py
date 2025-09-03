@@ -32,8 +32,8 @@ from texas811_poc.storage import create_storage_instances
 logger = logging.getLogger(__name__)
 
 # Initialize storage and compliance calculator
-ticket_storage, audit_storage, backup_manager = create_storage_instances(
-    settings.data_root
+ticket_storage, audit_storage, response_storage, backup_manager = (
+    create_storage_instances(settings.data_root)
 )
 compliance_calculator = ComplianceCalculator()
 

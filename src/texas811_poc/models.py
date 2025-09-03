@@ -15,7 +15,14 @@ from datetime import UTC, date, datetime
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    computed_field,
+    field_validator,
+    model_validator,
+)
 
 
 class TicketStatus(str, Enum):
@@ -25,6 +32,7 @@ class TicketStatus(str, Enum):
     VALIDATED = "validated"
     READY = "ready"
     SUBMITTED = "submitted"
+    IN_PROGRESS = "in_progress"
     RESPONSES_IN = "responses_in"
     READY_TO_DIG = "ready_to_dig"
     COMPLETED = "completed"
@@ -52,6 +60,13 @@ class GeometryType(str, Enum):
     MULTIPOLYGON = "MultiPolygon"
 
 
+class ResponseStatus(str, Enum):
+    """Member response status types."""
+
+    CLEAR = "clear"
+    NOT_CLEAR = "not_clear"
+
+
 class AuditAction(str, Enum):
     """Audit event action types."""
 
@@ -63,6 +78,8 @@ class AuditAction(str, Enum):
     GEOMETRY_GENERATED = "geometry_generated"
     SUBMISSION_PACKET_CREATED = "submission_packet_created"
     TICKET_SUBMITTED = "ticket_submitted"
+    MEMBER_RESPONSE_SUBMITTED = "member_response_submitted"
+    MEMBER_RESPONSE_UPDATED = "member_response_updated"
     RESPONSES_RECEIVED = "responses_received"
     TICKET_CANCELLED = "ticket_cancelled"
 
@@ -288,6 +305,11 @@ class TicketModel(BaseModel):
         None, description="Date when markings expire"
     )
 
+    # Response Tracking
+    expected_members: list["MemberInfo"] = Field(
+        default_factory=list, description="Expected utility members for this location"
+    )
+
     # Submission Tracking
     submitted_at: datetime | None = Field(
         None, description="When ticket was submitted to Texas811"
@@ -372,3 +394,166 @@ class SubmissionPacketResponse(BaseModel):
     )
 
     model_config = ConfigDict(use_enum_values=True)
+
+
+class MemberResponseRequest(BaseModel):
+    """Request model for member response submission."""
+
+    member_name: str = Field(
+        ..., min_length=1, description="Name of utility member providing response"
+    )
+    status: ResponseStatus = Field(
+        ..., description="Response status: clear or not_clear"
+    )
+    user_name: str = Field(
+        ..., min_length=1, description="Name/email of user submitting response"
+    )
+    facilities: str | None = Field(
+        None, description="Description of facilities in work area"
+    )
+    comment: str | None = Field(None, description="Additional comments or instructions")
+
+    model_config = ConfigDict(use_enum_values=True)
+
+
+class MemberResponseDetail(BaseModel):
+    """Detailed member response model with persistence fields."""
+
+    response_id: str = Field(
+        default_factory=lambda: str(uuid.uuid4()), description="Unique response ID"
+    )
+    ticket_id: str = Field(..., description="ID of associated ticket")
+    member_code: str = Field(..., description="Short code identifying utility member")
+    member_name: str = Field(
+        ..., min_length=1, description="Name of utility member providing response"
+    )
+    status: ResponseStatus = Field(
+        ..., description="Response status: clear or not_clear"
+    )
+    user_name: str = Field(
+        ..., min_length=1, description="Name/email of user submitting response"
+    )
+    facilities: str | None = Field(
+        None, description="Description of facilities in work area"
+    )
+    comment: str | None = Field(None, description="Additional comments or instructions")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        description="When response was originally submitted",
+    )
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        description="When response was last updated (for modifications)",
+    )
+
+    model_config = ConfigDict(use_enum_values=True)
+
+    @field_validator("updated_at", mode="before")
+    @classmethod
+    def set_updated_at(cls, v: Any) -> datetime:
+        """Always update the updated_at timestamp."""
+        return datetime.now(UTC)
+
+
+class ResponseSummary(BaseModel):
+    """Summary model for ticket response status."""
+
+    ticket_id: str = Field(..., description="ID of associated ticket")
+    total_expected: int = Field(
+        ..., ge=0, description="Total number of expected responses"
+    )
+    total_received: int = Field(
+        ..., ge=0, description="Total number of responses received"
+    )
+    clear_count: int = Field(..., ge=0, description="Number of 'clear' responses")
+    not_clear_count: int = Field(
+        ..., ge=0, description="Number of 'not clear' responses"
+    )
+    pending_members: list[dict[str, str]] = Field(
+        default_factory=list,
+        description="List of members expected but not yet responded",
+    )
+
+    model_config = ConfigDict(use_enum_values=True)
+
+    @computed_field
+    @property
+    def is_complete(self) -> bool:
+        """Whether all expected responses have been received."""
+        return self.total_received >= self.total_expected
+
+    @computed_field
+    @property
+    def all_clear(self) -> bool:
+        """Whether all responses are 'clear' status."""
+        return self.is_complete and self.not_clear_count == 0
+
+    @model_validator(mode="after")
+    def validate_response_counts(self) -> "ResponseSummary":
+        """Validate that response counts are consistent."""
+        # Allow total_received to equal or exceed total_expected since
+        # unknown members can submit responses and be added retroactively
+        # This is normal behavior in the response tracking system
+
+        # Clear + not_clear should equal total received
+        if self.clear_count + self.not_clear_count != self.total_received:
+            raise ValueError(
+                f"Clear count ({self.clear_count}) + not clear count "
+                f"({self.not_clear_count}) must equal total received "
+                f"({self.total_received})"
+            )
+
+        return self
+
+    @classmethod
+    def create_summary(
+        cls,
+        ticket_id: str,
+        total_expected: int,
+        clear_responses: int,
+        not_clear_responses: int,
+    ) -> "ResponseSummary":
+        """Create a response summary with calculated fields."""
+        total_received = clear_responses + not_clear_responses
+
+        return cls(
+            ticket_id=ticket_id,
+            total_expected=total_expected,
+            total_received=total_received,
+            clear_count=clear_responses,
+            not_clear_count=not_clear_responses,
+        )
+
+
+class MemberInfo(BaseModel):
+    """Information about utility members for response tracking."""
+
+    member_code: str = Field(
+        ..., min_length=1, description="Short code identifying utility member"
+    )
+    member_name: str = Field(
+        ..., min_length=1, description="Full name of utility member"
+    )
+    contact_phone: str | None = Field(
+        None, description="Contact phone number for member"
+    )
+    contact_email: str | None = Field(
+        None, description="Contact email address for member"
+    )
+    added_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        description="When member was added to expected members list",
+    )
+    is_active: bool = Field(
+        default=True, description="Whether member is currently active"
+    )
+
+    model_config = ConfigDict(use_enum_values=True)
+
+    @field_validator("contact_email")
+    @classmethod
+    def validate_email(cls, v: str | None) -> str | None:
+        """Basic email validation."""
+        if v and "@" not in v:
+            raise ValueError("Invalid email format")
+        return v
