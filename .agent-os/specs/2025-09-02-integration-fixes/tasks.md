@@ -1,237 +1,178 @@
-# Integration Fixes Task Plan
+# Spec Tasks
 
-> Spec: Frontend-Backend Integration Fixes
-> Created: 2025-09-02
-> Status: Ready for Parallel Execution
-> Execution Strategy: Multi-Agent Parallel Processing
+These are the tasks to be completed for the spec detailed in @.agent-os/specs/2025-09-02-integration-fixes/spec.md
 
-## Parallel Execution Groups
+> Created: 2025-09-03
+> Status: Ready for Implementation
 
-### Task Group A: Backend Data [backend-developer] ✅ COMPLETED
-**Can Start: Immediately**
-**Dependencies: None**
+## Tasks
 
-- [x] A.1: Verify backend API is running on http://localhost:8000
-- [x] A.2: Create seed data script at `src/texas811_poc/seed_data.py`
-- [x] A.3: Add 15-20 realistic Texas 811 tickets with varied statuses (50 tickets created)
-- [x] A.4: Include Houston, Dallas, Austin, San Antonio locations (includes Fort Worth too)
-- [x] A.5: Test data appears via GET /api/tickets endpoint (verified via /dashboard/tickets)
+### 1. Backend - Create Missing Responses API Endpoint
+**Goal**: Enable frontend to fetch utility member response data
+**Priority**: High (blocking frontend fixes)
 
-**Success Criteria**: Backend returns realistic ticket data with Texas cities ✅
-**Estimated Time**: 2 hours
-**Actual Completion**: 2025-09-02
+- [ ] 1.1 Write unit tests for responses endpoint
+  - [ ] 1.1.1 Test GET `/tickets/{ticket_id}/responses` returns expected response format
+  - [ ] 1.1.2 Test response aggregation from multiple JSON files in `/data/responses/{ticket_id}/`
+  - [ ] 1.1.3 Test handling of missing response directory
+  - [ ] 1.1.4 Test expected members list includes all members from ticket data
+  - [ ] 1.1.5 Test response format includes member_code, member_name, status, facilities, comment
 
----
+- [ ] 1.2 Implement responses endpoint in dashboard_endpoints.py
+  - [ ] 1.2.1 Create `get_ticket_responses` function to aggregate response files
+  - [ ] 1.2.2 Add GET `/tickets/{ticket_id}/responses` route handler
+  - [ ] 1.2.3 Handle cases where response directory doesn't exist
+  - [ ] 1.2.4 Return both actual responses and expected members list
+  - [ ] 1.2.5 Format response data with proper member details
 
-### Task Group B: Critical Frontend Fixes [frontend-developer] ✅ COMPLETED
-**Can Start: Immediately**
-**Dependencies: None**
+- [ ] 1.3 Run tests and verify endpoint functionality
+  - [ ] 1.3.1 Execute unit tests and ensure all pass
+  - [ ] 1.3.2 Test with real ticket data (ticket 0AT0)
+  - [ ] 1.3.3 Verify API response format matches frontend expectations
 
-- [x] B.1: Fix homepage redirect in `/app/page.tsx`
-  - Changed to client-side redirect with useRouter
-  - Added console logging for debugging
-  - Redirect now works properly
-- [x] B.2: Fix Mapbox token usage in `/components/map/GeoMapBox.tsx`
-  - Verified token is being read from environment
-  - Added debug logging to confirm token presence
-  - Token is properly configured and accessible
-- [x] B.3: Remove "Unknown" defaults in `/app/api/tickets/[id]/route.ts` (lines 55-67)
-  - Changed defaults to null values
-  - Frontend will handle display logic
-  - No more hardcoded "Unknown" strings
+### 2. Backend - Fix Submission Packet Generation
+**Goal**: Ensure all tickets have complete submission_packet data
+**Priority**: Medium (fixes packet view display)
 
-**Success Criteria**: Homepage redirects, maps display, data shows without "Unknown" ✅
-**Estimated Time**: 2 hours
-**Actual Completion**: 2025-09-02
+- [ ] 2.1 Write tests for submission packet generation
+  - [ ] 2.1.1 Test packet generation includes all Texas811 required fields
+  - [ ] 2.1.2 Test packet data format matches expected structure
+  - [ ] 2.1.3 Test packet creation when ticket reaches READY status
 
----
+- [ ] 2.2 Update ticket confirmation endpoint
+  - [ ] 2.2.1 Ensure submission_packet is generated and stored for all tickets
+  - [ ] 2.2.2 Include all required fields in proper Texas811 format
+  - [ ] 2.2.3 Store packet data when ticket status becomes READY
 
-### Task Group C: Navigation & UX Fixes [frontend-developer] ✅ COMPLETED
-**Can Start: Immediately**
-**Dependencies: None**
+- [ ] 2.3 Run tests and verify packet generation
+  - [ ] 2.3.1 Execute unit tests and ensure all pass
+  - [ ] 2.3.2 Test with existing tickets to generate missing packet data
 
-- [x] C.1: Fix navigation in `/app/tickets/[id]/page.tsx` (lines 173, 379)
-  - Replaced all `router.back()` with `router.push('/tickets')`
-  - Navigation now always goes to tickets list
-- [x] C.2: Fix scrolling snap-back in `/app/tickets/page.tsx` (lines 89-94)
-  - Removed automatic scrolling code
-  - No more unwanted scroll jumps
-- [x] C.3: Simplify async params in `/app/tickets/[id]/page.tsx` (lines 74-88)
-  - Refactored to use async component pattern
-  - Created TicketDetailContent wrapper
-  - Params are now resolved at component level
+### 3. Frontend - Fix Map GPS Validation and Address Fallback
+**Goal**: Display map correctly when GPS coordinates are invalid
+**Priority**: High (critical user experience issue)
 
-**Success Criteria**: Navigation works predictably, no scrolling jumps ✅
-**Estimated Time**: 1.5 hours
-**Actual Completion**: 2025-09-02
+- [ ] 3.1 Write tests for GPS validation in GeoMapBox component
+  - [ ] 3.1.1 Test GPS coordinate validation (lat: -90 to 90, lng: -180 to 180)
+  - [ ] 3.1.2 Test fallback to address geocoding when GPS is invalid
+  - [ ] 3.1.3 Test map centering with valid coordinates
+  - [ ] 3.1.4 Test map centering with address fallback
+  - [ ] 3.1.5 Test display of address marker when GPS unavailable
 
----
+- [ ] 3.2 Update GeoMapBox component with validation logic
+  - [ ] 3.2.1 Add GPS coordinate validation function
+  - [ ] 3.2.2 Implement address geocoding fallback using Mapbox API
+  - [ ] 3.2.3 Update map centering logic to handle invalid GPS
+  - [ ] 3.2.4 Add address marker display when GPS is unavailable
+  - [ ] 3.2.5 Handle error cases gracefully
 
-### Task Group D: Data Integration Testing [frontend-developer + test-runner] ✅ COMPLETED
-**Can Start: After Groups A & C complete**
-**Dependencies: Backend data (A), Navigation fixes (C)**
+- [ ] 3.3 Run tests and verify map display fixes
+  - [ ] 3.3.1 Execute component tests and ensure all pass
+  - [ ] 3.3.2 Test with ticket 0AT0 (invalid GPS: lat 1.0, lng 2025.0)
+  - [ ] 3.3.3 Verify map centers on address when GPS is invalid
 
-- [x] D.1: Verify frontend displays backend data correctly
-  - Frontend successfully fetches and displays data from backend
-- [x] D.2: Test all ticket fields show real data (no "Unknown")
-  - Removed all hardcoded "Unknown" defaults from API routes
-- [x] D.3: Confirm map displays with actual coordinates
-  - Mapbox token verified and functioning
-- [x] D.4: Test pagination works with backend data
-  - Pagination controls working (minor scroll issue remains)
-- [x] D.5: Verify status updates persist to backend
-  - Status update buttons display correctly for appropriate states
+### 4. Frontend - Add Responses API Client Integration
+**Goal**: Connect frontend to new responses endpoint
+**Priority**: High (enables response display fixes)
 
-**Success Criteria**: Full data flow from backend to UI working ✅
-**Estimated Time**: 1 hour
-**Actual Completion**: 2025-09-02
+- [ ] 4.1 Write tests for responses API integration
+  - [ ] 4.1.1 Test API client function for fetching ticket responses
+  - [ ] 4.1.2 Test error handling for missing responses
+  - [ ] 4.1.3 Test response data parsing and formatting
 
----
+- [ ] 4.2 Update API client and proxy route
+  - [ ] 4.2.1 Add `getTicketResponses` function to lib/api.ts
+  - [ ] 4.2.2 Update proxy route in app/api/tickets/[id]/responses/route.ts
+  - [ ] 4.2.3 Handle API errors and loading states
 
-### Task Group E: Error Handling & Polish [frontend-developer] ⚠️ PARTIAL
-**Can Start: After Group D complete**
-**Dependencies: Core functionality working (D)**
+- [ ] 4.3 Run tests and verify API integration
+  - [ ] 4.3.1 Execute API tests and ensure all pass
+  - [ ] 4.3.2 Test with real ticket data to verify data flow
 
-- [x] E.1: Add 404 handling for non-existent tickets
-  - Non-existent tickets handled gracefully
-- [x] E.2: Fix loading state timing issues
-  - Loading states working correctly
-  - Skeletons display during data fetch
-- [ ] E.3: Add error recovery mechanisms
-  - Retry buttons exist but backend error rate high
-  - User messages display but backend unhealthy
+### 5. Frontend - Reorganize Overview Tab Layout
+**Goal**: Improve UI organization to match Texas811 submission flow
+**Priority**: Medium (user experience improvement)
 
-**Success Criteria**: Graceful error handling, smooth loading states ⚠️
-**Estimated Time**: 1.5 hours
-**Note**: Backend showing high error rate (14%) needs investigation
+- [ ] 5.1 Write tests for reorganized Overview tab
+  - [ ] 5.1.1 Test Utility Responses section displays all expected members
+  - [ ] 5.1.2 Test Current Summary section remains functional
+  - [ ] 5.1.3 Test Map and Location section includes driving directions
+  - [ ] 5.1.4 Test Work Description section displays all required fields
+  - [ ] 5.1.5 Test proper section ordering and visibility
 
----
+- [ ] 5.2 Update ticket detail page component structure
+  - [ ] 5.2.1 Reorder sections: Utility Responses (top), Current Summary, Map and Location, Work Description
+  - [ ] 5.2.2 Rename "Map & Description" to "Map and Location"
+  - [ ] 5.2.3 Add driving_directions field to Map and Location section
+  - [ ] 5.2.4 Create Work Description section with marking_instructions, remarks, caller_company, work_type, work_description
+  - [ ] 5.2.5 Add duration, explosives, white_lining_complete fields to Work Description
 
-### Task Group F: Final Validation [test-runner]
-**Can Start: After all groups complete**
-**Dependencies: All tasks (A-E)**
+- [ ] 5.3 Run tests and verify layout reorganization
+  - [ ] 5.3.1 Execute component tests and ensure all pass
+  - [ ] 5.3.2 Test with real ticket data to verify all sections display correctly
+  - [ ] 5.3.3 Verify responsive layout works on different screen sizes
 
-- [ ] F.1: Run full Playwright test suite
-- [ ] F.2: Manual testing of all user flows
-- [ ] F.3: Performance testing (page loads < 3s)
-- [ ] F.4: Cross-browser testing (Chrome, Firefox, Safari)
-- [ ] F.5: Document any remaining issues
+### 6. Frontend - Fix Response Display to Show All Members
+**Goal**: Display complete utility member response status
+**Priority**: High (critical functionality)
 
-**Success Criteria**: All tests pass, no regressions
-**Estimated Time**: 1 hour
+- [ ] 6.1 Write tests for updated response display
+  - [ ] 6.1.1 Test display of all expected members from ticket data
+  - [ ] 6.1.2 Test "No response yet" status for non-responding members
+  - [ ] 6.1.3 Test response details display (facilities, comments) when available
+  - [ ] 6.1.4 Test response status indicators and formatting
 
-## Agent Delegation Strategy
+- [ ] 6.2 Update Utility Responses section in ticket page
+  - [ ] 6.2.1 Fetch expected_members from ticket data
+  - [ ] 6.2.2 Fetch actual responses from new API endpoint
+  - [ ] 6.2.3 Display all expected members with response status
+  - [ ] 6.2.4 Show "No response yet" for members who haven't responded
+  - [ ] 6.2.5 Include response details (facilities, comments) when available
 
-### Primary Agents
-- **backend-developer**: Owns Group A entirely
-- **frontend-developer**: Owns Groups B, C, D (frontend), E
-- **test-runner**: Supports D (testing), owns F
-- **deep-debugger**: On-call for any blocking issues
+- [ ] 6.3 Run tests and verify response display
+  - [ ] 6.3.1 Execute component tests and ensure all pass
+  - [ ] 6.3.2 Test with ticket 0AT0 which has responses
+  - [ ] 6.3.3 Verify all expected members show in responses table
 
-### Parallel Execution Timeline
-```
-Hour 0-2: Groups A, B, C execute in parallel
-Hour 2-3: Group D (integration testing)
-Hour 3-4: Group E (polish)
-Hour 4-5: Group F (validation)
-```
+### 7. Frontend - Fix Packet View Data Mapping
+**Goal**: Display complete submission packet data in correct Texas811 format
+**Priority**: Medium (data presentation improvement)
 
-### Communication Points
-- After Group A: backend-developer signals data ready
-- After Group C: frontend-developer signals navigation fixed
-- After Group D: test-runner reports integration status
-- After Group F: test-runner provides final sign-off
+- [ ] 7.1 Write tests for updated packet view mapping
+  - [ ] 7.1.1 Test Location section displays address and driving directions
+  - [ ] 7.1.2 Test Instructions section displays locate instructions and remarks
+  - [ ] 7.1.3 Test Work Details section displays type, nature, company, duration
+  - [ ] 7.1.4 Test Flags section displays equipment type, explosives, boring, depth flags
 
-## Testing Approach
+- [ ] 7.2 Update SubmitPacketView component data mapping
+  - [ ] 7.2.1 Map Location fields: address, driving_directions
+  - [ ] 7.2.2 Map Instructions fields: marking_instructions, remarks
+  - [ ] 7.2.3 Map Work Details fields: work_type, work_description, caller_company, duration
+  - [ ] 7.2.4 Map Flags fields: explosives_used, white_lining_complete, boring_crossing, depth
+  - [ ] 7.2.5 Handle missing or null packet data gracefully
 
-### Unit Testing (Per Task)
-- Each task includes inline verification
-- Console logging for debugging
-- Browser DevTools monitoring
+- [ ] 7.3 Run tests and verify packet view fixes
+  - [ ] 7.3.1 Execute component tests and ensure all pass
+  - [ ] 7.3.2 Test with tickets that have complete submission_packet data
+  - [ ] 7.3.3 Verify all fields display correctly in Texas811 format
 
-### Integration Testing (Group D)
-- Frontend-backend data flow
-- API response handling
-- State management
+### 8. Integration Testing and Validation
+**Goal**: Ensure all fixes work together properly
+**Priority**: High (system validation)
 
-### E2E Testing (Group F)
-- Complete user journeys
-- Cross-browser validation
-- Performance benchmarks
+- [ ] 8.1 End-to-end testing with real data
+  - [ ] 8.1.1 Test complete workflow with ticket 0AT0
+  - [ ] 8.1.2 Verify responses display correctly for all expected members
+  - [ ] 8.1.3 Verify map displays with address fallback for invalid GPS
+  - [ ] 8.1.4 Verify Overview tab shows all sections in correct order
+  - [ ] 8.1.5 Verify Packet view displays complete submission data
 
-## Risk Mitigation
+- [ ] 8.2 Cross-browser and responsive testing
+  - [ ] 8.2.1 Test functionality in Chrome, Firefox, Safari
+  - [ ] 8.2.2 Test responsive layout on mobile and tablet devices
+  - [ ] 8.2.3 Verify map component works across browsers
 
-### Potential Blockers & Solutions
-1. **Backend not running**: Start with `uvicorn app.main:app --reload`
-2. **Environment variables missing**: Check `.env.local` exists
-3. **CORS issues**: Verify backend allows frontend origin
-4. **Token invalid**: Get new Mapbox token if needed
-
-### Rollback Strategy
-- Git commit after each task group
-- Can revert specific changes if needed
-- Keep backend and frontend changes separate
-
-## Success Metrics
-
-### Quantitative
-- [x] 0 "Unknown" values displayed ✅
-- [x] < 3 second page load times ✅
-- [ ] 100% Playwright tests passing (7/12 failing due to backend issues)
-- [x] 15+ test tickets visible (50 tickets in database) ✅
-
-### Qualitative
-- [ ] Smooth navigation between pages
-- [ ] No scrolling jumps or glitches
-- [ ] Maps display correctly
-- [ ] Error states are user-friendly
-
-## Execution Command
-
-To execute this plan with parallel agent delegation:
-```
-/execute-tasks --parallel --agents=backend-developer,frontend-developer,test-runner,deep-debugger
-```
-
----
-
-*This task plan enables 50% time savings through parallelization (3-4 hours vs 6-8 hours sequential)*
-
-## Current Status (2025-09-02) - SPEC COMPLETED
-
-### Completed Work
-- ✅ Backend seed data created (50 realistic Texas tickets)
-- ✅ Homepage redirect fixed (using client-side redirect)
-- ✅ Mapbox token configuration verified
-- ✅ Removed all "Unknown" defaults from API
-- ✅ Navigation fixes (all back buttons go to /tickets)
-- ✅ Fixed infinite reload loop with URL params
-- ✅ Data integration between frontend and backend working
-- ✅ **Data Replacement Complete**: Replaced all test data with user's 15 specific tickets
-  - Fixed invalid status values ('valid_pending_confirm' → 'ready', 'expiring' → 'expired')
-  - Removed all old test data, sessions, and audit logs
-  - Backend now correctly serves all 15 tickets
-  - Frontend displays all tickets without "0 tickets to show" error
-
-### Resolved Issues
-1. **Backend Connection**: Fixed backend not running (ECONNREFUSED error)
-2. **Data Validation**: Fixed 7 tickets with invalid status values that prevented loading
-3. **Ticket Count**: Resolved issue where only 8 of 15 tickets were being served
-
-### Remaining Minor Issues (Non-blocking)
-1. **Scroll-to-top Issue**: Page scrolls to top when filters or pagination clicked
-   - Attempted fixes: removed scroll code, added { scroll: false }, manual scroll restoration
-   - Root cause: Appears to be Next.js 15 router.replace behavior
-   - Impact: Minor UX issue but doesn't break functionality
-
-2. **Multiple Homepage Redirects**: Extra navigation events on homepage redirect
-   - Homepage redirects successfully but with minor performance overhead
-   - Impact: Negligible, doesn't affect functionality
-
-### Overall Assessment
-- ✅ **SPEC COMPLETE**: All critical integration objectives achieved
-- ✅ Frontend successfully displays backend data
-- ✅ Navigation works predictably (no infinite loops)
-- ✅ All user-provided ticket data loaded and displayed correctly
-- ✅ System ready for POC demonstration
-- Minor UX refinements can be addressed in future iterations
+- [ ] 8.3 Performance and error handling validation
+  - [ ] 8.3.1 Test API response times for responses endpoint
+  - [ ] 8.3.2 Test error handling for missing data scenarios
+  - [ ] 8.3.3 Test loading states and user feedback

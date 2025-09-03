@@ -304,6 +304,227 @@ Retrieve all member responses for a ticket with summary statistics.
 - Response timestamps use UTC timezone
 - Responses support upsert behavior - submitting for same member_code updates existing response
 
+## Dashboard Endpoints
+
+The dashboard endpoints provide ticket management and tracking functionality for compliance officers and field managers.
+
+### GET /dashboard/tickets
+
+Get list of tickets with filtering and pagination.
+
+**Purpose**: Retrieve tickets with various filters for dashboard display.
+
+**Query Parameters:**
+- `status` (string, optional): Filter by ticket status
+- `county` (string, optional): Filter by county
+- `city` (string, optional): Filter by city
+- `created_since` (string, optional): Filter by creation date (ISO format)
+- `updated_since` (string, optional): Filter by update date (ISO format)
+- `limit` (integer, optional): Maximum number of tickets to return (1-100, default: 50)
+- `offset` (integer, optional): Number of tickets to skip for pagination (default: 0)
+
+**Response (200 OK):**
+```json
+{
+  "tickets": [
+    {
+      "ticket_id": "5C7T",
+      "session_id": "2574458426",
+      "status": "responses_in",
+      "county": "MONTGOMERY",
+      "city": "NEW CANEY",
+      "address": "CROSS PINES DR",
+      "cross_street": "THE TRAILS DR",
+      "work_description": "Replace-Pole",
+      "caller_name": "TRAVIS PARTEN",
+      "caller_phone": "(979) 997-2171",
+      "excavator_company": "BRIGHT STAR SOLUTIONS",
+      "work_start_date": "2025-09-04",
+      "lawful_start_date": "2025-09-04",
+      "ticket_expires_date": "2025-09-18",
+      "expected_members": [
+        {
+          "member_code": "TGC",
+          "member_name": "Kinder Morgan",
+          "is_active": true
+        }
+      ],
+      "created_at": "2025-09-03T17:59:28.747349Z",
+      "updated_at": "2025-09-03T17:59:28.775903Z"
+    }
+  ],
+  "total_count": 17,
+  "page": 1,
+  "page_size": 50
+}
+```
+
+### GET /dashboard/tickets/{ticket_id}
+
+Get detailed ticket information with audit history and countdown info.
+
+**Path Parameters:**
+- `ticket_id` (string, required): Unique ticket identifier
+
+**Response (200 OK):**
+```json
+{
+  "ticket_id": "5C7T",
+  "session_id": "2574458426",
+  "status": "responses_in",
+  "county": "MONTGOMERY",
+  "city": "NEW CANEY",
+  "address": "CROSS PINES DR",
+  "work_description": "Replace-Pole",
+  "audit_history": [
+    {
+      "timestamp": "2025-09-03T17:59:28.747349Z",
+      "action": "ticket_created",
+      "user": "sync-import",
+      "details": {}
+    },
+    {
+      "timestamp": "2025-09-03T19:43:17.126283Z",
+      "action": "responses_received",
+      "user": "system",
+      "details": {"member_code": "TGC"}
+    }
+  ],
+  "countdown_info": {
+    "days_until_start": 1,
+    "days_until_expiry": 15,
+    "days_until_marking_expiry": 14,
+    "can_start_today": false,
+    "can_start_work": false,
+    "markings_valid": true,
+    "is_expired": false,
+    "is_urgent": true,
+    "requires_action": false,
+    "action_required": null,
+    "status_description": "Responses received - markings valid (15 days remaining)"
+  },
+  "responses": [
+    {
+      "response_id": "uuid",
+      "member_code": "TGC",
+      "member_name": "Kinder Morgan - Tennessee Gas Pipeline",
+      "status": "not_clear",
+      "user_name": "kindermorgan.pr",
+      "facilities": "Gas",
+      "comment": "In Conflict",
+      "created_at": "2025-09-02T14:54:00Z"
+    }
+  ]
+}
+```
+
+### POST /dashboard/tickets/{ticket_id}/mark-submitted
+
+Mark a ticket as submitted to Texas 811.
+
+**Path Parameters:**
+- `ticket_id` (string, required): Unique ticket identifier
+
+**Request Body:**
+```json
+{
+  "submission_ticket_number": "2024123456",  // optional
+  "notes": "Submitted via portal"           // optional
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "ticket_id": "5C7T",
+  "status": "submitted",
+  "submitted_at": "2025-09-03T10:35:00Z",
+  "submission_ticket_number": "2024123456",
+  "message": "Ticket marked as submitted successfully"
+}
+```
+
+### POST /dashboard/tickets/{ticket_id}/mark-responses-in
+
+Mark that all expected responses have been received.
+
+**Path Parameters:**
+- `ticket_id` (string, required): Unique ticket identifier
+
+**Request Body:**
+```json
+{
+  "notes": "All utilities have responded"  // optional
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "ticket_id": "5C7T",
+  "status": "responses_in",
+  "responses_marked_at": "2025-09-03T10:35:00Z",
+  "message": "Ticket marked as responses received"
+}
+```
+
+### DELETE /dashboard/tickets/{ticket_id}
+
+Cancel or delete a ticket.
+
+**Path Parameters:**
+- `ticket_id` (string, required): Unique ticket identifier
+
+**Response (200 OK):**
+```json
+{
+  "ticket_id": "5C7T",
+  "status": "cancelled",
+  "message": "Ticket cancelled successfully"
+}
+```
+
+### GET /dashboard/tickets/{ticket_id}/responses
+
+Get all responses for a specific ticket.
+
+**Path Parameters:**
+- `ticket_id` (string, required): Unique ticket identifier
+
+**Response (200 OK):**
+```json
+{
+  "ticket_id": "5C7T",
+  "responses": [
+    {
+      "response_id": "uuid",
+      "member_code": "TGC",
+      "member_name": "Kinder Morgan - Tennessee Gas Pipeline",
+      "status": "not_clear",
+      "user_name": "kindermorgan.pr",
+      "facilities": "Gas",
+      "comment": "In Conflict",
+      "created_at": "2025-09-02T14:54:00Z",
+      "updated_at": "2025-09-02T14:54:00Z"
+    },
+    {
+      "response_id": "uuid",
+      "member_code": "ETX01",
+      "member_name": "Entergy Texas Inc",
+      "status": "clear",
+      "user_name": "digtix.pr",
+      "facilities": "Electric",
+      "comment": "Bradley Moore: clear",
+      "created_at": "2025-09-02T19:05:00Z",
+      "updated_at": "2025-09-02T19:05:00Z"
+    }
+  ],
+  "total_responses": 2,
+  "clear_count": 1,
+  "not_clear_count": 1
+}
+```
+
 ## Parcel Enrichment Endpoint
 
 ### POST /parcels/enrich

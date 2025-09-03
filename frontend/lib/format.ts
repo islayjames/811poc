@@ -1,4 +1,4 @@
-import type { TicketStatus } from "./types"
+import type { TicketStatus, ResponseStatus } from "./types"
 
 // Format dates for display
 export function formatDate(dateString: string | null): string {
@@ -162,4 +162,60 @@ export function isWithinDays(dateString: string | null, days: number): boolean {
   const diffDays = diffMs / (1000 * 60 * 60 * 24)
 
   return diffDays <= days && diffDays >= 0
+}
+
+// Response status formatting functions
+export function getResponseStatusLabel(status: ResponseStatus | string): string {
+  switch (status) {
+    case "Located":
+      return "Located – Facility Marked"
+    case "Clear":
+      return "Clear/No Conflict"
+    case "InConflict":
+      return "In Conflict"
+    case "Delayed":
+      return "Delayed Response"
+    case "CannotLocate":
+      return "Cannot Locate"
+    case "LocatedToMeter":
+      return "Located to Meter"
+    case "Cancelled":
+      return "Cancelled"
+    case "Positive":
+      return "Positive Response"
+    case "Negative":
+      return "Negative Response"
+    case "Caution":
+      return "Caution"
+    case "No Response":
+      return "No Response Yet"
+    default:
+      return status as string
+  }
+}
+
+export function getResponseStatusColor(status: ResponseStatus | string): string {
+  switch (status) {
+    case "Located":
+    case "Positive":
+      return "bg-green-100 text-green-900 border-green-300"
+    case "Clear":
+    case "Negative":
+      return "bg-blue-100 text-blue-900 border-blue-300"
+    case "InConflict":
+    case "Caution":
+      return "bg-yellow-100 text-yellow-900 border-yellow-300"
+    case "Delayed":
+      return "bg-orange-100 text-orange-900 border-orange-300"
+    case "CannotLocate":
+      return "bg-gray-100 text-gray-900 border-gray-300"
+    case "LocatedToMeter":
+      return "bg-teal-100 text-teal-900 border-teal-300"
+    case "Cancelled":
+      return "bg-slate-100 text-slate-900 border-slate-300"
+    case "No Response":
+      return "bg-gray-50 text-gray-600 border-gray-200"
+    default:
+      return "bg-gray-100 text-gray-900 border-gray-300"
+  }
 }

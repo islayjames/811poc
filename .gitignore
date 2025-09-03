@@ -4,3 +4,6 @@ __pycache__/
 coverage.json
 data/
 .env
+node_modules/
+scrape/backup/
+scrape/node_modules/

@@ -17,7 +17,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from texas811_poc.main import app
 from texas811_poc.models import (
     AuditAction,
@@ -63,7 +62,10 @@ def setup_test_storage(monkeypatch):
         "texas811_poc.dashboard_endpoints.audit_storage", test_storage[1]
     )
     monkeypatch.setattr(
-        "texas811_poc.dashboard_endpoints.backup_manager", test_storage[2]
+        "texas811_poc.dashboard_endpoints.response_storage", test_storage[2]
+    )
+    monkeypatch.setattr(
+        "texas811_poc.dashboard_endpoints.backup_manager", test_storage[3]
     )
 
     yield
@@ -78,7 +80,9 @@ def setup_test_storage(monkeypatch):
 @pytest.fixture
 def sample_tickets():
     """Create sample tickets for dashboard testing."""
-    ticket_storage, audit_storage, _ = create_storage_instances(TEST_DATA_ROOT)
+    ticket_storage, audit_storage, response_storage, backup_manager = (
+        create_storage_instances(TEST_DATA_ROOT)
+    )
 
     # Create tickets with different statuses and dates
     tickets_data = [
@@ -783,3 +787,220 @@ class TestDashboardIntegration:
 
             assert detail_response.status_code == 200
             assert (detail_end - detail_start) < 0.5  # Under 500ms each
+
+
+class TestTicketResponsesEndpoint:
+    """Test suite for the GET /dashboard/tickets/{ticket_id}/responses endpoint."""
+
+    @pytest.fixture
+    def sample_ticket_with_responses(self):
+        """Create a sample ticket with response data."""
+        from datetime import UTC, datetime
+
+        from texas811_poc.models import MemberInfo, MemberResponseDetail, ResponseStatus
+        from texas811_poc.storage import create_storage_instances
+
+        # Create test ticket
+        ticket = TicketModel(
+            ticket_id="TEST_RESP_001",
+            session_id="session_resp_001",
+            status=TicketStatus.SUBMITTED,
+            county="Harris",
+            city="Houston",
+            address="123 Test Response St",
+            work_description="Test excavation with responses",
+            expected_members=[
+                MemberInfo(member_code="COMST", member_name="Comcast"),
+                MemberInfo(member_code="CPTEN01", member_name="CenterPoint Energy"),
+                MemberInfo(member_code="NAME", member_name="Natural Gas"),
+            ],
+        )
+
+        # Set up storage
+        ticket_storage, audit_storage, response_storage, backup_manager = (
+            create_storage_instances(TEST_DATA_ROOT)
+        )
+
+        # Save ticket
+        ticket_storage.save_ticket(ticket)
+
+        # Create sample responses
+        responses = [
+            MemberResponseDetail(
+                ticket_id="TEST_RESP_001",
+                member_code="COMST",
+                member_name="Comcast",
+                status=ResponseStatus.CLEAR,
+                user_name="test_user",
+                facilities=None,
+                comment="All clear to dig",
+                created_at=datetime.now(UTC),
+            ),
+            MemberResponseDetail(
+                ticket_id="TEST_RESP_001",
+                member_code="CPTEN01",
+                member_name="CenterPoint Energy",
+                status=ResponseStatus.NOT_CLEAR,
+                user_name="test_user",
+                facilities="Gas line present",
+                comment="Underground gas line - marked on site",
+                created_at=datetime.now(UTC),
+            ),
+        ]
+
+        # Save responses
+        for response in responses:
+            response_storage.save_response(response)
+
+        return ticket, responses
+
+    def test_get_responses_success(self, sample_ticket_with_responses):
+        """Test successful retrieval of ticket responses."""
+        ticket, expected_responses = sample_ticket_with_responses
+
+        response = client.get(
+            f"/dashboard/tickets/{ticket.ticket_id}/responses", headers=AUTH_HEADERS
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+
+        # Check response structure
+        assert "ticket_id" in data
+        assert "responses" in data
+        assert "expected_members" in data
+        assert "summary" in data
+
+        assert data["ticket_id"] == "TEST_RESP_001"
+        assert len(data["responses"]) == 2
+        assert len(data["expected_members"]) == 3
+
+        # Check response details
+        responses = data["responses"]
+        comst_response = next(
+            (r for r in responses if r["member_code"] == "COMST"), None
+        )
+        assert comst_response is not None
+        assert comst_response["status"] == "clear"
+        assert comst_response["comment"] == "All clear to dig"
+
+        cpten_response = next(
+            (r for r in responses if r["member_code"] == "CPTEN01"), None
+        )
+        assert cpten_response is not None
+        assert cpten_response["status"] == "not_clear"
+        assert cpten_response["facilities"] == "Gas line present"
+
+        # Check expected members
+        expected_members = data["expected_members"]
+        member_codes = [m["member_code"] for m in expected_members]
+        assert "COMST" in member_codes
+        assert "CPTEN01" in member_codes
+        assert "NAME" in member_codes
+
+        # Check summary statistics
+        summary = data["summary"]
+        assert summary["total_expected"] == 3
+        assert summary["total_responses"] == 2
+        assert summary["pending_count"] == 1
+        assert summary["clear_count"] == 1
+        assert summary["not_clear_count"] == 1
+
+    def test_get_responses_ticket_not_found(self):
+        """Test responses endpoint with non-existent ticket."""
+        response = client.get(
+            "/dashboard/tickets/NONEXISTENT/responses", headers=AUTH_HEADERS
+        )
+
+        assert response.status_code == 404
+        assert "not found" in response.json()["detail"].lower()
+
+    def test_get_responses_no_responses_yet(self):
+        """Test responses endpoint for ticket with no responses yet."""
+        from texas811_poc.models import MemberInfo
+
+        # Create ticket without responses
+        ticket = TicketModel(
+            ticket_id="TEST_NO_RESP",
+            session_id="session_no_resp",
+            status=TicketStatus.SUBMITTED,
+            county="Dallas",
+            city="Dallas",
+            address="456 No Response Ave",
+            work_description="Test excavation without responses",
+            expected_members=[
+                MemberInfo(member_code="TEST1", member_name="Test Utility 1"),
+                MemberInfo(member_code="TEST2", member_name="Test Utility 2"),
+            ],
+        )
+
+        from texas811_poc.storage import create_storage_instances
+
+        ticket_storage, _, _, _ = create_storage_instances(TEST_DATA_ROOT)
+        ticket_storage.save_ticket(ticket)
+
+        response = client.get(
+            f"/dashboard/tickets/{ticket.ticket_id}/responses", headers=AUTH_HEADERS
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+
+        assert data["ticket_id"] == "TEST_NO_RESP"
+        assert data["responses"] == []
+        assert len(data["expected_members"]) == 2
+        assert data["summary"]["total_expected"] == 2
+        assert data["summary"]["total_responses"] == 0
+        assert data["summary"]["pending_count"] == 2
+        assert data["summary"]["clear_count"] == 0
+        assert data["summary"]["not_clear_count"] == 0
+
+    def test_get_responses_no_expected_members(self):
+        """Test responses endpoint for ticket with no expected members."""
+        # Create ticket without expected members
+        ticket = TicketModel(
+            ticket_id="TEST_NO_EXPECTED",
+            session_id="session_no_expected",
+            status=TicketStatus.DRAFT,
+            county="Travis",
+            city="Austin",
+            address="789 No Expected Members St",
+            work_description="Test excavation without expected members",
+            expected_members=[],
+        )
+
+        from texas811_poc.storage import create_storage_instances
+
+        ticket_storage, _, _, _ = create_storage_instances(TEST_DATA_ROOT)
+        ticket_storage.save_ticket(ticket)
+
+        response = client.get(
+            f"/dashboard/tickets/{ticket.ticket_id}/responses", headers=AUTH_HEADERS
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+
+        assert data["ticket_id"] == "TEST_NO_EXPECTED"
+        assert data["responses"] == []
+        assert data["expected_members"] == []
+        assert data["summary"]["total_expected"] == 0
+        assert data["summary"]["total_responses"] == 0
+        assert data["summary"]["pending_count"] == 0
+
+    def test_get_responses_unauthorized(self):
+        """Test responses endpoint without authorization."""
+        response = client.get("/dashboard/tickets/TEST001/responses")
+
+        assert response.status_code == 403
+        assert "not authenticated" in response.json()["detail"].lower()
+
+    def test_get_responses_invalid_api_key(self):
+        """Test responses endpoint with invalid API key."""
+        response = client.get(
+            "/dashboard/tickets/TEST001/responses",
+            headers={"Authorization": "Bearer invalid-key"},
+        )
+
+        assert response.status_code == 401
+        assert "invalid api key" in response.json()["detail"].lower()

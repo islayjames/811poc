@@ -5,13 +5,14 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * TEXAS 811 PRODUCTION TICKET SCRAPER - FINAL VERSION WITH COMPREHENSIVE FIXES
+ * TEXAS 811 PRODUCTION TICKET SCRAPER - FINAL VERSION WITH COMPREHENSIVE FIXES + RESPONSE EXTRACTION
  *
  * Fixes Applied:
  * 1. Comprehensive print dialog handling (multiple suppression methods)
  * 2. Proper starting position verification (detailed logging)
  * 3. Enhanced error recovery and timeout handling
  * 4. Multiple fallback strategies for content extraction
+ * 5. Utility member response data extraction with multiple detection methods
  */
 
 // Configuration
@@ -298,10 +299,178 @@ async function extractTicketDataWithFallbacks(popupPage) {
         } : { lat: null, lng: null };
       };
 
+      const getUtilityMemberResponses = () => {
+        const responses = [];
+
+        // Method 1: Look for response tables or sections
+        const responseSections = [
+          // Common selectors for response sections
+          root.querySelector('#memberResponses'),
+          root.querySelector('#utilityResponses'),
+          root.querySelector('.member-responses'),
+          root.querySelector('.utility-responses'),
+          ...Array.from(root.querySelectorAll('h2, h3, h4')).filter(h =>
+            getText(h).toLowerCase().includes('member') ||
+            getText(h).toLowerCase().includes('response') ||
+            getText(h).toLowerCase().includes('utility')
+          ).map(h => h.nextElementSibling)
+        ].filter(el => el !== null);
+
+        for (const section of responseSections) {
+          if (!section) continue;
+
+          // Look for table rows in response section
+          const responseRows = section.querySelectorAll('tr');
+          for (const row of responseRows) {
+            const cells = Array.from(row.querySelectorAll('td, th'));
+            if (cells.length < 2) continue;
+
+            const rowText = cells.map(cell => getText(cell)).join(' | ');
+
+            // Skip header rows
+            if (rowText.toLowerCase().includes('member') && rowText.toLowerCase().includes('response')) {
+              continue;
+            }
+
+            // Extract member/utility info from row
+            const memberName = getText(cells[0]);
+            const statusText = getText(cells[1]);
+
+            if (memberName && statusText && memberName.length > 2) {
+              const response = {
+                member_code: memberName.split(' ')[0] || memberName,
+                member_name: memberName,
+                response_status: statusText.toLowerCase(),
+                response_date: cells.length > 2 ? getText(cells[2]) : null,
+                comments: cells.length > 3 ? getText(cells[3]) : null,
+                contact_info: cells.length > 4 ? getText(cells[4]) : null,
+                raw_row_data: rowText
+              };
+
+              // Normalize status
+              if (statusText.toLowerCase().includes('clear')) {
+                response.response_status = 'clear';
+              } else if (statusText.toLowerCase().includes('not clear') || statusText.toLowerCase().includes('not_clear')) {
+                response.response_status = 'not_clear';
+              } else if (statusText.toLowerCase().includes('no response')) {
+                response.response_status = 'no_response';
+              }
+
+              responses.push(response);
+            }
+          }
+
+          // Method 2: Look for list items in response section
+          const listItems = section.querySelectorAll('li, div');
+          for (const item of listItems) {
+            const itemText = getText(item);
+            if (itemText.length < 10) continue;
+
+            // Look for patterns like "COMPANY_CODE - Clear" or "Company Name: Not Clear"
+            const patterns = [
+              /^([A-Z0-9_]+)\s*[-:]\s*(clear|not clear|no response)/i,
+              /^([^-:]+)\s*[-:]\s*(clear|not clear|no response)/i
+            ];
+
+            for (const pattern of patterns) {
+              const match = itemText.match(pattern);
+              if (match) {
+                responses.push({
+                  member_code: match[1].trim(),
+                  member_name: match[1].trim(),
+                  response_status: match[2].toLowerCase().replace(' ', '_'),
+                  response_date: null,
+                  comments: null,
+                  contact_info: null,
+                  raw_item_data: itemText
+                });
+                break;
+              }
+            }
+          }
+        }
+
+        // Method 3: Look for response data in definition lists
+        const definitionLists = root.querySelectorAll('dl');
+        for (const dl of definitionLists) {
+          const dts = Array.from(dl.querySelectorAll('dt'));
+          for (const dt of dts) {
+            const dtText = getText(dt).toLowerCase();
+            if (dtText.includes('response') || dtText.includes('member') || dtText.includes('utility')) {
+              const dd = dt.nextElementSibling;
+              if (dd) {
+                const responseText = getText(dd);
+                if (responseText) {
+                  responses.push({
+                    member_code: getText(dt),
+                    member_name: getText(dt),
+                    response_status: responseText.toLowerCase(),
+                    response_date: null,
+                    comments: responseText,
+                    contact_info: null,
+                    raw_dl_data: `${getText(dt)}: ${responseText}`
+                  });
+                }
+              }
+            }
+          }
+        }
+
+        // Method 4: Look for any text patterns that might indicate responses
+        const allText = getText(root);
+        const responsePatterns = [
+          /([A-Z][A-Z0-9_]{2,})\s*[-:]\s*(clear|not clear|no response)/gi,
+          /(clear|not clear|no response)\s*[-:]\s*([A-Z][A-Z0-9_]{2,})/gi
+        ];
+
+        for (const pattern of responsePatterns) {
+          let match;
+          while ((match = pattern.exec(allText)) !== null) {
+            if (pattern.source.includes('clear.*[-:]')) {
+              // Status first, then member
+              responses.push({
+                member_code: match[2],
+                member_name: match[2],
+                response_status: match[1].toLowerCase().replace(' ', '_'),
+                response_date: null,
+                comments: null,
+                contact_info: null,
+                raw_pattern_match: match[0]
+              });
+            } else {
+              // Member first, then status
+              responses.push({
+                member_code: match[1],
+                member_name: match[1],
+                response_status: match[2].toLowerCase().replace(' ', '_'),
+                response_date: null,
+                comments: null,
+                contact_info: null,
+                raw_pattern_match: match[0]
+              });
+            }
+          }
+        }
+
+        // Deduplicate responses based on member_code
+        const uniqueResponses = [];
+        const seenMembers = new Set();
+
+        for (const response of responses) {
+          if (!seenMembers.has(response.member_code)) {
+            seenMembers.add(response.member_code);
+            uniqueResponses.push(response);
+          }
+        }
+
+        return uniqueResponses;
+      };
+
       // Extract basic ticket info
       const ticketId = getTicketNumber();
       const companyInfo = getCompanyInfo();
       const gpsCoords = getGPSCoordinates();
+      const utilityResponses = getUtilityMemberResponses();
 
       // Build comprehensive ticket data
       return {
@@ -340,6 +509,10 @@ async function extractTicketDataWithFallbacks(popupPage) {
         gps_lat: gpsCoords.lat,
         gps_lng: gpsCoords.lng,
 
+        // Utility member responses
+        responses: utilityResponses,
+        response_count: utilityResponses.length,
+
         // Metadata
         extraction_timestamp: new Date().toISOString(),
         page_title: document.title,
@@ -348,6 +521,14 @@ async function extractTicketDataWithFallbacks(popupPage) {
     });
 
     console.log(`   📊 Extraction complete (method: ${ticketData?.extraction_method})`);
+    if (ticketData?.responses && ticketData.responses.length > 0) {
+      console.log(`   🏢 Found ${ticketData.responses.length} utility member responses:`);
+      ticketData.responses.forEach((response, index) => {
+        console.log(`      ${index + 1}. ${response.member_name}: ${response.response_status}`);
+      });
+    } else {
+      console.log(`   🏢 No utility member responses found`);
+    }
     return ticketData;
 
   } catch (error) {
@@ -642,12 +823,13 @@ async function runTexas811Scraper() {
       total_pages_processed: 0,
       total_tickets_extracted: 0,
       extraction_errors: 0,
-      scraper_version: '1.0.3-comprehensive-fixes',
+      scraper_version: '1.0.4-comprehensive-fixes-with-responses',
       fixes_applied: [
         'comprehensive_print_dialog_suppression',
         'enhanced_starting_position_verification',
         'multiple_fallback_extraction_methods',
-        'robust_error_recovery'
+        'robust_error_recovery',
+        'utility_member_response_extraction'
       ]
     },
     tickets: []

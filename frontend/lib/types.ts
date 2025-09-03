@@ -19,6 +19,9 @@ export type ResponseStatus =
   | "CannotLocate"
   | "LocatedToMeter"
   | "Cancelled"
+  | "Positive" // Additional status types from backend
+  | "Negative"
+  | "Caution"
 
 export type GeometryType = "Point" | "Polygon" | "LineBuffer"
 
@@ -33,6 +36,19 @@ export interface TicketListItem {
     expires_at: string | null
   }
   gap_count: number
+}
+
+export interface UtilityResponse {
+  utility: string
+  status: ResponseStatus
+  notes: string | null
+  response_date?: string
+}
+
+export interface ExpectedUtilityMember {
+  utility: string
+  category: 'gas' | 'electric' | 'water' | 'telecom' | 'cable' | 'sewer' | 'other'
+  priority: 'high' | 'medium' | 'low'
 }
 
 export interface TicketDetail {
@@ -87,11 +103,8 @@ export interface TicketDetail {
     map_description: { geometry: any; work_area_description: string }
     dates: { earliest_lawful_start: string | null }
   }
-  responses: Array<{
-    utility: string
-    status: ResponseStatus
-    notes: string | null
-  }>
+  responses: UtilityResponse[]
+  expected_utility_members?: ExpectedUtilityMember[]
   audit_log: Array<{
     ts: string
     actor: string

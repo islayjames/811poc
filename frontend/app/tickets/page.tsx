@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -21,6 +21,8 @@ export default function TicketsListPage() {
   const tableRef = useRef<HTMLDivElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
   const isInitialMount = useRef(true)
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const lastFetchTime = useRef<number>(0)
 
   const [tickets, setTickets] = useState<TicketListItem[]>([])
   const [total, setTotal] = useState(0)
@@ -31,35 +33,54 @@ export default function TicketsListPage() {
   const [ariaLiveMessage, setAriaLiveMessage] = useState("")
 
   // Initialize from URL params if present, otherwise use defaults
-  const getInitialPage = () => Number.parseInt(searchParams.get("page") || "1", 10)
-  const getInitialPageSize = () => {
-    const size = Number.parseInt(searchParams.get("pageSize") || DEFAULT_PAGE_SIZE.toString(), 10)
-    return PAGE_SIZE_OPTIONS.includes(size) ? size : DEFAULT_PAGE_SIZE
-  }
-
-  const [currentPage, setCurrentPage] = useState(getInitialPage)
-  const [pageSize, setPageSize] = useState(getInitialPageSize)
+  const [currentPage, setCurrentPage] = useState(() => {
+    const page = searchParams.get("page")
+    return page ? Number.parseInt(page, 10) : 1
+  })
+  const [pageSize, setPageSize] = useState(() => {
+    const size = searchParams.get("pageSize")
+    const parsedSize = size ? Number.parseInt(size, 10) : DEFAULT_PAGE_SIZE
+    return PAGE_SIZE_OPTIONS.includes(parsedSize) ? parsedSize : DEFAULT_PAGE_SIZE
+  })
   const [statusFilter, setStatusFilter] = useState<TicketStatus[] | undefined>(() => {
     const status = searchParams.getAll("status") as TicketStatus[]
     return status.length > 0 ? status : undefined
   })
-  const [cityFilter, setCityFilter] = useState<string | undefined>(searchParams.get("city") || undefined)
-  const [countyFilter, setCountyFilter] = useState<string | undefined>(searchParams.get("county") || undefined)
-  const [searchFilter, setSearchFilter] = useState<string | undefined>(searchParams.get("q") || undefined)
-  const [sortBy, setSortBy] = useState<"earliest_start" | "expires" | "status">(
-    (searchParams.get("sort") as "earliest_start" | "expires" | "status") || "earliest_start"
-  )
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
-    (searchParams.get("dir") as "asc" | "desc") || "asc"
-  )
+  const [cityFilter, setCityFilter] = useState<string | undefined>(() => {
+    return searchParams.get("city") || undefined
+  })
+  const [countyFilter, setCountyFilter] = useState<string | undefined>(() => {
+    return searchParams.get("county") || undefined
+  })
+  const [searchFilter, setSearchFilter] = useState<string | undefined>(() => {
+    return searchParams.get("q") || undefined
+  })
+  const [sortBy, setSortBy] = useState<"earliest_start" | "expires" | "status">(() => {
+    const sort = searchParams.get("sort") as "earliest_start" | "expires" | "status"
+    return sort || "earliest_start"
+  })
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(() => {
+    const dir = searchParams.get("dir") as "asc" | "desc"
+    return dir || "asc"
+  })
 
   const fetchTickets = async () => {
+    const now = Date.now()
+
+    // Prevent rapid-fire requests (minimum 500ms between requests)
+    if (now - lastFetchTime.current < 500) {
+      return
+    }
+
+    lastFetchTime.current = now
+
     try {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
       }
 
       abortControllerRef.current = new AbortController()
+
 
       setLoading(true)
       setError(null)
@@ -85,25 +106,23 @@ export default function TicketsListPage() {
       })
 
       if (!response.ok) {
-        throw new Error("Failed to fetch tickets")
+        const errorText = await response.text()
+        throw new Error(`Failed to fetch tickets: ${response.status} - ${errorText}`)
       }
 
       const data = await response.json()
 
-      setTickets(data.tickets)
-      setTotal(data.total)
+      setTickets(data.tickets || [])
+      setTotal(data.total || 0)
 
       setTimeout(() => {
-        setAriaLiveMessage(`${data.total} ticket${data.total !== 1 ? "s" : ""} found`)
+        setAriaLiveMessage(`${data.total || 0} ticket${(data.total || 0) !== 1 ? "s" : ""} found`)
       }, 100)
 
-      if (data.total > 0) {
+      if ((data.total || 0) > 0) {
         setHasEverHadTickets(true)
       }
 
-      // Only scroll if this was a user-initiated action (like pagination)
-      // Don't scroll on initial load or automatic refreshes
-      // This can be enhanced with a flag to track user interactions
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
         return
@@ -225,7 +244,22 @@ export default function TicketsListPage() {
   }, [])
 
   useEffect(() => {
-    fetchTickets()
+    // Clear any existing debounce timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+
+    // Debounce the fetchTickets call by 100ms to prevent rapid successive calls
+    debounceTimeoutRef.current = setTimeout(() => {
+      fetchTickets()
+    }, 100)
+
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter, cityFilter, countyFilter, searchFilter, sortBy, sortOrder, currentPage, pageSize])
 
   useEffect(() => {

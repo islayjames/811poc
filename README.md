@@ -105,6 +105,20 @@ The system now includes comprehensive parcel data enrichment capabilities powere
 - `POST /tickets/create` - Create new ticket with validation and parcel enrichment
 - `POST /tickets/update` - Update existing ticket with re-enrichment
 - `POST /tickets/confirm` - Confirm ticket for submission
+- `GET /tickets/{ticket_id}` - Get ticket details with all information
+- `GET /tickets/session/{session_id}/tickets` - Get all tickets for a session
+
+#### Response Tracking
+- `POST /tickets/{ticket_id}/responses/{member_code}` - Submit utility member response
+- `GET /tickets/{ticket_id}/responses` - Get all responses with summary statistics
+
+#### Dashboard Operations
+- `GET /dashboard/tickets` - List tickets with filtering and pagination
+- `GET /dashboard/tickets/{ticket_id}` - Get detailed ticket with countdown info
+- `POST /dashboard/tickets/{ticket_id}/mark-submitted` - Mark ticket as submitted
+- `POST /dashboard/tickets/{ticket_id}/mark-responses-in` - Mark responses received
+- `DELETE /dashboard/tickets/{ticket_id}` - Cancel or delete a ticket
+- `GET /dashboard/tickets/{ticket_id}/responses` - Get ticket responses
 
 #### Parcel Enrichment
 - `POST /parcels/enrich` - Standalone parcel data enrichment and comparison

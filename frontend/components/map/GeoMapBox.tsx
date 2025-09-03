@@ -2,19 +2,23 @@
 import { useEffect, useRef, useState } from "react"
 import { MapPinIcon, NavigationIcon } from "lucide-react"
 import "mapbox-gl/dist/mapbox-gl.css"
+import { isValidGPS, getMapCenter, type GPSCoordinates } from "@/lib/gps-utils"
 
 interface GeoMapBoxProps {
   geometry: any | null // GeoJSON Feature or FeatureCollection
-  gps: { lat: number | null; lng: number | null }
+  gps: GPSCoordinates
+  address?: string | null // Address for fallback geocoding
   height?: number
 }
 
-export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
+export function GeoMapBox({ geometry, gps, address, height = 340 }: GeoMapBoxProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<any>(null)
   const [mapboxgl, setMapboxgl] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [geocodedCenter, setGeocodedCenter] = useState<{ lat: number; lng: number } | null>(null)
+  const [isGeocodingAddress, setIsGeocodingAddress] = useState(false)
 
   useEffect(() => {
     const loadMapbox = async () => {
@@ -32,6 +36,33 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
 
     loadMapbox()
   }, [])
+
+  // Handle geocoding when GPS is invalid but address is available
+  useEffect(() => {
+    const handleGeocoding = async () => {
+      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+
+      // Reset geocoded center when inputs change
+      setGeocodedCenter(null)
+
+      // Only geocode if GPS is invalid and we have an address and token
+      if (!isValidGPS(gps) && address && token) {
+        setIsGeocodingAddress(true)
+        try {
+          const center = await getMapCenter(gps, address, token)
+          if (center) {
+            setGeocodedCenter(center)
+          }
+        } catch (error) {
+          console.error("Error getting map center:", error)
+        } finally {
+          setIsGeocodingAddress(false)
+        }
+      }
+    }
+
+    handleGeocoding()
+  }, [gps, address])
 
   useEffect(() => {
     if (!mapboxgl || !mapContainer.current || map.current) return
@@ -56,7 +87,7 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
 
       map.current.on("load", () => {
         addGeometryToMap()
-        addGPSToMap()
+        addMarkersToMap()
         fitMapBounds()
       })
 
@@ -75,7 +106,7 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
         map.current = null
       }
     }
-  }, [mapboxgl, geometry, gps])
+  }, [mapboxgl, geometry, gps, geocodedCenter])
 
   const addGeometryToMap = () => {
     if (!map.current || !geometry) return
@@ -136,40 +167,88 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
     }
   }
 
-  const addGPSToMap = () => {
-    if (!map.current || !gps.lat || !gps.lng) return
+  const addMarkersToMap = () => {
+    if (!map.current) return
 
     try {
-      map.current.addSource("gps", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [
-            {
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [gps.lng, gps.lat],
-              },
-              properties: {},
-            },
-          ],
-        },
-      })
+      // Remove existing markers if any
+      if (map.current.getLayer("gps-point")) {
+        map.current.removeLayer("gps-point")
+      }
+      if (map.current.getSource("gps")) {
+        map.current.removeSource("gps")
+      }
+      if (map.current.getLayer("address-point")) {
+        map.current.removeLayer("address-point")
+      }
+      if (map.current.getSource("address")) {
+        map.current.removeSource("address")
+      }
 
-      map.current.addLayer({
-        id: "gps-point",
-        type: "circle",
-        source: "gps",
-        paint: {
-          "circle-color": "#ef4444",
-          "circle-radius": 6,
-          "circle-stroke-color": "#ffffff",
-          "circle-stroke-width": 2,
-        },
-      })
+      // Add valid GPS marker
+      if (isValidGPS(gps)) {
+        map.current.addSource("gps", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [gps.lng, gps.lat],
+                },
+                properties: { type: "gps" },
+              },
+            ],
+          },
+        })
+
+        map.current.addLayer({
+          id: "gps-point",
+          type: "circle",
+          source: "gps",
+          paint: {
+            "circle-color": "#ef4444",
+            "circle-radius": 6,
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 2,
+          },
+        })
+      }
+      // Add geocoded address marker when GPS is invalid but address was found
+      else if (geocodedCenter) {
+        map.current.addSource("address", {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "Point",
+                  coordinates: [geocodedCenter.lng, geocodedCenter.lat],
+                },
+                properties: { type: "address" },
+              },
+            ],
+          },
+        })
+
+        map.current.addLayer({
+          id: "address-point",
+          type: "circle",
+          source: "address",
+          paint: {
+            "circle-color": "#3b82f6",
+            "circle-radius": 8,
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 2,
+          },
+        })
+      }
     } catch (err) {
-      console.error("Failed to add GPS to map:", err)
+      console.error("Failed to add markers to map:", err)
     }
   }
 
@@ -205,8 +284,14 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
         }
       }
 
-      if (gps.lat && gps.lng) {
+      // Include valid GPS coordinates
+      if (isValidGPS(gps)) {
         bounds.extend([gps.lng, gps.lat])
+        hasPoints = true
+      }
+      // Include geocoded address center
+      else if (geocodedCenter) {
+        bounds.extend([geocodedCenter.lng, geocodedCenter.lat])
         hasPoints = true
       }
 
@@ -244,12 +329,14 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
     return "Complex geometry"
   }
 
-  if (isLoading) {
+  if (isLoading || isGeocodingAddress) {
     return (
       <div style={{ height: `${height}px` }} className="rounded-lg border bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-2">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <div className="text-sm text-muted-foreground">Loading map...</div>
+          <div className="text-sm text-muted-foreground">
+            {isGeocodingAddress ? "Geocoding address..." : "Loading map..."}
+          </div>
         </div>
       </div>
     )
@@ -274,11 +361,36 @@ export function GeoMapBox({ geometry, gps, height = 340 }: GeoMapBoxProps) {
                   <div>{getGeometryInfo()}</div>
                 </div>
               )}
-              {gps.lat && gps.lng && (
+              {/* Show GPS status */}
+              {isValidGPS(gps) && (
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
                   <NavigationIcon className="w-4 h-4" />
                   <span>
-                    GPS: {gps.lat.toFixed(6)}, {gps.lng.toFixed(6)}
+                    Valid GPS: {gps.lat!.toFixed(6)}, {gps.lng!.toFixed(6)}
+                  </span>
+                </div>
+              )}
+              {!isValidGPS(gps) && gps.lat !== null && gps.lng !== null && (
+                <div className="flex items-center justify-center gap-2 text-sm text-red-600 mt-2">
+                  <NavigationIcon className="w-4 h-4" />
+                  <span>
+                    Invalid GPS: {gps.lat}, {gps.lng}
+                  </span>
+                </div>
+              )}
+              {geocodedCenter && (
+                <div className="flex items-center justify-center gap-2 text-sm text-blue-600 mt-2">
+                  <MapPinIcon className="w-4 h-4" />
+                  <span>
+                    Address Location: {geocodedCenter.lat.toFixed(6)}, {geocodedCenter.lng.toFixed(6)}
+                  </span>
+                </div>
+              )}
+              {!isValidGPS(gps) && !geocodedCenter && address && (
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
+                  <MapPinIcon className="w-4 h-4" />
+                  <span>
+                    Address not found: {address}
                   </span>
                 </div>
               )}

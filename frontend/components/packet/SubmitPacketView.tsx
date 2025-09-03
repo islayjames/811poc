@@ -5,8 +5,8 @@ import { formatDate } from "@/lib/format"
 
 interface SubmitPacketProps {
   packet: {
-    ticket_type: "Normal" | "Emergency" | "NonCompliant" | "SurveyDesign"
-    caller_excavator: {
+    ticket_type?: "Normal" | "Emergency" | "NonCompliant" | "SurveyDesign"
+    caller_excavator?: {
       company?: string
       contact_name?: string
       phone?: string
@@ -15,7 +15,7 @@ interface SubmitPacketProps {
       onsite_contact_phone?: string
       onsite_best_time?: string
     }
-    work: {
+    work?: {
       work_for?: string
       type_of_work?: string
       is_blasting?: boolean
@@ -24,7 +24,7 @@ interface SubmitPacketProps {
       duration_days?: number
       anticipated_completion_at?: string
     }
-    location: {
+    location?: {
       county?: string
       city?: string
       address?: string
@@ -36,37 +36,44 @@ interface SubmitPacketProps {
       marking_instructions?: string
       remarks?: string
     }
-    map_description: {
+    map_description?: {
       geometry?: any
       geometry_type?: string
       work_area_description?: string
       site_marked_white?: boolean
     }
-    dates: {
+    dates?: {
       requested_at?: string
       desired_start_local?: string
       earliest_lawful_start?: string
       positive_response_at?: string
       expires_at?: string
     }
-  }
+  } | null
   mode: "screen" | "print"
   showDisclaimer?: boolean
 }
 
 export function SubmitPacketView({ packet, mode, showDisclaimer }: SubmitPacketProps) {
   if (!packet) {
-    return <div className="text-sm text-muted-foreground">No packet data available</div>
+    return (
+      <div className="p-6 text-center">
+        <div className="text-sm text-muted-foreground mb-2">No submission packet generated yet</div>
+        <p className="text-xs text-muted-foreground max-w-md mx-auto">
+          The submission packet will be automatically generated when this ticket is validated and ready to be submitted to Texas 811.
+        </p>
+      </div>
+    )
   }
 
   // Ensure all nested objects exist with defaults
   const safePacket = {
-    ticket_type: packet.ticket_type || "Normal",
-    caller_excavator: packet.caller_excavator || {},
-    work: packet.work || {},
-    location: packet.location || {},
-    map_description: packet.map_description || {},
-    dates: packet.dates || {},
+    ticket_type: packet?.ticket_type || "Normal",
+    caller_excavator: packet?.caller_excavator || {},
+    work: packet?.work || {},
+    location: packet?.location || {},
+    map_description: packet?.map_description || {},
+    dates: packet?.dates || {},
   }
 
   const isScreen = mode === "screen"
@@ -223,7 +230,7 @@ export function SubmitPacketView({ packet, mode, showDisclaimer }: SubmitPacketP
         <div className="flex items-center">{getTicketTypeBadge(safePacket.ticket_type)}</div>
       </SectionWrapper>
 
-      {/* 2) Location */}
+      {/* 2) Location - Texas811 Submission Order */}
       <SectionWrapper title="Location">
         <dl className="space-y-2">
           <FieldRow label="County" value={safePacket.location.county} />
@@ -232,24 +239,75 @@ export function SubmitPacketView({ packet, mode, showDisclaimer }: SubmitPacketP
           <FieldRow label="Cross Street" value={safePacket.location.cross_street} />
           <FieldRow label="Subdivision" value={safePacket.location.subdivision} />
           <FieldRow label="Lot/Block" value={safePacket.location.lot_block} />
+          <FieldRow label="Driving Directions" value={safePacket.location.driving_directions} />
         </dl>
       </SectionWrapper>
 
-      {/* 2.5) Directions & Instructions */}
-      <SectionWrapper title="Directions & Instructions">
+      {/* 3) Instructions - Texas811 Submission Order */}
+      <SectionWrapper title="Instructions">
         <dl className="space-y-2">
-          <FieldRow label="Driving Directions" value={safePacket.location.driving_directions} />
-          <FieldRow label="Marking Instructions" value={safePacket.location.marking_instructions} />
+          <FieldRow label="Locate Instructions" value={safePacket.location.marking_instructions} />
           <FieldRow label="Additional Remarks" value={safePacket.location.remarks} />
         </dl>
       </SectionWrapper>
 
-      {/* 3) Map & Locate Instructions */}
-      <SectionWrapper title="Map & Locate Instructions">
+      {/* 4) Work Details - Texas811 Submission Order */}
+      <SectionWrapper title="Work Details">
+        <dl className="space-y-2">
+          <FieldRow label="Type of Work" value={safePacket.work.type_of_work} />
+          <FieldRow label="Nature of Work" value={safePacket.work.work_for} />
+          <FieldRow label="For Company" value={safePacket.caller_excavator.company} />
+          <FieldRow
+            label="Duration"
+            value={safePacket.work.duration_days ? `${safePacket.work.duration_days} days` : undefined}
+          />
+          <FieldRow
+            label="Anticipated Completion"
+            value={
+              safePacket.work.anticipated_completion_at
+                ? formatDate(safePacket.work.anticipated_completion_at)
+                : undefined
+            }
+          />
+        </dl>
+      </SectionWrapper>
+
+      {/* 5) Flags - Texas811 Submission Order */}
+      <SectionWrapper title="Flags">
+        <dl className="space-y-2">
+          <FieldRow label="Equipment Type" value={safePacket.work.type_of_work} />
+          <FieldRow label="Explosives" value={safePacket.work.is_blasting} />
+          <FieldRow label="White Lined" value={safePacket.map_description.site_marked_white} />
+          <FieldRow label="Directional Boring" value={safePacket.work.is_trenchless} />
+          <FieldRow
+            label="Depth"
+            value={
+              safePacket.work.depth_inches !== null && safePacket.work.depth_inches !== undefined
+                ? `${safePacket.work.depth_inches} inches`
+                : undefined
+            }
+          />
+        </dl>
+      </SectionWrapper>
+
+      {/* 6) Caller/Excavator */}
+      <SectionWrapper title="Caller/Excavator">
+        <dl className="space-y-2">
+          <FieldRow label="Company" value={safePacket.caller_excavator.company} />
+          <FieldRow label="Contact" value={safePacket.caller_excavator.contact_name} />
+          <FieldRow label="Phone" value={safePacket.caller_excavator.phone} />
+          <FieldRow label="Email" value={safePacket.caller_excavator.email} />
+          <FieldRow label="On-site Contact" value={safePacket.caller_excavator.onsite_contact_name} />
+          <FieldRow label="On-site Phone" value={safePacket.caller_excavator.onsite_contact_phone} />
+          <FieldRow label="Best Time" value={safePacket.caller_excavator.onsite_best_time} />
+        </dl>
+      </SectionWrapper>
+
+      {/* 7) Map & Work Area Description */}
+      <SectionWrapper title="Work Area">
         <dl className="space-y-2">
           <FieldRow label="Geometry" value={getGeometryInfo()} />
           <FieldRow label="Work Area Description" value={safePacket.map_description.work_area_description} />
-          <FieldRow label="White-lined?" value={safePacket.map_description.site_marked_white} />
         </dl>
 
         {isPrint && getStaticMapUrl() && (
@@ -267,52 +325,7 @@ export function SubmitPacketView({ packet, mode, showDisclaimer }: SubmitPacketP
         )}
       </SectionWrapper>
 
-      {/* 4) Work Details */}
-      <SectionWrapper title="Work Details">
-        <dl className="space-y-2">
-          <FieldRow label="Work For" value={safePacket.work.work_for} />
-          <FieldRow label="Type of Work" value={safePacket.work.type_of_work} />
-          <FieldRow label="Explosives?" value={safePacket.work.is_blasting} />
-          <FieldRow label="Trenchless?" value={safePacket.work.is_trenchless} />
-          <FieldRow
-            label="Depth"
-            value={
-              safePacket.work.depth_inches
-                ? `${safePacket.work.depth_inches} in`
-                : safePacket.work.depth_inches === 0
-                  ? "0 in"
-                  : ">16 in"
-            }
-          />
-          <FieldRow
-            label="Duration"
-            value={safePacket.work.duration_days ? `${safePacket.work.duration_days} days` : undefined}
-          />
-          <FieldRow
-            label="Anticipated Completion"
-            value={
-              safePacket.work.anticipated_completion_at
-                ? formatDate(safePacket.work.anticipated_completion_at)
-                : undefined
-            }
-          />
-        </dl>
-      </SectionWrapper>
-
-      {/* 5) Caller/Excavator */}
-      <SectionWrapper title="Caller/Excavator">
-        <dl className="space-y-2">
-          <FieldRow label="Company" value={safePacket.caller_excavator.company} />
-          <FieldRow label="Contact" value={safePacket.caller_excavator.contact_name} />
-          <FieldRow label="Phone" value={safePacket.caller_excavator.phone} />
-          <FieldRow label="Email" value={safePacket.caller_excavator.email} />
-          <FieldRow label="On-site Contact" value={safePacket.caller_excavator.onsite_contact_name} />
-          <FieldRow label="On-site Phone" value={safePacket.caller_excavator.onsite_contact_phone} />
-          <FieldRow label="Best Time" value={safePacket.caller_excavator.onsite_best_time} />
-        </dl>
-      </SectionWrapper>
-
-      {/* 6) Dates */}
+      {/* 8) Dates */}
       <SectionWrapper title="Dates">
         <dl className="space-y-2">
           <FieldRow

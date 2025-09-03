@@ -706,6 +706,113 @@ async def mark_responses_received(
         ) from e
 
 
+@router.get("/tickets/{ticket_id}/responses")
+async def get_ticket_responses(
+    ticket_id: str,
+    api_key: str = Depends(verify_api_key),
+):
+    """
+    Get all utility member responses for a ticket.
+
+    Aggregates response files from /data/responses/{ticket_id}/ directory
+    and combines with expected members list from the ticket.
+
+    Returns:
+    - ticket_id: ID of the ticket
+    - responses: List of responses received so far
+    - expected_members: List of all expected utility members
+    - summary: Statistics about response completion
+    """
+    try:
+        logger.info(f"Dashboard ticket responses requested for: {ticket_id}")
+
+        # Load ticket to get expected members
+        ticket = ticket_storage.load_ticket(ticket_id)
+        if not ticket:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Ticket {ticket_id} not found",
+            )
+
+        # Load all responses for this ticket
+        all_responses = response_storage.load_ticket_responses(ticket_id)
+
+        # Sort responses by created_at (chronological order)
+        sorted_responses = sorted(all_responses, key=lambda r: r.created_at)
+
+        # Convert responses to serializable format
+        response_data = []
+        for response in sorted_responses:
+            response_data.append(
+                {
+                    "response_id": response.response_id,
+                    "member_code": response.member_code,
+                    "member_name": response.member_name,
+                    "status": response.status,
+                    "facilities": response.facilities,
+                    "comment": response.comment,
+                    "user_name": response.user_name,
+                    "created_at": response.created_at,
+                    "updated_at": response.updated_at,
+                }
+            )
+
+        # Convert expected members to serializable format
+        expected_members = []
+        if ticket.expected_members:
+            for member in ticket.expected_members:
+                expected_members.append(
+                    {
+                        "member_code": member.member_code,
+                        "member_name": member.member_name,
+                        "contact_phone": getattr(member, "contact_phone", None),
+                    }
+                )
+
+        # Generate summary statistics
+        total_expected = len(expected_members)
+        total_responses = len(response_data)
+        pending_count = total_expected - total_responses
+
+        # Count clear vs not clear responses
+        clear_count = sum(1 for r in response_data if r["status"] == "clear")
+        not_clear_count = sum(1 for r in response_data if r["status"] == "not_clear")
+
+        summary = {
+            "total_expected": total_expected,
+            "total_responses": total_responses,
+            "pending_count": max(0, pending_count),
+            "clear_count": clear_count,
+            "not_clear_count": not_clear_count,
+            "completion_percentage": round(
+                (total_responses / total_expected * 100) if total_expected > 0 else 100,
+                1,
+            ),
+        }
+
+        logger.info(
+            f"Retrieved {total_responses} responses for ticket {ticket_id} (expected: {total_expected})"
+        )
+
+        return {
+            "ticket_id": ticket_id,
+            "responses": response_data,
+            "expected_members": expected_members,
+            "summary": summary,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(
+            f"Error retrieving responses for ticket {ticket_id}: {e}", exc_info=True
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve ticket responses: {str(e)}",
+        ) from e
+
+
 @router.delete("/tickets/{ticket_id}", response_model=CancelTicketResponse)
 async def cancel_ticket(
     ticket_id: str,

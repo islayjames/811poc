@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { StatusPill } from "@/components/tickets/status-pill"
+import { ResponsesSection } from "@/components/tickets/ResponsesSection"
 import { api, ApiError } from "@/lib/api"
 import { GeoMapBox } from "@/components/map/GeoMapBox"
 import {
@@ -43,16 +44,14 @@ import {
   AwardIcon as IdCardIcon,
   MapIcon,
   CheckCircleIcon,
+  HardHatIcon,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
-export default async function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  return <TicketDetailContent ticketId={id} />
-}
-
-function TicketDetailContent({ ticketId }: { ticketId: string }) {
+export default function TicketDetailPage() {
   const router = useRouter()
+  const params = useParams()
+  const ticketId = params.id as string
   const { toast } = useToast()
 
   const [ticket, setTicket] = useState<TicketDetail | null>(null)
@@ -74,6 +73,9 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
     action: async () => {},
   })
 
+  // Prevent infinite refresh loops
+  const fetchingRef = useRef(false)
+  const mountedRef = useRef(true)
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
@@ -90,18 +92,38 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
     window.history.replaceState(null, "", url.toString())
   }
 
-  const fetchTicket = async () => {
+  const fetchTicket = useCallback(async () => {
+    // Prevent concurrent fetches
+    if (fetchingRef.current) {
+      console.log('[TicketDetail] Fetch already in progress, skipping...')
+      return
+    }
+
+    fetchingRef.current = true
+
     try {
       setLoading(true)
       setError(null)
+      console.log(`[TicketDetail] Fetching ticket ${ticketId}...`)
       const response = await api.getTicket(ticketId)
-      setTicket(response)
+
+      // Only update state if component is still mounted
+      if (mountedRef.current) {
+        setTicket(response)
+        console.log(`[TicketDetail] Ticket ${ticketId} loaded, responses:`, response.responses?.length || 0)
+      }
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Failed to load ticket")
+      console.error(`[TicketDetail] Error loading ticket ${ticketId}:`, err)
+      if (mountedRef.current) {
+        setError(err instanceof ApiError ? err.message : "Failed to load ticket")
+      }
     } finally {
-      setLoading(false)
+      if (mountedRef.current) {
+        setLoading(false)
+      }
+      fetchingRef.current = false
     }
-  }
+  }, [ticketId])
 
   const handleAction = async (
     action: string,
@@ -153,9 +175,22 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
     }
   }
 
+  // Track component mount/unmount
   useEffect(() => {
+    mountedRef.current = true
+    console.log('[TicketDetail] Component mounted')
+    return () => {
+      mountedRef.current = false
+      fetchingRef.current = false
+      console.log('[TicketDetail] Component unmounted')
+    }
+  }, [])
+
+  // Fetch ticket on mount or when ticketId changes
+  useEffect(() => {
+    console.log('[TicketDetail] useEffect triggered for fetchTicket')
     fetchTicket()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchTicket])
 
   if (error) {
     return (
@@ -460,6 +495,13 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
             <div className="flex items-center space-x-2 pb-4 border-b">
               <span className="text-sm text-muted-foreground mr-2">Jump to:</span>
               <button
+                onClick={() => document.getElementById("responses")?.scrollIntoView({ behavior: "smooth" })}
+                className="text-xs px-2 py-1 rounded-md border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 transition-colors"
+              >
+                Responses
+              </button>
+              <span className="text-gray-300">•</span>
+              <button
                 onClick={() => document.getElementById("summary")?.scrollIntoView({ behavior: "smooth" })}
                 className="text-xs px-2 py-1 rounded-md border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 transition-colors"
               >
@@ -470,14 +512,14 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                 onClick={() => document.getElementById("map")?.scrollIntoView({ behavior: "smooth" })}
                 className="text-xs px-2 py-1 rounded-md border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 transition-colors"
               >
-                Map
+                Map & Location
               </button>
               <span className="text-gray-300">•</span>
               <button
-                onClick={() => document.getElementById("responses")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => document.getElementById("work-description")?.scrollIntoView({ behavior: "smooth" })}
                 className="text-xs px-2 py-1 rounded-md border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 transition-colors"
               >
-                Responses
+                Work Details
               </button>
               <span className="text-gray-300">•</span>
               <button
@@ -487,12 +529,16 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                 Timeline
               </button>
             </div>
-            {/* Summary Section */}
+
+            {/* Utility Responses Section - Moved to top */}
+            <ResponsesSection ticketId={ticket.id} ticket={ticket} initialResponses={ticket.responses} />
+
+            {/* Current Summary Section */}
             <Card id="summary" className="rounded-xl border p-4">
               <CardHeader className="p-0 pb-2">
                 <CardTitle className="text-base font-semibold flex items-center space-x-2">
                   <IdCardIcon className="h-4 w-4" />
-                  <span>Summary</span>
+                  <span>Current Summary</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
@@ -644,7 +690,9 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                                   <CopyIcon className="h-3 w-3" />
                                 </button>
                                 <a
-                                  href={`https://maps.google.com/?q=${ticket.site.gps.lat},${ticket.site.gps.lng}`}
+                                  href={`https://maps.google.com/?q=${encodeURIComponent(
+                                    [ticket.site.address, ticket.site.city, ticket.site.county, 'TX'].filter(Boolean).join(', ')
+                                  )}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-blue-600 hover:text-blue-800 text-xs underline"
@@ -697,30 +745,12 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                           <dd className="text-sm">{ticket.site.lot_block}</dd>
                         </div>
                       )}
-                      {ticket.site?.driving_directions && (
-                        <div className="flex flex-col">
-                          <dt className="text-sm text-muted-foreground font-medium mb-1">Driving Directions</dt>
-                          <dd className="text-sm leading-relaxed">{ticket.site.driving_directions}</dd>
-                        </div>
-                      )}
-                      {ticket.site?.marking_instructions && (
-                        <div className="flex flex-col">
-                          <dt className="text-sm text-muted-foreground font-medium mb-1">Marking Instructions</dt>
-                          <dd className="text-sm leading-relaxed">{ticket.site.marking_instructions}</dd>
-                        </div>
-                      )}
-                      {ticket.site?.remarks && (
-                        <div className="flex flex-col">
-                          <dt className="text-sm text-muted-foreground font-medium mb-1">Additional Remarks</dt>
-                          <dd className="text-sm leading-relaxed">{ticket.site.remarks}</dd>
-                        </div>
-                      )}
                     </dl>
                   </div>
                 )}
 
                 {/* Show more/less toggle */}
-                {(ticket.site?.subdivision || ticket.site?.lot_block || ticket.site?.driving_directions || ticket.site?.marking_instructions || ticket.site?.remarks) && (
+                {(ticket.site?.subdivision || ticket.site?.lot_block) && (
                   <div className="mt-4 pt-4 border-t">
                     <button
                       onClick={() => setShowMoreSummary(!showMoreSummary)}
@@ -742,13 +772,14 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                 )}
               </CardContent>
             </Card>
-            {/* Map Section */}
+
+            {/* Map and Location Section */}
             <Card id="map" className="rounded-xl border p-4">
               <CardHeader className="p-0 pb-2">
                 <CardTitle className="text-base font-semibold flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <MapIcon className="h-4 w-4" />
-                    <span>Map & Description</span>
+                    <span>Map and Location</span>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setShowMapModal(true)} className="h-8 w-8 p-0">
                     <ExpandIcon className="h-4 w-4" />
@@ -761,6 +792,7 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                     <GeoMapBox
                       geometry={ticket.geom?.geojson ?? null}
                       gps={ticket.site?.gps ?? { lat: null, lng: null }}
+                      address={ticket.site?.address}
                       height={360}
                     />
                   </div>
@@ -809,79 +841,119 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
                   )}
                 </div>
 
-                {ticket.site?.work_area_description && (
-                  <div className="max-w-prose">
-                    <label className="text-sm text-muted-foreground font-medium">Work Area Description</label>
-                    <p className="text-sm mt-1 leading-5">{ticket.site.work_area_description}</p>
-                  </div>
-                )}
+                <div className="space-y-4">
+                  {ticket.site?.driving_directions && (
+                    <div className="max-w-prose">
+                      <label className="text-sm text-muted-foreground font-medium">Driving Directions</label>
+                      <p className="text-sm mt-1 leading-5">{ticket.site.driving_directions}</p>
+                    </div>
+                  )}
+
+                  {ticket.site?.work_area_description && (
+                    <div className="max-w-prose">
+                      <label className="text-sm text-muted-foreground font-medium">Work Area Description</label>
+                      <p className="text-sm mt-1 leading-5">{ticket.site.work_area_description}</p>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
-            {/* Utility Responses Section */}
-            <Card id="responses" className="rounded-xl border p-4">
+
+            {/* Work Description Section */}
+            <Card id="work-description" className="rounded-xl border p-4">
               <CardHeader className="p-0 pb-2">
-                <CardTitle className="text-base font-semibold flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircleIcon className="h-4 w-4" />
-                    <span>Utility Responses</span>
-                  </div>
-                  {ticket.responses && ticket.responses.length > 0 && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        const summary = ticket.responses
-                          ?.map((r) => `${r.utility} — ${r.status} — ${r.notes || "No notes"}`)
-                          .join("\n")
-                        if (summary) {
-                          copyToClipboard(summary)
-                        }
-                      }}
-                      className="text-xs"
-                    >
-                      Copy summary
-                    </Button>
-                  )}
+                <CardTitle className="text-base font-semibold flex items-center space-x-2">
+                  <HardHatIcon className="h-4 w-4" />
+                  <span>Work Description</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                {ticket.responses && ticket.responses.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left text-sm font-medium text-muted-foreground py-2">Utility</th>
-                          <th className="text-left text-sm font-medium text-muted-foreground py-2">Status</th>
-                          <th className="text-left text-sm font-medium text-muted-foreground py-2">Notes</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ticket.responses.map((response, index) => (
-                          <tr key={index} className="border-b last:border-b-0">
-                            <td className="py-3 text-sm font-medium">{response.utility}</td>
-                            <td className="py-3">
-                              <StatusPill status={response.status} />
-                            </td>
-                            <td className="py-3 text-sm">
-                              {response.notes ? (
-                                <span className="truncate block max-w-xs cursor-help" title={response.notes}>
-                                  {response.notes.length > 50
-                                    ? `${response.notes.substring(0, 50)}...`
-                                    : response.notes}
-                                </span>
-                              ) : (
-                                <span className="text-muted-foreground">No notes</span>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left Column */}
+                  <div className="space-y-4">
+                    {ticket.site?.marking_instructions && (
+                      <div>
+                        <label className="text-sm text-muted-foreground font-medium">Locate Instructions</label>
+                        <p className="text-sm mt-1 leading-5">{ticket.site.marking_instructions}</p>
+                      </div>
+                    )}
+
+                    {ticket.site?.remarks && (
+                      <div>
+                        <label className="text-sm text-muted-foreground font-medium">Additional Remarks</label>
+                        <p className="text-sm mt-1 leading-5">{ticket.site.remarks}</p>
+                      </div>
+                    )}
+
+                    {ticket.excavator?.company && (
+                      <div>
+                        <label className="text-sm text-muted-foreground font-medium">Work For</label>
+                        <p className="text-sm mt-1">{ticket.excavator.company}</p>
+                      </div>
+                    )}
                   </div>
-                ) : (
+
+                  {/* Right Column */}
+                  <div className="space-y-4">
+                    {ticket.work?.type_of_work && (
+                      <div>
+                        <label className="text-sm text-muted-foreground font-medium">Equipment Type</label>
+                        <p className="text-sm mt-1">{ticket.work.type_of_work}</p>
+                      </div>
+                    )}
+
+                    {ticket.work?.work_for && (
+                      <div>
+                        <label className="text-sm text-muted-foreground font-medium">Nature of Work</label>
+                        <p className="text-sm mt-1">{ticket.work.work_for}</p>
+                      </div>
+                    )}
+
+                    {/* Duration, Explosives, White Lining Flags */}
+                    <div className="space-y-2">
+                      {ticket.work?.duration_days && (
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm text-muted-foreground font-medium">Duration</label>
+                          <span className="text-sm">{ticket.work.duration_days} days</span>
+                        </div>
+                      )}
+
+                      {ticket.work?.is_blasting !== undefined && (
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm text-muted-foreground font-medium">Explosives</label>
+                          <Badge
+                            variant={ticket.work.is_blasting ? "destructive" : "secondary"}
+                            className="text-xs px-2 py-1 h-5 rounded-md"
+                          >
+                            {ticket.work.is_blasting ? "Yes" : "No"}
+                          </Badge>
+                        </div>
+                      )}
+
+                      {/* White lining flags - placeholder for future implementation */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm text-muted-foreground font-medium">White Lining Flags</label>
+                        <Badge variant="secondary" className="text-xs px-2 py-1 h-5 rounded-md">
+                          Standard
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* No work description available */}
+                {!ticket.site?.marking_instructions &&
+                 !ticket.site?.remarks &&
+                 !ticket.excavator?.company &&
+                 !ticket.work?.type_of_work &&
+                 !ticket.work?.work_for &&
+                 !ticket.work?.duration_days &&
+                 ticket.work?.is_blasting === undefined && (
                   <div className="text-center py-8">
-                    <h3 className="text-base font-semibold mb-2">No utility responses yet</h3>
-                    <p className="text-sm text-muted-foreground">When marked in the field, they will appear here.</p>
+                    <h3 className="text-base font-semibold mb-2">No work description details available</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Work description information will appear here when available.
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -975,8 +1047,6 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
           </TabsContent>
 
           <TabsContent value="packet" className="mt-6 max-h-[calc(100vh-200px)] overflow-auto">
-            {console.log("[v0] Packet tab - ticket:", ticket)}
-            {console.log("[v0] Packet tab - submit_packet:", ticket?.submit_packet)}
             <SubmitPacketView packet={ticket.submit_packet} mode="screen" showDisclaimer />
           </TabsContent>
         </Tabs>
@@ -994,6 +1064,7 @@ function TicketDetailContent({ ticketId }: { ticketId: string }) {
             <GeoMapBox
               geometry={ticket.geom?.geojson ?? null}
               gps={ticket.site?.gps ?? { lat: null, lng: null }}
+              address={ticket.site?.address}
               height={500}
             />
           </div>

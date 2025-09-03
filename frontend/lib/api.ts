@@ -49,6 +49,11 @@ interface BackendTicketListResponse {
 interface BackendTicketDetailResponse extends BackendTicketModel {
   audit_history: any[]
   countdown_info: any
+  responses?: Array<{
+    utility: string
+    status: string
+    notes: string | null
+  }>
 }
 
 // Mapping functions
@@ -113,8 +118,8 @@ function mapBackendDetailToFrontend(backendDetail: BackendTicketDetailResponse):
       assumptions: null,
       warnings: null,
     },
-    submit_packet: backendDetail.submission_packet || {},
-    responses: [],
+    submit_packet: backendDetail.submission_packet,
+    responses: backendDetail.responses || [],
     audit_log: (backendDetail.audit_history || []).map((event: any) => ({
       ts: event.timestamp || event.created_at,
       actor: event.user_id || "system",
@@ -313,7 +318,7 @@ function mockGetTicket(id: string): Promise<TicketDetail> {
               assumptions: null,
               warnings: null,
             },
-            submit_packet: {},
+            submit_packet: null,
             responses: [],
             audit_log: [],
           }
@@ -341,6 +346,44 @@ function mockStatusAction(id: string, action: string): Promise<void> {
 }
 
 export const api = {
+  // Fetch responses for a specific ticket
+  async fetchTicketResponses(id: string): Promise<Array<{
+    utility: string
+    status: string
+    notes: string | null
+    user_name?: string | null
+    created_at?: string | null
+    response_id?: string | null
+    member_code?: string | null
+  }>> {
+    if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
+      // Return empty responses for mock mode
+      return []
+    }
+
+    // Use the Next.js API route as a proxy
+    const response = await fetch(`/api/tickets/${id}/responses`, {
+      headers: {
+        "Accept": "application/json"
+      }
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new ApiError(response.status, errorText || `Failed to fetch responses`)
+    }
+
+    const data = await response.json()
+
+    // Return the full response data from the API route
+    // The API route already handles the transformation
+    if (data.responses && Array.isArray(data.responses)) {
+      return data.responses
+    }
+
+    return []
+  },
+
   // Get tickets with optional filters
   async getTickets(filters: TicketFilters = {}): Promise<TicketListResponse> {
     console.log("[v0] Mock mode check:", process.env.NEXT_PUBLIC_USE_MOCK)
@@ -404,7 +447,14 @@ export const api = {
       throw new ApiError(response.status, errorText || `Failed to fetch ticket`)
     }
 
-    return response.json()
+    const ticketDetail = await response.json()
+
+    // Ensure responses is at least an empty array if not provided
+    if (!ticketDetail.responses) {
+      ticketDetail.responses = []
+    }
+
+    return ticketDetail
   },
 
   // Confirm ticket (ValidPendingConfirm -> Ready)
@@ -493,3 +543,14 @@ export const api = {
 }
 
 export { ApiError }
+
+// Export individual methods for testing
+export const {
+  fetchTicketResponses,
+  getTickets,
+  getTicket,
+  confirmTicket,
+  markSubmitted,
+  markResponsesIn,
+  cancelTicket
+} = api

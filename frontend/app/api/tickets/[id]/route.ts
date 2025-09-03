@@ -90,8 +90,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         assumptions: null,
         warnings: null,
       },
-      submit_packet: backendData.submission_packet || {},
-      responses: [], // Backend doesn't provide responses yet
+      submit_packet: backendData.submission_packet,
+      responses: [], // Will be fetched separately by ResponsesSection component
       audit_log: [], // Backend doesn't provide audit log yet
     }
 

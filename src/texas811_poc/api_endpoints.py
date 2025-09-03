@@ -343,67 +343,125 @@ def generate_submission_packet(ticket: TicketModel) -> dict[str, Any]:
         ticket: Complete ticket model
 
     Returns:
-        Texas811-formatted submission packet
+        Texas811-formatted submission packet (never None)
+
+    Raises:
+        RuntimeError: If packet generation fails
     """
-    # Calculate compliance dates using ticket's submitted time or current time
-    submission_time = ticket.submitted_at or datetime.now(UTC)
-    lawful_start = compliance_calculator.calculate_lawful_start_date(submission_time)
-    ticket_expires = compliance_calculator.calculate_ticket_expiration(submission_time)
+    try:
+        # Validate required ticket fields
+        if not ticket.ticket_id:
+            raise ValueError("Ticket ID is required for submission packet")
+        if not ticket.county:
+            raise ValueError("County is required for submission packet")
+        if not ticket.city:
+            raise ValueError("City is required for submission packet")
+        if not ticket.address:
+            raise ValueError("Address is required for submission packet")
+        if not ticket.work_description:
+            raise ValueError("Work description is required for submission packet")
 
-    packet = {
-        "texas811_fields": {
-            "county": ticket.county,
-            "city": ticket.city,
-            "address": ticket.address,
-            "cross_street": ticket.cross_street,
-            "work_description": ticket.work_description,
-            "caller_name": ticket.caller_name,
-            "caller_company": ticket.caller_company,
-            "caller_phone": ticket.caller_phone,
-            "caller_email": ticket.caller_email,
-            "excavator_company": ticket.excavator_company,
-            "excavator_address": ticket.excavator_address,
-            "excavator_phone": ticket.excavator_phone,
-            "work_start_date": (
-                ticket.work_start_date.isoformat() if ticket.work_start_date else None
-            ),
-            "work_duration_days": ticket.work_duration_days,
-            "work_type": ticket.work_type or "Normal",
-            "remarks": ticket.remarks,
-        },
-        "geometry_data": {
-            "gps_coordinates": (
-                {
-                    "latitude": ticket.gps_lat,
-                    "longitude": ticket.gps_lng,
-                }
-                if ticket.gps_lat and ticket.gps_lng
-                else None
-            ),
-            "geometry": ticket.geometry.model_dump() if ticket.geometry else None,
-        },
-        "compliance_dates": {
-            "lawful_start_date": lawful_start.isoformat(),
-            "ticket_expires_date": ticket_expires.isoformat(),
-            "marking_valid_until": (lawful_start + timedelta(days=14)).isoformat(),
-        },
-        "work_methods": {
-            "white_lining_complete": ticket.white_lining_complete,
-            "boring_crossing": ticket.boring_crossing,
-            "explosives_used": ticket.explosives_used,
-            "hand_digging_only": ticket.hand_digging_only,
-        },
-        "metadata": {
-            "ticket_id": ticket.ticket_id,
-            "session_id": ticket.session_id,
-            "created_at": ticket.created_at.isoformat(),
-            "confirmed_at": datetime.now(UTC).isoformat(),
-            "submission_format": "texas811_portal",
-            "generated_by": "texas811_poc_api",
-        },
-    }
+        # Calculate compliance dates using ticket's submitted time or current time
+        submission_time = ticket.submitted_at or datetime.now(UTC)
+        lawful_start = compliance_calculator.calculate_lawful_start_date(
+            submission_time
+        )
+        ticket_expires = compliance_calculator.calculate_ticket_expiration(
+            submission_time
+        )
 
-    return packet
+        packet = {
+            "texas811_fields": {
+                "county": ticket.county,
+                "city": ticket.city,
+                "address": ticket.address,
+                "cross_street": ticket.cross_street,
+                "work_description": ticket.work_description,
+                "caller_name": ticket.caller_name,
+                "caller_company": ticket.caller_company,
+                "caller_phone": ticket.caller_phone,
+                "caller_email": ticket.caller_email,
+                "excavator_company": ticket.excavator_company,
+                "excavator_address": ticket.excavator_address,
+                "excavator_phone": ticket.excavator_phone,
+                "work_start_date": (
+                    ticket.work_start_date.isoformat()
+                    if ticket.work_start_date
+                    else None
+                ),
+                "work_duration_days": ticket.work_duration_days,
+                "work_type": ticket.work_type or "Normal",
+                "remarks": ticket.remarks,
+            },
+            "geometry_data": {
+                "gps_coordinates": (
+                    {
+                        "latitude": ticket.gps_lat,
+                        "longitude": ticket.gps_lng,
+                    }
+                    if ticket.gps_lat and ticket.gps_lng
+                    else None
+                ),
+                "geometry": ticket.geometry.model_dump() if ticket.geometry else None,
+            },
+            "compliance_dates": {
+                "lawful_start_date": lawful_start.isoformat(),
+                "ticket_expires_date": ticket_expires.isoformat(),
+                "marking_valid_until": (lawful_start + timedelta(days=14)).isoformat(),
+            },
+            "work_methods": {
+                "white_lining_complete": ticket.white_lining_complete,
+                "boring_crossing": ticket.boring_crossing,
+                "explosives_used": ticket.explosives_used,
+                "hand_digging_only": ticket.hand_digging_only,
+            },
+            "metadata": {
+                "ticket_id": ticket.ticket_id,
+                "session_id": ticket.session_id,
+                "created_at": ticket.created_at.isoformat(),
+                "confirmed_at": datetime.now(UTC).isoformat(),
+                "submission_format": "texas811_portal",
+                "generated_by": "texas811_poc_api",
+            },
+        }
+
+        # Validate packet was created successfully
+        if not packet:
+            raise RuntimeError("Submission packet generation resulted in empty packet")
+
+        # Validate required sections
+        required_sections = [
+            "texas811_fields",
+            "compliance_dates",
+            "geometry_data",
+            "work_methods",
+            "metadata",
+        ]
+        for section in required_sections:
+            if section not in packet:
+                raise RuntimeError(
+                    f"Missing required section in submission packet: {section}"
+                )
+
+        # Validate required texas811_fields
+        texas811_fields = packet["texas811_fields"]
+        required_fields = ["county", "city", "address", "work_description"]
+        for field in required_fields:
+            if not texas811_fields.get(field):
+                raise RuntimeError(
+                    f"Missing required field in texas811_fields: {field}"
+                )
+
+        logger.debug(
+            f"Successfully generated submission packet for ticket {ticket.ticket_id}"
+        )
+        return packet
+
+    except Exception as e:
+        logger.error(
+            f"Failed to generate submission packet for ticket {getattr(ticket, 'ticket_id', 'unknown')}: {e}"
+        )
+        raise RuntimeError(f"Submission packet generation failed: {e}") from e
 
 
 # API Endpoints
@@ -879,9 +937,21 @@ async def confirm_ticket(
         ticket.status = TicketStatus.READY
         ticket.updated_at = datetime.now(UTC)
 
-        # Generate submission packet
-        submission_packet = generate_submission_packet(ticket)
-        ticket.submission_packet = submission_packet
+        # Generate submission packet - ensure it's never null
+        try:
+            submission_packet = generate_submission_packet(ticket)
+            ticket.submission_packet = submission_packet
+            logger.info(
+                f"Generated submission packet for ticket {ticket_id} with {len(submission_packet)} sections"
+            )
+        except (RuntimeError, ValueError) as e:
+            logger.error(
+                f"Failed to generate submission packet for ticket {ticket_id}: {e}"
+            )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Cannot generate submission packet: {str(e)}",
+            ) from e
 
         # Update compliance dates from packet
         compliance_dates = submission_packet["compliance_dates"]

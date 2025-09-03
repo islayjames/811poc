@@ -65,14 +65,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ responses: [] })
     }
 
-    // Use real backend
-    const backendUrl = `${API_BASE_URL}/tickets/${id}/responses`
+    // Use real backend - dashboard endpoint for responses
+    const backendUrl = `${API_BASE_URL}/dashboard/tickets/${id}/responses`
 
     console.log(`[API] Fetching responses for ticket ${id} from: ${backendUrl}`)
 
     const response = await fetch(backendUrl, {
       headers: {
-        "Authorization": "Bearer test-api-key-12345",
+        "Authorization": "Bearer dashboard-admin-key",
         "Accept": "application/json"
       }
     })
@@ -88,7 +88,19 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const data = await response.json()
     console.log(`[API] Retrieved ${data.responses?.length || 0} responses for ticket ${id}`)
 
-    return NextResponse.json(data)
+    // Transform backend response format to match frontend expectations
+    // Include all available fields from the response
+    const transformedResponses = (data.responses || []).map((response: any) => ({
+      utility: response.member_name || response.member_code,
+      status: response.status,
+      notes: response.comment || response.facilities || null,
+      user_name: response.user_name || null,
+      created_at: response.created_at || null,
+      response_id: response.response_id || null,
+      member_code: response.member_code || null
+    }))
+
+    return NextResponse.json({ responses: transformedResponses })
 
   } catch (error) {
     console.error("Error fetching responses:", error)
