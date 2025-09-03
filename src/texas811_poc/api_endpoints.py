@@ -452,8 +452,12 @@ async def create_ticket(
         # Convert request to ticket data
         ticket_data = ticket_request.model_dump(exclude_unset=True)
 
-        # Process geocoding and parcel enrichment if needed
-        ticket_data = await process_geocoding_and_enrichment(ticket_data)
+        # Extract and remove skip_validation flag for sync processing
+        skip_validation = ticket_data.pop("skip_validation", False)
+
+        # Process geocoding and parcel enrichment if needed (skip for sync override)
+        if not skip_validation:
+            ticket_data = await process_geocoding_and_enrichment(ticket_data)
 
         # Calculate compliance dates using new compliance calculator
         created_time = datetime.now(UTC)
@@ -467,13 +471,21 @@ async def create_ticket(
         # Create ticket model
         ticket = TicketModel(**ticket_data)
 
-        # Run validation
-        validation_result = validation_engine.validate_ticket(ticket)
-        ticket.validation_gaps = validation_result.gaps
-
-        # Update status based on validation
-        if validation_result.is_submittable:
+        # Run validation (skip strict validation for sync override)
+        if skip_validation:
+            # For sync, mark as validated with no gaps
+            ticket.validation_gaps = []
             ticket.status = TicketStatus.VALIDATED
+            validation_result = type(
+                "obj", (object,), {"gaps": [], "is_submittable": True, "score": 1.0}
+            )()
+        else:
+            validation_result = validation_engine.validate_ticket(ticket)
+            ticket.validation_gaps = validation_result.gaps
+
+            # Update status based on validation
+            if validation_result.is_submittable:
+                ticket.status = TicketStatus.VALIDATED
 
         # Save ticket
         ticket_storage.save_ticket(ticket)

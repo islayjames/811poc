@@ -10,6 +10,8 @@ This module defines the core data structures for:
 Following Texas811 requirements and CustomGPT integration patterns.
 """
 
+import random
+import string
 import uuid
 from datetime import UTC, date, datetime
 from enum import Enum
@@ -23,6 +25,12 @@ from pydantic import (
     field_validator,
     model_validator,
 )
+
+
+def generate_alphanumeric_id() -> str:
+    """Generate a 4-character alphanumeric ticket ID like 'A1B0'."""
+    chars = string.ascii_uppercase + string.digits
+    return "".join(random.choices(chars, k=4))
 
 
 class TicketStatus(str, Enum):
@@ -188,7 +196,8 @@ class TicketModel(BaseModel):
 
     # System fields
     ticket_id: str = Field(
-        default_factory=lambda: str(uuid.uuid4()), description="Unique ticket ID"
+        default_factory=lambda: generate_alphanumeric_id(),
+        description="Unique ticket ID",
     )
     session_id: str = Field(
         ..., description="CustomGPT session ID for multi-turn workflow"
@@ -218,15 +227,11 @@ class TicketModel(BaseModel):
     # Texas811 Required Fields - GPS (alternative to address)
     gps_lat: float | None = Field(
         None,
-        ge=25.0,
-        le=37.0,
-        description="GPS latitude (Texas bounds approximately 25-37°N)",
+        description="GPS latitude coordinate",
     )
     gps_lng: float | None = Field(
         None,
-        ge=-107.0,
-        le=-93.0,
-        description="GPS longitude (Texas bounds approximately -107 to -93°W)",
+        description="GPS longitude coordinate",
     )
 
     # Texas811 Required Fields - Work Description
@@ -254,7 +259,7 @@ class TicketModel(BaseModel):
     # Texas811 Work Details
     work_start_date: date | None = Field(None, description="Requested work start date")
     work_duration_days: int | None = Field(
-        None, ge=1, le=30, description="Expected duration of work in days"
+        None, ge=1, description="Expected duration of work in days"
     )
     work_type: str | None = Field(
         None, description="Type of work (Normal, Emergency, etc.)"
@@ -353,13 +358,7 @@ class TicketModel(BaseModel):
             raise ValueError("Invalid email format")
         return v
 
-    @field_validator("work_start_date")
-    @classmethod
-    def validate_work_start_date(cls, v: date | None) -> date | None:
-        """Ensure work start date is not in the past."""
-        if v and v < date.today():
-            raise ValueError("Work start date cannot be in the past")
-        return v
+    # Removed work_start_date validation to allow historical data import
 
 
 # Collection models for API responses

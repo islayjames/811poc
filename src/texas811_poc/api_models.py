@@ -91,15 +91,11 @@ class CreateTicketRequest(BaseModel):
     # GPS coordinates (alternative/supplement to address)
     gps_lat: float | None = Field(
         None,
-        ge=25.0,
-        le=37.0,
-        description="GPS latitude (Texas bounds approximately 25-37°N)",
+        description="GPS latitude coordinate",
     )
     gps_lng: float | None = Field(
         None,
-        ge=-107.0,
-        le=-93.0,
-        description="GPS longitude (Texas bounds approximately -107 to -93°W)",
+        description="GPS longitude coordinate",
     )
 
     # Texas811 Required Work Description
@@ -140,7 +136,7 @@ class CreateTicketRequest(BaseModel):
         description="Requested work start date (must be at least 2 business days future)",
     )
     work_duration_days: int | None = Field(
-        None, ge=1, le=30, description="Expected duration of work in days"
+        None, ge=1, description="Expected duration of work in days"
     )
     work_type: str | None = Field(
         None, description="Type of work (Normal, Emergency, etc.)", max_length=50
@@ -177,6 +173,11 @@ class CreateTicketRequest(BaseModel):
     )
     parcel_info: ParcelInfoModel | None = Field(
         None, description="Pre-enriched parcel data (optional)"
+    )
+
+    # Sync override flag for historical data import
+    skip_validation: bool = Field(
+        False, description="Skip validation restrictions for historical data sync"
     )
 
 
@@ -259,7 +260,7 @@ class UpdateTicketRequest(BaseModel):
     excavator_phone: str | None = Field(None, max_length=20)
 
     work_start_date: date | None = None
-    work_duration_days: int | None = Field(None, ge=1, le=30)
+    work_duration_days: int | None = Field(None, ge=1)
     work_type: str | None = Field(None, max_length=50)
 
     driving_directions: str | None = Field(None, max_length=1000)
