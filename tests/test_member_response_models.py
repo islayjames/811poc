@@ -10,6 +10,7 @@ from datetime import datetime
 
 import pytest
 from pydantic import ValidationError
+
 from texas811_poc.models import (
     MemberInfo,
     MemberResponseDetail,

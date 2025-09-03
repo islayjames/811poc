@@ -7,6 +7,7 @@ This approach avoids complex mocking and tests the actual integration.
 
 import pytest
 from fastapi.testclient import TestClient
+
 from texas811_poc.main import app
 
 
