@@ -57,11 +57,16 @@ export async function GET(request: NextRequest) {
     const q = searchParams.get("q")
     if (q) params.set("q", q)
 
-    const limit = searchParams.get("limit")
-    if (limit) params.set("limit", limit)
+    // Handle pagination parameters - frontend sends pageSize and page, backend expects limit and offset
+    const pageSize = searchParams.get("pageSize") || searchParams.get("limit") || "100"
+    const page = searchParams.get("page") || "1"
 
-    const offset = searchParams.get("offset")
-    if (offset) params.set("offset", offset)
+    // Convert page-based pagination to offset-based for backend
+    const limit = parseInt(pageSize, 10)
+    const offset = (parseInt(page, 10) - 1) * limit
+
+    params.set("limit", limit.toString())
+    params.set("offset", offset.toString())
 
     const queryString = params.toString()
     const backendUrl = `${API_BASE_URL}/dashboard/tickets${queryString ? `?${queryString}` : ""}`
@@ -100,8 +105,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       tickets: transformedTickets,
       total: transformedTickets.length,
-      limit: 25,
-      offset: 0,
+      limit: Number(limit),
+      offset: Number(offset || 0),
     })
 
   } catch (error) {

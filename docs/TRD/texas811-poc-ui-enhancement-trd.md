@@ -292,11 +292,11 @@ const validateFields = async (fields: Partial<TicketFormData>): Promise<Validati
 **Dependencies**: TRD-004
 
 **Acceptance Criteria**:
-- [ ] Create `/tickets/[id]/edit` route
-- [ ] Implement data fetching from existing endpoint
-- [ ] Pre-populate form with current ticket data
-- [ ] Add navigation from ticket detail page
-- [ ] Handle edit mode state management
+- [x] Create `/tickets/[id]/edit` route
+- [x] Implement data fetching from existing endpoint
+- [x] Pre-populate form with current ticket data
+- [x] Add navigation from ticket detail page
+- [x] Handle edit mode state management
 
 **Technical Details**:
 ```typescript
@@ -322,11 +322,11 @@ const EditTicketPage = ({ params }: { params: { id: string } }) => {
 **Dependencies**: TRD-005
 
 **Acceptance Criteria**:
-- [ ] Add "Edit Ticket" button to ticket detail page
-- [ ] Implement conditional display based on ticket status
-- [ ] Add proper loading states for navigation
-- [ ] Ensure accessibility for button interactions
-- [ ] Test navigation flow end-to-end
+- [x] Add "Edit Ticket" button to ticket detail page
+- [x] Implement conditional display based on ticket status
+- [x] Add proper loading states for navigation
+- [x] Ensure accessibility for button interactions
+- [x] Test navigation flow end-to-end
 
 #### Task TRD-007: Implement Update API Integration
 **Estimate**: 5 hours
@@ -334,11 +334,11 @@ const EditTicketPage = ({ params }: { params: { id: string } }) => {
 **Dependencies**: TRD-005
 
 **Acceptance Criteria**:
-- [ ] Integrate with existing `PATCH /api/tickets/{id}/update` endpoint
-- [ ] Implement optimistic updates with rollback
-- [ ] Add conflict resolution for concurrent edits
-- [ ] Implement validation gap highlighting
-- [ ] Add audit trail integration
+- [x] Integrate with existing `PATCH /api/tickets/{id}/update` endpoint
+- [x] Implement optimistic updates with rollback
+- [x] Add conflict resolution for concurrent edits
+- [x] Implement validation gap highlighting
+- [x] Add audit trail integration
 
 **Technical Details**:
 ```typescript
@@ -354,11 +354,11 @@ const highlightFields = (fieldNames: string[]) => void
 **Dependencies**: TRD-007
 
 **Acceptance Criteria**:
-- [ ] Implement auto-save every 30 seconds
-- [ ] Add local storage backup for offline editing
-- [ ] Show auto-save status indicators
-- [ ] Handle auto-save conflicts gracefully
-- [ ] Provide manual save option
+- [x] Implement auto-save every 30 seconds
+- [x] Add local storage backup for offline editing
+- [x] Show auto-save status indicators
+- [x] Handle auto-save conflicts gracefully
+- [x] Provide manual save option
 
 ### 4.3 Sprint 3: Status Management Integration (Week 3)
 

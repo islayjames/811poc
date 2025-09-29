@@ -45,6 +45,8 @@ import {
   MapIcon,
   CheckCircleIcon,
   HardHatIcon,
+  EditIcon,
+  Loader2,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
@@ -61,6 +63,7 @@ export default function TicketDetailPage() {
   const [showMoreSummary, setShowMoreSummary] = useState(false)
   const [showMapModal, setShowMapModal] = useState(false)
   const [activeTab, setActiveTab] = useState("overview")
+  const [navigatingToEdit, setNavigatingToEdit] = useState(false)
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean
     title: string
@@ -182,6 +185,7 @@ export default function TicketDetailPage() {
     return () => {
       mountedRef.current = false
       fetchingRef.current = false
+      setNavigatingToEdit(false)
       console.log('[TicketDetail] Component unmounted')
     }
   }, [])
@@ -397,6 +401,31 @@ export default function TicketDetailPage() {
 
   const primaryAction = getPrimaryAction()
 
+  // Determine if ticket can be edited based on status
+  const canEdit = (status: string): boolean => {
+    // Allow editing for Draft, ValidPendingConfirm, and Ready states
+    const editableStatuses = ['Draft', 'ValidPendingConfirm', 'Ready']
+    return editableStatuses.includes(status)
+  }
+
+  // Handle navigation to edit page with loading state
+  const handleEditNavigation = async () => {
+    if (!ticket || navigatingToEdit) return
+
+    try {
+      setNavigatingToEdit(true)
+      await router.push(`/tickets/${ticket.id}/edit`)
+    } catch (error) {
+      console.error('Navigation to edit failed:', error)
+      toast({
+        title: "Navigation Error",
+        description: "Failed to navigate to edit page. Please try again.",
+        variant: "destructive",
+      })
+      setNavigatingToEdit(false)
+    }
+  }
+
   return (
     <div className="min-h-screen">
       <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b">
@@ -469,6 +498,29 @@ export default function TicketDetailPage() {
             {primaryAction && (
               <Button size="sm" onClick={primaryAction.action} disabled={!!actionLoading}>
                 {primaryAction.loading ? "Processing..." : primaryAction.label}
+              </Button>
+            )}
+
+            {/* Secondary: Edit Ticket - Conditional Display */}
+            {canEdit(ticket.status) && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEditNavigation}
+                disabled={navigatingToEdit || !!actionLoading}
+                aria-label={`Edit ticket ${formatTicketId(ticket.id)}`}
+              >
+                {navigatingToEdit ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    <EditIcon className="h-4 w-4 mr-2" />
+                    Edit Ticket
+                  </>
+                )}
               </Button>
             )}
 

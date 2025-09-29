@@ -1,18 +1,31 @@
 "use client"
 
-import React from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertTriangle, Save, Send, Loader2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { AlertTriangle, Save, Send, Loader2, RefreshCw, AlertCircle, Download } from "lucide-react"
 import { ExcavatorInfoSection } from "./sections/ExcavatorInfoSection"
 import { WorkDetailsSection } from "./sections/WorkDetailsSection"
 import { LocationInfoSection } from "./sections/LocationInfoSection"
 import { AdditionalDetailsSection } from "./sections/AdditionalDetailsSection"
+import { AutoSaveStatus } from "@/components/ui/auto-save-status"
 import { ticketFormSchema } from "@/lib/schemas/ticketFormSchema"
+import { useAutoSave } from "@/hooks/use-auto-save"
+import { TicketService } from "@/lib/services/ticketService"
 import type { TicketFormData, TicketFormProps, ValidationError } from "@/lib/types/form"
+
+interface ExtendedFormProps extends TicketFormProps {
+  fieldErrors?: Record<string, ValidationError[]>
+  onConflictResolution?: (resolutions: Record<string, 'client' | 'server'>) => void
+  optimisticUpdate?: boolean
+  autoSaveEnabled?: boolean
+  onAutoSaveError?: (error: Error) => void
+  onFormChange?: (data: TicketFormData) => void
+}
 
 export function TicketFormComponent({
   mode,
@@ -22,8 +35,14 @@ export function TicketFormComponent({
   onCancel,
   validationErrors = [],
   isSubmitting = false,
-  autoSaveStatus = "idle"
-}: TicketFormProps) {
+  autoSaveStatus = "idle",
+  fieldErrors = {},
+  onConflictResolution,
+  optimisticUpdate = true,
+  autoSaveEnabled = true,
+  onAutoSaveError,
+  onFormChange
+}: ExtendedFormProps) {
   const form = useForm<TicketFormData>({
     resolver: zodResolver(ticketFormSchema),
     defaultValues: initialData || {
@@ -60,10 +79,70 @@ export function TicketFormComponent({
     mode: "onChange"
   })
 
-  const { handleSubmit, formState: { isDirty, isValid }, watch } = form
+  const { handleSubmit, formState: { isDirty, isValid, errors }, watch, setError, clearErrors, getValues } = form
+  const [highlightedFields, setHighlightedFields] = useState<Set<string>>(new Set())
+  const [showLocalBackupAlert, setShowLocalBackupAlert] = useState(false)
+
+  // Watch form data for auto-save
+  const formData = watch()
+
+  // Auto-save functionality
+  const handleAutoSave = useCallback(async (data: TicketFormData) => {
+    await TicketService.autoSave(data, ticketId, { silent: true })
+  }, [ticketId])
+
+  const handleAutoSaveError = useCallback((error: Error) => {
+    console.error('Auto-save error:', error)
+    onAutoSaveError?.(error)
+  }, [onAutoSaveError])
+
+  const autoSave = useAutoSave(formData, {
+    interval: 30000, // 30 seconds
+    debounceDelay: 1000, // 1 second
+    onAutoSave: handleAutoSave,
+    onError: handleAutoSaveError,
+    enabled: autoSaveEnabled && mode === 'edit',
+    ticketId
+  })
+
+  // Check for local backup on mount
+  useEffect(() => {
+    if (mode === 'create') {
+      const backup = autoSave.restoreFromLocalStorage()
+      if (backup && Object.keys(backup).length > 0) {
+        setShowLocalBackupAlert(true)
+      }
+    }
+  }, [mode, autoSave])
+
+  // Notify parent of form changes
+  useEffect(() => {
+    if (onFormChange && formData) {
+      onFormChange(formData)
+    }
+  }, [formData, onFormChange])
+
+  // Set form errors from validation gaps
+  useEffect(() => {
+    Object.entries(fieldErrors).forEach(([field, fieldValidationErrors]) => {
+      if (fieldValidationErrors.length > 0) {
+        const message = fieldValidationErrors.map(e => e.message).join('; ')
+        setError(field as any, { type: 'validation', message })
+        setHighlightedFields(prev => new Set([...prev, field]))
+      }
+    })
+  }, [fieldErrors, setError])
+
+  // Clear highlighted fields when errors are resolved
+  useEffect(() => {
+    const currentErrorFields = new Set(Object.keys(errors))
+    setHighlightedFields(currentErrorFields)
+  }, [errors])
 
   const onSubmit = async (data: TicketFormData) => {
     try {
+      clearErrors()
+      setHighlightedFields(new Set())
       await onSave(data)
     } catch (error) {
       console.error("Form submission error:", error)
@@ -73,6 +152,23 @@ export function TicketFormComponent({
   const handleSaveDraft = () => {
     const currentData = form.getValues()
     onSave(currentData, { isDraft: true })
+  }
+
+  const handleManualAutoSave = async () => {
+    await autoSave.triggerAutoSave()
+  }
+
+  const handleRestoreBackup = () => {
+    const backup = autoSave.restoreFromLocalStorage()
+    if (backup) {
+      form.reset(backup)
+      setShowLocalBackupAlert(false)
+    }
+  }
+
+  const handleDismissBackup = () => {
+    autoSave.clearLocalStorage()
+    setShowLocalBackupAlert(false)
   }
 
   const getAutoSaveStatusText = () => {
@@ -103,15 +199,78 @@ export function TicketFormComponent({
                 : `Editing ticket ${ticketId}`}
             </p>
           </div>
-          <div className="flex items-center space-x-2">
-            {autoSaveStatus !== "idle" && (
+          <div className="flex items-center space-x-3">
+            {/* Auto-save status */}
+            {autoSaveEnabled && mode === 'edit' && (
+              <AutoSaveStatus
+                status={autoSave.status}
+                lastSaved={autoSave.lastSaved}
+                size="sm"
+              />
+            )}
+
+            {/* Legacy auto-save status (fallback) */}
+            {!autoSaveEnabled && autoSaveStatus !== "idle" && (
               <div className="text-sm text-muted-foreground flex items-center">
                 {autoSaveStatus === "saving" && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
                 {getAutoSaveStatusText()}
               </div>
             )}
+
+            {/* Manual auto-save button for edit mode */}
+            {autoSaveEnabled && mode === 'edit' && autoSave.hasUnsavedChanges && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleManualAutoSave}
+                disabled={autoSave.isSaving || isSubmitting}
+                className="text-xs"
+              >
+                {autoSave.isSaving ? (
+                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                ) : (
+                  <Save className="h-3 w-3 mr-1" />
+                )}
+                Save Now
+              </Button>
+            )}
           </div>
         </div>
+
+        {/* Local Backup Alert */}
+        {showLocalBackupAlert && (
+          <Alert>
+            <Download className="h-4 w-4" />
+            <AlertTitle>Local Backup Found</AlertTitle>
+            <AlertDescription>
+              <div className="space-y-3">
+                <p>
+                  We found a local backup of your work from a previous session.
+                  Would you like to restore it?
+                </p>
+                <div className="flex space-x-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleRestoreBackup}
+                    variant="default"
+                  >
+                    Restore Backup
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleDismissBackup}
+                    variant="outline"
+                  >
+                    Start Fresh
+                  </Button>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Validation Errors */}
         {validationErrors.length > 0 && (
@@ -121,9 +280,42 @@ export function TicketFormComponent({
             <AlertDescription>
               <ul className="list-disc list-inside space-y-1">
                 {validationErrors.map((error, index) => (
-                  <li key={index}>{error.message}</li>
+                  <li key={index} className="flex items-start space-x-2">
+                    <span>{error.message}</span>
+                    {error.field && (
+                      <Badge variant="outline" className="text-xs">
+                        {error.field}
+                      </Badge>
+                    )}
+                  </li>
                 ))}
               </ul>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Field-Specific Validation Gaps */}
+        {Object.keys(fieldErrors).length > 0 && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Field Validation Issues</AlertTitle>
+            <AlertDescription>
+              <div className="space-y-2">
+                {Object.entries(fieldErrors).map(([field, errors]) => (
+                  <div key={field} className="flex items-start space-x-2">
+                    <Badge variant="destructive" className="text-xs">
+                      {field}
+                    </Badge>
+                    <div className="flex-1">
+                      {errors.map((error, index) => (
+                        <div key={index} className="text-sm">
+                          {error.message}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </AlertDescription>
           </Alert>
         )}
@@ -172,38 +364,82 @@ export function TicketFormComponent({
           {/* Form Actions */}
           <Card>
             <CardContent className="pt-6">
-              <div className="flex flex-col sm:flex-row justify-between gap-4">
-                <div className="flex gap-2">
+              <div className="space-y-4">
+                {/* Auto-save info for edit mode */}
+                {autoSaveEnabled && mode === 'edit' && (
+                  <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <AutoSaveStatus
+                          status={autoSave.status}
+                          lastSaved={autoSave.lastSaved}
+                          size="sm"
+                          showText={false}
+                        />
+                        <span>
+                          Auto-save every 30 seconds
+                          {autoSave.hasUnsavedChanges && ' (changes pending)'}
+                        </span>
+                      </div>
+                      {autoSave.lastSaved && (
+                        <span className="text-xs">
+                          Last saved: {autoSave.lastSaved.toLocaleTimeString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={onCancel}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleSaveDraft}
+                      disabled={isSubmitting || !isDirty}
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Draft
+                    </Button>
+                    {/* Manual auto-save button */}
+                    {autoSaveEnabled && mode === 'edit' && autoSave.hasUnsavedChanges && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={handleManualAutoSave}
+                        disabled={autoSave.isSaving || isSubmitting}
+                        size="sm"
+                      >
+                        {autoSave.isSaving ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <Save className="h-4 w-4 mr-2" />
+                        )}
+                        Save Now
+                      </Button>
+                    )}
+                  </div>
                   <Button
-                    type="button"
-                    variant="outline"
-                    onClick={onCancel}
-                    disabled={isSubmitting}
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    className="min-w-[120px]"
                   >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleSaveDraft}
-                    disabled={isSubmitting || !isDirty}
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Draft
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4 mr-2" />
+                    )}
+                    {mode === "create" ? "Create Ticket" : "Update Ticket"}
                   </Button>
                 </div>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting || !isValid}
-                  className="min-w-[120px]"
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4 mr-2" />
-                  )}
-                  {mode === "create" ? "Create Ticket" : "Update Ticket"}
-                </Button>
               </div>
             </CardContent>
           </Card>

@@ -12,8 +12,8 @@ import { TicketsTableSkeleton } from "@/components/tickets/tickets-table-skeleto
 import { ApiError } from "@/lib/api"
 import type { TicketListItem, TicketFilters, TicketStatus } from "@/lib/types"
 
-const DEFAULT_PAGE_SIZE = 25
-const PAGE_SIZE_OPTIONS = [10, 25, 50]
+const DEFAULT_PAGE_SIZE = 100
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 
 export default function TicketsListPage() {
   const router = useRouter()
