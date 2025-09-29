@@ -4,12 +4,15 @@ A robust, production-ready web scraper for extracting ticket data and utility me
 
 ## Features
 
-- **Advanced Print Dialog Suppression**: Sophisticated browser automation with hardened print dialog interception
+- **Nuclear Print Dialog Suppression**: Advanced multi-layer print prevention system that completely eliminates print dialog interruptions
+- **Multi-Page Extraction Support**: Comprehensive pagination handling with reliable page navigation and data continuity
+- **DL Format Response Extraction**: Enhanced parser for utility member responses using definition list (DL) HTML structures
+- **Consolidated Dataset Generation**: Creates unified datasets combining multiple extraction runs and data sources
 - **Comprehensive Data Extraction**: Complete ticket information including utility member responses
 - **Critical Clear/Not Clear Detection**: Accurately captures response status for each utility member
 - **Multi-Method Response Extraction**: Uses multiple fallback strategies for robust data capture
-- **Fast Processing**: 500ms rate limiting for efficient scraping
-- **Robust Error Handling**: Automatic retries and fallback mechanisms
+- **Fast Processing**: Optimized rate limiting for efficient scraping
+- **Robust Error Handling**: Automatic retries and fallback mechanisms with enhanced recovery
 - **Progress Tracking**: Real-time progress saving and session management
 
 ## Requirements
@@ -33,7 +36,7 @@ npx playwright install
 
 ## Configuration
 
-The scraper is configured via the `CONFIG` object in `texas811-production-scraper-hybrid-fixed.js`:
+The scraper is configured via the `CONFIG` object in `texas811-production-scraper-final.js`:
 
 ```javascript
 const CONFIG = {
@@ -58,7 +61,7 @@ const CONFIG = {
 
 Run the scraper with default settings:
 ```bash
-node texas811-production-scraper-hybrid-fixed.js
+node texas811-production-scraper-final.js
 ```
 
 ### Output Files
@@ -141,8 +144,10 @@ The scraper uses multiple extraction strategies for maximum reliability:
 
 - **Authentication Retries**: Automatic retry on login failures
 - **Network Resilience**: Handles network timeouts and connection issues
-- **Print Dialog Suppression**: Advanced browser automation prevents print interruptions
+- **Nuclear Print Dialog Suppression**: Multi-layer print prevention completely eliminates dialog interruptions
+- **Multi-Page Navigation**: Robust pagination handling with reliable page transitions
 - **Progress Recovery**: Can resume from saved progress files
+- **DL Format Parsing**: Enhanced extraction for definition list response structures
 
 ## Performance
 
@@ -185,8 +190,10 @@ For debugging, set `headless: false` in CONFIG to see browser automation in acti
 
 ```
 /scrape/
-├── texas811-production-scraper-hybrid-fixed.js  # Main scraper
-├── texas811-all-tickets-YYYY-MM-DD.json        # Output files
+├── texas811-production-scraper-final.js         # Main production scraper
+├── texas811-all-tickets-YYYY-MM-DD.json        # Historical output files
+├── texas811-consolidated-full-dataset-*.json   # Consolidated datasets
+├── texas811-full-brightstar-*.json             # Company-specific extractions
 └── README.md                                    # This documentation
 ```
 
@@ -196,8 +203,31 @@ For debugging, set `headless: false` in CONFIG to see browser automation in acti
 - Browser runs with security restrictions disabled (necessary for automation)
 - Output files contain sensitive business data - protect accordingly
 
+## Recent Improvements
+
+### Nuclear Print Dialog Suppression
+- **Multi-layer prevention**: Context-level, page-level, and global print system disabling
+- **Complete elimination**: Zero print dialog interruptions during extraction
+- **Comprehensive coverage**: Handles all browser print trigger scenarios
+
+### Multi-Page Extraction Enhancements
+- **Reliable pagination**: Robust page navigation with stability checks
+- **Data continuity**: Seamless extraction across multiple result pages
+- **Error recovery**: Enhanced fallback mechanisms for page transition failures
+
+### DL Format Response Extraction
+- **Enhanced parser**: Improved handling of definition list (DL) HTML structures
+- **Paired element extraction**: Accurate member name and response status pairing
+- **Multiple fallback methods**: Ensures data extraction even with varying HTML formats
+
+### Consolidated Dataset Generation
+- **Data aggregation**: Combines multiple extraction runs into unified datasets
+- **Comprehensive coverage**: Merges historical and current ticket data
+- **Enhanced analysis**: Supports broader data analysis and reporting needs
+
 ## Version History
 
+- **v1.0.7**: Nuclear print suppression, multi-page support, DL format extraction, consolidated datasets
 - **v2.0.0**: Advanced print suppression, comprehensive member response extraction
 - **v1.x**: Initial versions with basic scraping capabilities
 

@@ -1,0 +1,9 @@
+{
+  "ticket_id": "${TARGET_TICKET}",
+  "page_title": "Page not found - Texas 811",
+  "page_url": "https://texas811.org/tickets/TicketDetailsByNumber?ticketNumber=2576937724",
+  "content_length": 61829,
+  "responses": [],
+  "response_count": 0,
+  "raw_content_sample": "\n\t\t\n\t\t\tconst onSkipLinkClick = () => {\n\t\t\t\tconst htmlElement = document.querySelector('html');\n\n\t\t\t\thtmlElement.style['scroll-behavior'] = 'smooth';\n\n\t\t\t\tsetTimeout( () => htmlElement.style['scroll-behavior'] = null, 1000 );\n\t\t\t}\n\t\t\tdocument.addEventListener(\"DOMContentLoaded\", () => {\n\t\t\t\tif (!document.querySelector('#content')) {\n\t\t\t\t\tdocument.querySelector('.ea11y-skip-to-content-link').remove();\n\t\t\t\t}\n\t\t\t});\n\t\t\n\t\t\n\t\t\t\n\t\t\t\tSkip to content\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\n\t\t\t\n\t\t\n\n\t\t\n\t\n\t\n\t\t\n\t\t\tSkip to content\t\t\n\t\t\t\t\n\t\t\t\n\t\t\n\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t English English Español\n\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\n                \n                                    \n                    EXCAVATORS PORTAL                \n            \n            \n                    HOMEOWNERS PORTAL                \n                  \n                \n            \t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\tExtraordinary Circumstance\n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\n\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\n"
+}
