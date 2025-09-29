@@ -313,6 +313,9 @@ export default function TicketsListPage() {
           <h1 className="text-3xl font-bold tracking-tight">Tickets</h1>
           <p className="text-muted-foreground">Manage utility locate tickets and track their status</p>
         </div>
+        <Button onClick={() => router.push('/tickets/create')}>
+          Create Ticket
+        </Button>
       </div>
 
       <TicketsFilters
