@@ -26,8 +26,8 @@ import requests
 from dateutil import parser as date_parser
 
 # Configuration
-API_BASE_URL = "http://localhost:8000"
-SCRAPED_DATA_FILE = "scrape/texas811-all-tickets-2025-09-03.json"
+API_BASE_URL = "http://localhost:8001"
+SCRAPED_DATA_FILE = "scrape/texas811-consolidated-production-2025-09-29.json"
 API_KEY = "test-api-key-12345"  # Default development API key
 TIMEOUT_SECONDS = 30
 
