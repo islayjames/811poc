@@ -67,8 +67,15 @@ export function SubmissionConfirmationDialog({
     }
   }
 
+  // Handle dialog open change - prevent closing while submitting
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!isSubmitting) {
+      onOpenChange(newOpen)
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={!isSubmitting ? onOpenChange : undefined}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Submit Ticket to Texas811</DialogTitle>

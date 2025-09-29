@@ -120,14 +120,9 @@ export function useFormValidation(): FormValidationState {
     return fieldState
   }, [errors, touchedFields])
 
-  const [stats, setStats] = useState<ValidationStats>(calculateStats)
-  const [fieldValidationState, setFieldValidationState] = useState(() => buildFieldValidationState())
-
-  // Update stats when form data changes
-  useEffect(() => {
-    setStats(calculateStats())
-    setFieldValidationState(buildFieldValidationState())
-  }, [calculateStats, buildFieldValidationState, refreshCounter])
+  // Compute stats directly without state to avoid infinite loops
+  const stats = calculateStats()
+  const fieldValidationState = buildFieldValidationState()
 
   const refreshValidation = useCallback(() => {
     setRefreshCounter(prev => prev + 1)

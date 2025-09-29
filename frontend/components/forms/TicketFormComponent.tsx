@@ -132,7 +132,8 @@ export function TicketFormComponent({
         setShowLocalBackupAlert(true)
       }
     }
-  }, [mode, autoSave])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode])
 
   // Notify parent of form changes
   useEffect(() => {

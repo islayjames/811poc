@@ -55,10 +55,26 @@ export function useAutoSave(
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
-  // Refs for tracking data
+  // Refs for tracking data and callbacks
   const previousDataRef = useRef<TicketFormData | null>(null)
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
   const isManualSaveRef = useRef(false)
+  const onAutoSaveRef = useRef(onAutoSave)
+  const onErrorRef = useRef(onError)
+  const ticketIdRef = useRef(ticketId)
+
+  // Update refs when values change
+  useEffect(() => {
+    onAutoSaveRef.current = onAutoSave
+  }, [onAutoSave])
+
+  useEffect(() => {
+    onErrorRef.current = onError
+  }, [onError])
+
+  useEffect(() => {
+    ticketIdRef.current = ticketId
+  }, [ticketId])
 
   // Local storage key
   const localStorageKey = ticketId ? `${LOCAL_STORAGE_PREFIX}${ticketId}` : `${LOCAL_STORAGE_PREFIX}new`
@@ -68,16 +84,17 @@ export function useAutoSave(
    */
   const saveToLocalStorage = useCallback((data: TicketFormData) => {
     try {
+      const storageKey = ticketIdRef.current ? `${LOCAL_STORAGE_PREFIX}${ticketIdRef.current}` : `${LOCAL_STORAGE_PREFIX}new`
       const backupData = {
         data,
         timestamp: Date.now(),
-        ticketId: ticketId || null
+        ticketId: ticketIdRef.current || null
       }
-      localStorage.setItem(localStorageKey, JSON.stringify(backupData))
+      localStorage.setItem(storageKey, JSON.stringify(backupData))
     } catch (error) {
       console.warn('Failed to save auto-save backup to localStorage:', error)
     }
-  }, [localStorageKey, ticketId])
+  }, [])
 
   /**
    * Restore data from localStorage
@@ -127,8 +144,8 @@ export function useAutoSave(
       // Save to localStorage first as backup
       saveToLocalStorage(data)
 
-      // Perform server auto-save
-      await onAutoSave(data)
+      // Perform server auto-save using ref to avoid dependency
+      await onAutoSaveRef.current(data)
 
       setStatus('saved')
       setLastSaved(new Date())
@@ -143,7 +160,7 @@ export function useAutoSave(
       console.error('Auto-save failed:', error)
       setStatus('error')
       setError(error instanceof Error ? error : new Error('Auto-save failed'))
-      onError(error instanceof Error ? error : new Error('Auto-save failed'))
+      onErrorRef.current(error instanceof Error ? error : new Error('Auto-save failed'))
 
       // Auto-hide error status after 3 seconds
       setTimeout(() => {
@@ -152,7 +169,7 @@ export function useAutoSave(
     } finally {
       setIsSaving(false)
     }
-  }, [enabled, onAutoSave, onError, saveToLocalStorage])
+  }, [enabled, saveToLocalStorage])
 
   /**
    * Manual trigger for auto-save
@@ -203,12 +220,18 @@ export function useAutoSave(
    */
   useEffect(() => {
     if (!enabled || !hasUnsavedChanges) {
-      clearAutoSave()
+      if (autoSaveTimerRef.current) {
+        clearInterval(autoSaveTimerRef.current)
+        autoSaveTimerRef.current = null
+      }
       return
     }
 
     // Clear existing timer
-    clearAutoSave()
+    if (autoSaveTimerRef.current) {
+      clearInterval(autoSaveTimerRef.current)
+      autoSaveTimerRef.current = null
+    }
 
     // Set up new timer
     autoSaveTimerRef.current = setInterval(() => {
@@ -217,8 +240,13 @@ export function useAutoSave(
       }
     }, interval)
 
-    return clearAutoSave
-  }, [enabled, hasUnsavedChanges, formData, isSaving, interval, performAutoSave, clearAutoSave])
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearInterval(autoSaveTimerRef.current)
+        autoSaveTimerRef.current = null
+      }
+    }
+  }, [enabled, hasUnsavedChanges, formData, isSaving, interval, performAutoSave])
 
   /**
    * Cleanup on unmount
