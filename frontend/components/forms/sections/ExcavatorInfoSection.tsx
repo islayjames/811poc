@@ -15,6 +15,11 @@ export function ExcavatorInfoSection() {
         label="Company Name"
         required
         helpText="Name of the excavating company or organization"
+        examples={[
+          "ABC Construction Inc.",
+          "Texas Utility Services LLC",
+          "Metro Excavation Company"
+        ]}
       >
         <Input
           {...register("excavator.company")}
@@ -27,6 +32,11 @@ export function ExcavatorInfoSection() {
         label="Contact Name"
         required
         helpText="Primary contact person for this excavation project"
+        examples={[
+          "John Smith",
+          "Maria Rodriguez",
+          "David Johnson"
+        ]}
       >
         <Input
           {...register("excavator.contact_name")}
@@ -39,6 +49,11 @@ export function ExcavatorInfoSection() {
         label="Phone Number"
         required
         helpText="Primary phone number in format (xxx) xxx-xxxx"
+        examples={[
+          "(512) 555-0123",
+          "(214) 555-9876",
+          "(713) 555-4567"
+        ]}
       >
         <Input
           {...register("excavator.phone")}
@@ -50,7 +65,12 @@ export function ExcavatorInfoSection() {
       <FormFieldWrapper
         name="excavator.email"
         label="Email Address"
-        helpText="Email address for notifications and updates"
+        helpText="Email address for notifications and updates (optional)"
+        examples={[
+          "john.smith@company.com",
+          "excavation@contractor.com",
+          "permits@construction.net"
+        ]}
       >
         <Input
           {...register("excavator.email")}

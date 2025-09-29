@@ -13,8 +13,13 @@ import { WorkDetailsSection } from "./sections/WorkDetailsSection"
 import { LocationInfoSection } from "./sections/LocationInfoSection"
 import { AdditionalDetailsSection } from "./sections/AdditionalDetailsSection"
 import { AutoSaveStatus } from "@/components/ui/auto-save-status"
+import { SubmissionConfirmationDialog } from "@/components/dialogs/SubmissionConfirmationDialog"
+import { FormProgressIndicator } from "./FormProgressIndicator"
 import { ticketFormSchema } from "@/lib/schemas/ticketFormSchema"
 import { useAutoSave } from "@/hooks/use-auto-save"
+import { useFormValidation } from "@/hooks/use-form-validation"
+import { useOnlineStatus } from "@/hooks/use-online-status"
+import { OfflineAlert } from "@/components/ui/offline-indicator"
 import { TicketService } from "@/lib/services/ticketService"
 import type { TicketFormData, TicketFormProps, ValidationError } from "@/lib/types/form"
 
@@ -25,6 +30,9 @@ interface ExtendedFormProps extends TicketFormProps {
   autoSaveEnabled?: boolean
   onAutoSaveError?: (error: Error) => void
   onFormChange?: (data: TicketFormData) => void
+  onSubmitToTexas811?: (submissionReference: string, notes?: string) => Promise<void>
+  currentStatus?: string
+  enableSubmission?: boolean
 }
 
 export function TicketFormComponent({
@@ -41,7 +49,10 @@ export function TicketFormComponent({
   optimisticUpdate = true,
   autoSaveEnabled = true,
   onAutoSaveError,
-  onFormChange
+  onFormChange,
+  onSubmitToTexas811,
+  currentStatus = "",
+  enableSubmission = false
 }: ExtendedFormProps) {
   const form = useForm<TicketFormData>({
     resolver: zodResolver(ticketFormSchema),
@@ -82,6 +93,14 @@ export function TicketFormComponent({
   const { handleSubmit, formState: { isDirty, isValid, errors }, watch, setError, clearErrors, getValues } = form
   const [highlightedFields, setHighlightedFields] = useState<Set<string>>(new Set())
   const [showLocalBackupAlert, setShowLocalBackupAlert] = useState(false)
+  const [showSubmissionDialog, setShowSubmissionDialog] = useState(false)
+  const [isSubmittingToTexas811, setIsSubmittingToTexas811] = useState(false)
+
+  // Form validation and progress tracking
+  const formValidation = useFormValidation()
+
+  // Online status monitoring
+  const { isOnline, checkConnectivity } = useOnlineStatus()
 
   // Watch form data for auto-save
   const formData = watch()
@@ -121,6 +140,15 @@ export function TicketFormComponent({
       onFormChange(formData)
     }
   }, [formData, onFormChange])
+
+  // Retry queued requests when connection is restored
+  useEffect(() => {
+    if (isOnline) {
+      TicketService.retryQueuedRequests().catch(error => {
+        console.warn('Failed to retry queued requests:', error)
+      })
+    }
+  }, [isOnline])
 
   // Set form errors from validation gaps
   useEffect(() => {
@@ -171,6 +199,47 @@ export function TicketFormComponent({
     setShowLocalBackupAlert(false)
   }
 
+  const handleSubmitRequest = async () => {
+    // First save the current form data
+    const currentData = form.getValues()
+    try {
+      // Save any pending changes first
+      await onSave(currentData)
+      // Then show the submission dialog
+      setShowSubmissionDialog(true)
+    } catch (error) {
+      console.error("Failed to save before submission:", error)
+      // Still allow submission attempt if save fails
+      setShowSubmissionDialog(true)
+    }
+  }
+
+  const handleConfirmSubmission = async (submissionReference: string, notes?: string) => {
+    if (!onSubmitToTexas811 || !ticketId) {
+      console.error("Submission handler or ticket ID not available")
+      return
+    }
+
+    setIsSubmittingToTexas811(true)
+    try {
+      await onSubmitToTexas811(submissionReference, notes)
+      setShowSubmissionDialog(false)
+    } catch (error) {
+      console.error("Submission failed:", error)
+      // Don't close dialog on error so user can retry
+      throw error
+    } finally {
+      setIsSubmittingToTexas811(false)
+    }
+  }
+
+  const canSubmit = () => {
+    if (!enableSubmission || !ticketId || !currentStatus) {
+      return false
+    }
+    return TicketService.canSubmitTicket(currentStatus) && isValid
+  }
+
   const getAutoSaveStatusText = () => {
     switch (autoSaveStatus) {
       case "saving":
@@ -186,9 +255,23 @@ export function TicketFormComponent({
 
   return (
     <FormProvider {...form}>
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Progress Sidebar */}
+          <div className="lg:col-span-1">
+            <FormProgressIndicator
+              completionPercentage={formValidation.stats.completionPercentage}
+              requiredFieldsCompleted={formValidation.stats.requiredFieldsCompleted}
+              totalRequiredFields={formValidation.stats.totalRequiredFields}
+              validationErrors={formValidation.stats.validationErrors}
+              className="lg:sticky lg:top-4"
+            />
+          </div>
+
+          {/* Main Form Content */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
               {mode === "create" ? "Create New Ticket" : "Edit Ticket"}
@@ -237,6 +320,12 @@ export function TicketFormComponent({
             )}
           </div>
         </div>
+
+        {/* Offline Status Alert */}
+        <OfflineAlert
+          offlineMessage="You're currently offline. Your work is being saved locally and will sync when connection is restored."
+          onlineMessage="Connection restored! Your changes are being synchronized."
+        />
 
         {/* Local Backup Alert */}
         {showLocalBackupAlert && (
@@ -396,7 +485,7 @@ export function TicketFormComponent({
                       type="button"
                       variant="outline"
                       onClick={onCancel}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || isSubmittingToTexas811}
                     >
                       Cancel
                     </Button>
@@ -404,7 +493,7 @@ export function TicketFormComponent({
                       type="button"
                       variant="outline"
                       onClick={handleSaveDraft}
-                      disabled={isSubmitting || !isDirty}
+                      disabled={isSubmitting || isSubmittingToTexas811 || !isDirty}
                     >
                       <Save className="h-4 w-4 mr-2" />
                       Save Draft
@@ -415,7 +504,7 @@ export function TicketFormComponent({
                         type="button"
                         variant="secondary"
                         onClick={handleManualAutoSave}
-                        disabled={autoSave.isSaving || isSubmitting}
+                        disabled={autoSave.isSaving || isSubmitting || isSubmittingToTexas811}
                         size="sm"
                       >
                         {autoSave.isSaving ? (
@@ -426,10 +515,23 @@ export function TicketFormComponent({
                         Save Now
                       </Button>
                     )}
+                    {/* Save & Mark Submitted button */}
+                    {enableSubmission && mode === 'edit' && (
+                      <Button
+                        type="button"
+                        variant="default"
+                        onClick={handleSubmitRequest}
+                        disabled={!canSubmit() || isSubmitting || isSubmittingToTexas811}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <Send className="h-4 w-4 mr-2" />
+                        Save & Mark Submitted
+                      </Button>
+                    )}
                   </div>
                   <Button
                     type="submit"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting || isSubmittingToTexas811 || !isValid}
                     className="min-w-[120px]"
                   >
                     {isSubmitting ? (
@@ -444,6 +546,19 @@ export function TicketFormComponent({
             </CardContent>
           </Card>
         </form>
+
+        {/* Submission Confirmation Dialog */}
+        {enableSubmission && ticketId && (
+          <SubmissionConfirmationDialog
+            open={showSubmissionDialog}
+            onOpenChange={setShowSubmissionDialog}
+            onConfirm={handleConfirmSubmission}
+            ticketId={ticketId}
+            isSubmitting={isSubmittingToTexas811}
+          />
+        )}
+          </div>
+        </div>
       </div>
     </FormProvider>
   )

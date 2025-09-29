@@ -36,36 +36,272 @@ export class TicketAPIError extends Error {
   constructor(
     public status: number,
     message: string,
-    public validationGaps?: ValidationError[]
+    public validationGaps?: ValidationError[],
+    public isNetworkError: boolean = false,
+    public isRetryable: boolean = false
   ) {
     super(message)
     this.name = "TicketAPIError"
   }
+
+  static isNetworkError(error: any): boolean {
+    return error instanceof TypeError ||
+           error.message?.includes('fetch') ||
+           error.message?.includes('network') ||
+           error.code === 'NETWORK_ERROR'
+  }
+
+  static isRetryableError(status?: number): boolean {
+    if (!status) return true // Network errors are retryable
+    return status >= 500 || status === 408 || status === 429
+  }
 }
+
+interface RetryOptions {
+  maxRetries?: number
+  baseDelay?: number
+  maxDelay?: number
+  backoffMultiplier?: number
+  retryCondition?: (error: TicketAPIError) => boolean
+}
+
+interface QueuedRequest {
+  id: string
+  url: string
+  options: RequestInit
+  resolve: (value: any) => void
+  reject: (error: any) => void
+  timestamp: number
+  retryCount: number
+}
+
+/**
+ * Enhanced API client with retry logic and offline queuing
+ */
+class APIClient {
+  private requestQueue: QueuedRequest[] = []
+  private isProcessingQueue = false
+
+  async fetchWithRetry(
+    url: string,
+    options: RequestInit = {},
+    retryOptions: RetryOptions = {}
+  ): Promise<Response> {
+    const {
+      maxRetries = 3,
+      baseDelay = 1000,
+      maxDelay = 30000,
+      backoffMultiplier = 2,
+      retryCondition = (error) => error.isRetryable
+    } = retryOptions
+
+    let lastError: TicketAPIError
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(url, options)
+
+        if (response.ok) {
+          return response
+        }
+
+        // Create error for non-200 responses
+        const errorData = await response.json().catch(() => ({}))
+        lastError = new TicketAPIError(
+          response.status,
+          errorData.error || `HTTP ${response.status}`,
+          errorData.validation_gaps,
+          false,
+          TicketAPIError.isRetryableError(response.status)
+        )
+
+        // Don't retry if error is not retryable
+        if (!retryCondition(lastError)) {
+          throw lastError
+        }
+
+        // Don't retry on last attempt
+        if (attempt === maxRetries) {
+          throw lastError
+        }
+
+        // Calculate delay with exponential backoff
+        const delay = Math.min(
+          baseDelay * Math.pow(backoffMultiplier, attempt),
+          maxDelay
+        )
+
+        await this.sleep(delay)
+
+      } catch (error: any) {
+        const isNetworkError = TicketAPIError.isNetworkError(error)
+
+        lastError = new TicketAPIError(
+          0,
+          isNetworkError ? 'Network connection failed' : error.message,
+          undefined,
+          isNetworkError,
+          true
+        )
+
+        // Don't retry network errors if we're offline
+        if (isNetworkError && typeof navigator !== 'undefined' && !navigator.onLine) {
+          throw lastError
+        }
+
+        // Don't retry if error is not retryable
+        if (!retryCondition(lastError)) {
+          throw lastError
+        }
+
+        // Don't retry on last attempt
+        if (attempt === maxRetries) {
+          throw lastError
+        }
+
+        // Calculate delay with exponential backoff
+        const delay = Math.min(
+          baseDelay * Math.pow(backoffMultiplier, attempt),
+          maxDelay
+        )
+
+        await this.sleep(delay)
+      }
+    }
+
+    throw lastError!
+  }
+
+  /**
+   * Queue request for when connection is restored
+   */
+  queueRequest(url: string, options: RequestInit = {}): Promise<Response> {
+    return new Promise((resolve, reject) => {
+      const request: QueuedRequest = {
+        id: `req-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        url,
+        options,
+        resolve,
+        reject,
+        timestamp: Date.now(),
+        retryCount: 0
+      }
+
+      this.requestQueue.push(request)
+
+      // Try to process queue immediately (in case we're back online)
+      this.processQueue()
+    })
+  }
+
+  /**
+   * Process queued requests when connection is restored
+   */
+  async processQueue() {
+    if (this.isProcessingQueue || this.requestQueue.length === 0) {
+      return
+    }
+
+    this.isProcessingQueue = true
+
+    while (this.requestQueue.length > 0) {
+      const request = this.requestQueue.shift()!
+
+      try {
+        const response = await this.fetchWithRetry(request.url, request.options, {
+          maxRetries: 2, // Fewer retries for queued requests
+          retryCondition: (error) => error.isNetworkError // Only retry network errors
+        })
+
+        request.resolve(response)
+
+      } catch (error) {
+        // If it's still a network error, put it back in queue
+        if (error instanceof TicketAPIError && error.isNetworkError) {
+          request.retryCount++
+
+          // Give up after too many attempts
+          if (request.retryCount >= 5) {
+            request.reject(error)
+          } else {
+            this.requestQueue.unshift(request) // Put back at front
+            break // Stop processing for now
+          }
+        } else {
+          request.reject(error)
+        }
+      }
+
+      // Small delay between queued requests
+      await this.sleep(100)
+    }
+
+    this.isProcessingQueue = false
+  }
+
+  /**
+   * Clear old queued requests
+   */
+  clearStaleRequests(maxAge: number = 5 * 60 * 1000) { // 5 minutes
+    const now = Date.now()
+    this.requestQueue = this.requestQueue.filter(req =>
+      (now - req.timestamp) < maxAge
+    )
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  /**
+   * Get queue status for debugging
+   */
+  getQueueStatus() {
+    return {
+      queueLength: this.requestQueue.length,
+      isProcessing: this.isProcessingQueue,
+      oldestRequest: this.requestQueue.length > 0
+        ? new Date(this.requestQueue[0].timestamp)
+        : null
+    }
+  }
+}
+
+const apiClient = new APIClient()
 
 export class TicketService {
   /**
    * Create a new ticket
    */
   static async createTicket(data: TicketFormData): Promise<CreateTicketResponse> {
-    const response = await fetch('/api/tickets', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
+    try {
+      const response = await apiClient.fetchWithRetry('/api/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }, {
+        maxRetries: 2, // Fewer retries for create operations
+        retryCondition: (error) => error.isNetworkError || error.status >= 500
+      })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new TicketAPIError(
-        response.status,
-        errorData.error || 'Failed to create ticket',
-        errorData.validation_gaps
-      )
+      return response.json()
+    } catch (error) {
+      if (error instanceof TicketAPIError && error.isNetworkError) {
+        // Queue the request for when connection is restored
+        console.log('Queueing ticket creation for when connection is restored')
+        const response = await apiClient.queueRequest('/api/tickets', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+        return response.json()
+      }
+      throw error
     }
-
-    return response.json()
   }
 
   /**
@@ -75,24 +311,34 @@ export class TicketService {
     ticketId: string,
     data: Partial<TicketFormData>
   ): Promise<UpdateTicketResponse> {
-    const response = await fetch(`/api/tickets/${ticketId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
+    try {
+      const response = await apiClient.fetchWithRetry(`/api/tickets/${ticketId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }, {
+        maxRetries: 3, // More retries for updates (less risky)
+        retryCondition: (error) => error.isRetryable
+      })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new TicketAPIError(
-        response.status,
-        errorData.error || 'Failed to update ticket',
-        errorData.validation_gaps
-      )
+      return response.json()
+    } catch (error) {
+      if (error instanceof TicketAPIError && error.isNetworkError) {
+        // Queue the request for when connection is restored
+        console.log('Queueing ticket update for when connection is restored')
+        const response = await apiClient.queueRequest(`/api/tickets/${ticketId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+        return response.json()
+      }
+      throw error
     }
-
-    return response.json()
   }
 
   /**
@@ -147,25 +393,34 @@ export class TicketService {
     try {
       if (ticketId) {
         // For existing tickets, use the auto-save endpoint if available
-        const response = await fetch(`/api/tickets/${ticketId}/autosave`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auto-Save': 'true'
-          },
-          body: JSON.stringify(data),
-        })
-
-        if (!response.ok) {
+        try {
+          const response = await apiClient.fetchWithRetry(`/api/tickets/${ticketId}/autosave`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Auto-Save': 'true'
+            },
+            body: JSON.stringify(data),
+          }, {
+            maxRetries: 1, // Minimal retries for auto-save
+            baseDelay: 500,
+            retryCondition: (error) => error.isNetworkError
+          })
+        } catch (error) {
           // Fallback to regular update if auto-save endpoint doesn't exist
-          if (response.status === 404) {
+          if (error instanceof TicketAPIError && error.status === 404) {
             await this.updateTicket(ticketId, data)
+          } else if (error instanceof TicketAPIError && error.isNetworkError) {
+            // Store locally when offline
+            const autoSaveData = {
+              data,
+              ticketId,
+              timestamp: Date.now(),
+              type: 'auto-save-offline'
+            }
+            localStorage.setItem(`ticket-${ticketId}-autosave`, JSON.stringify(autoSaveData))
           } else {
-            const errorData = await response.json().catch(() => ({}))
-            throw new TicketAPIError(
-              response.status,
-              errorData.error || 'Auto-save failed'
-            )
+            throw error
           }
         }
       } else {
@@ -531,5 +786,65 @@ export class TicketService {
       message: gap.message || gap.error || 'Validation error',
       code: gap.code
     }))
+  }
+
+  /**
+   * Submit ticket to Texas811
+   */
+  static async submitTicket(
+    ticketId: string,
+    submissionReference: string,
+    notes?: string
+  ): Promise<{ success: boolean; data?: any }> {
+    const response = await fetch(`/api/tickets/${ticketId}/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        submission_reference: submissionReference,
+        notes
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new TicketAPIError(
+        response.status,
+        errorData.error || 'Failed to submit ticket'
+      )
+    }
+
+    return response.json()
+  }
+
+  /**
+   * Check if ticket can be submitted (status validation)
+   */
+  static canSubmitTicket(ticketStatus: string): boolean {
+    // Based on backend validation, only "ready" tickets can be submitted
+    const submittableStatuses = ['ready', 'validated']
+    return submittableStatuses.includes(ticketStatus.toLowerCase())
+  }
+
+  /**
+   * Retry queued requests when connection is restored
+   */
+  static async retryQueuedRequests(): Promise<void> {
+    await apiClient.processQueue()
+  }
+
+  /**
+   * Get API queue status for debugging
+   */
+  static getAPIQueueStatus() {
+    return apiClient.getQueueStatus()
+  }
+
+  /**
+   * Clear old queued requests
+   */
+  static clearStaleQueuedRequests(maxAge?: number): void {
+    apiClient.clearStaleRequests(maxAge)
   }
 }

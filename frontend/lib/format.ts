@@ -21,7 +21,43 @@ export function getFullDateString(dateString: string | null): string {
   return new Date(dateString).toISOString()
 }
 
-// Shorten ticket ID for display
+// Generate 4-digit display key from ticket ID
+export function formatTicketKey(id: string | undefined): string {
+  if (!id) return "—"
+
+  // For numeric IDs like "2576937757", take last 4 digits
+  if (/^\d+$/.test(id)) {
+    return id.slice(-4)
+  }
+
+  // For alphanumeric IDs, generate 4-char hash
+  let hash = 0
+  for (let i = 0; i < id.length; i++) {
+    const char = id.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+
+  // Convert to 4-digit string with leading zeros
+  return Math.abs(hash % 10000).toString().padStart(4, '0')
+}
+
+// Format work order reference for display
+export function formatWorkOrder(workOrderRef: string | null, ticketId?: string): string {
+  // If work_order_ref is not the "scraped-data-xxxx" pattern, use it as-is
+  if (workOrderRef && !workOrderRef.startsWith('scraped-data-')) {
+    return workOrderRef
+  }
+
+  // Use ticket ID if available
+  if (ticketId) {
+    return `TX-${ticketId}`
+  }
+
+  return "—"
+}
+
+// Shorten ticket ID for display (legacy - keeping for backward compatibility)
 export function formatTicketId(id: string | undefined): string {
   if (!id) return "—"
   return `…${id.slice(-6)}`
@@ -30,25 +66,25 @@ export function formatTicketId(id: string | undefined): string {
 export function getStatusLabel(status: TicketStatus): string {
   switch (status) {
     case "Draft":
-      return "Draft"
+      return "DRAFT"
     case "ValidPendingConfirm":
-      return "Needs Confirm"
+      return "VALIDATED"
     case "Ready":
-      return "Ready"
+      return "READY"
     case "Submitted":
-      return "Submitted"
+      return "SUBMITTED"
     case "ResponsesIn":
-      return "Positive Responses In"
+      return "READY TO DIG" // All responses are in, ready to dig
     case "ReadyToDig":
-      return "Ready to Dig"
+      return "READY TO DIG"
     case "Expiring":
-      return "Expiring Soon"
+      return "READY TO DIG" // Expiring tickets are still ready to dig
     case "Expired":
-      return "Expired"
+      return "EXPIRED"
     case "Cancelled":
-      return "Cancelled"
+      return "CANCELLED"
     default:
-      return status
+      return status.toUpperCase()
   }
 }
 
@@ -64,7 +100,7 @@ export function getStatusColor(status: TicketStatus): string {
     case "Submitted":
       return "bg-amber-100 text-amber-900 border-amber-300"
     case "ResponsesIn":
-      return "bg-purple-100 text-purple-900 border-purple-300"
+      return "bg-green-100 text-green-900 border-green-300" // Ready to dig
     case "ReadyToDig":
       return "bg-green-100 text-green-900 border-green-300"
     case "Expiring":

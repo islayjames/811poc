@@ -1,0 +1,89 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - heading "Tickets" [level=1] [ref=e6]
+        - paragraph [ref=e7]: Manage utility locate tickets and track their status
+      - button "Create Ticket" [ref=e8]
+    - generic [ref=e11]:
+      - generic [ref=e13]:
+        - textbox "Search tickets by work order, city, or county" [ref=e14]
+        - button "Search" [ref=e15]
+      - button "Filter by status" [ref=e16]:
+        - img
+        - text: Status
+      - button "Filter by city" [ref=e17]:
+        - text: City
+        - img
+      - button "Filter by county" [ref=e18]:
+        - text: County
+        - img
+    - table [ref=e26]:
+      - rowgroup [ref=e27]:
+        - row "ID WO Ref City County Status Earliest Start Expires Gaps" [ref=e28]:
+          - cell "ID" [ref=e29]
+          - cell "WO Ref" [ref=e30]
+          - cell "City" [ref=e31]
+          - cell "County" [ref=e32]
+          - cell "Status" [ref=e33]
+          - cell "Earliest Start" [ref=e34]:
+            - generic [ref=e35]:
+              - img [ref=e36]
+              - text: Earliest Start
+          - cell "Expires" [ref=e39]:
+            - generic [ref=e40]:
+              - img [ref=e41]
+              - text: Expires
+          - cell "Gaps" [ref=e44]
+      - rowgroup [ref=e45]:
+        - row [ref=e46]:
+          - cell [ref=e47]
+          - cell [ref=e49]
+          - cell [ref=e51]
+          - cell [ref=e53]
+          - cell [ref=e55]
+          - cell [ref=e57]
+          - cell [ref=e59]
+          - cell [ref=e61]
+        - row [ref=e63]:
+          - cell [ref=e64]
+          - cell [ref=e66]
+          - cell [ref=e68]
+          - cell [ref=e70]
+          - cell [ref=e72]
+          - cell [ref=e74]
+          - cell [ref=e76]
+          - cell [ref=e78]
+        - row [ref=e80]:
+          - cell [ref=e81]
+          - cell [ref=e83]
+          - cell [ref=e85]
+          - cell [ref=e87]
+          - cell [ref=e89]
+          - cell [ref=e91]
+          - cell [ref=e93]
+          - cell [ref=e95]
+        - row [ref=e97]:
+          - cell [ref=e98]
+          - cell [ref=e100]
+          - cell [ref=e102]
+          - cell [ref=e104]
+          - cell [ref=e106]
+          - cell [ref=e108]
+          - cell [ref=e110]
+          - cell [ref=e112]
+        - row [ref=e114]:
+          - cell [ref=e115]
+          - cell [ref=e117]
+          - cell [ref=e119]
+          - cell [ref=e121]
+          - cell [ref=e123]
+          - cell [ref=e125]
+          - cell [ref=e127]
+          - cell [ref=e129]
+  - region "Notifications (F8)":
+    - list
+```

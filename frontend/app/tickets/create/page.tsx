@@ -1,8 +1,9 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { TicketFormComponent } from "@/components/forms/TicketFormComponent"
+import { FormErrorBoundary } from "@/components/error-boundaries/FormErrorBoundary"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -18,6 +19,7 @@ export default function CreateTicketPage() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [showAbandonDialog, setShowAbandonDialog] = useState(false)
   const [draftData, setDraftData] = useState<Partial<TicketFormData> | null>(null)
+  const formResetKey = useRef(0)
 
   // Load draft data from localStorage on mount
   useEffect(() => {
@@ -106,6 +108,13 @@ export default function CreateTicketPage() {
     setHasUnsavedChanges(true)
   }
 
+  // Handle form restore after error boundary reset
+  const handleFormRestore = (restoredData: Partial<TicketFormData>) => {
+    setDraftData(restoredData)
+    formResetKey.current += 1
+    setHasUnsavedChanges(true)
+  }
+
   // Prevent accidental navigation away
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -168,15 +177,22 @@ export default function CreateTicketPage() {
       )}
 
       {/* Main Form */}
-      <TicketFormComponent
-        mode="create"
-        initialData={draftData || undefined}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        validationErrors={validationErrors}
-        isSubmitting={isSubmitting}
-        autoSaveStatus={autoSaveStatus}
-      />
+      <FormErrorBoundary
+        formId="create-ticket"
+        onFormRestore={handleFormRestore}
+        fallbackMessage="The ticket form encountered an error. Don't worry - your data has been automatically saved."
+      >
+        <TicketFormComponent
+          key={formResetKey.current}
+          mode="create"
+          initialData={draftData || undefined}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          validationErrors={validationErrors}
+          isSubmitting={isSubmitting}
+          autoSaveStatus={autoSaveStatus}
+        />
+      </FormErrorBoundary>
 
       {/* Form Abandonment Warning Dialog */}
       <Dialog open={showAbandonDialog} onOpenChange={setShowAbandonDialog}>

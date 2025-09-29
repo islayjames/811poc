@@ -57,7 +57,7 @@ export default function TicketsListPage() {
   })
   const [sortBy, setSortBy] = useState<"earliest_start" | "expires" | "status">(() => {
     const sort = searchParams.get("sort") as "earliest_start" | "expires" | "status"
-    return sort || "earliest_start"
+    return sort || "expires"
   })
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(() => {
     const dir = searchParams.get("dir") as "asc" | "desc"
@@ -176,7 +176,7 @@ export default function TicketsListPage() {
     // Only add sort params if not default
     const sort = newSortBy || sortBy
     const dir = newSortOrder || sortOrder
-    if (sort !== "earliest_start") params.set("sort", sort)
+    if (sort !== "expires") params.set("sort", sort)
     if (dir !== "asc") params.set("dir", dir)
 
     // Use replace instead of push to avoid adding to history stack
@@ -216,10 +216,12 @@ export default function TicketsListPage() {
     router.push(`/tickets/${ticketId}`)
   }
 
-  const handleSort = (newSortBy: string, newSortOrder: string) => {
-    setSortBy(newSortBy as "earliest_start" | "expires" | "status")
-    setSortOrder(newSortOrder as "asc" | "desc")
-    updateURL(undefined, undefined, undefined, undefined, newSortBy, newSortOrder)
+  const handleSort = (column: "earliest_start" | "expires" | "status") => {
+    // Toggle sort order if clicking the same column, otherwise start with asc
+    const newSortOrder = sortBy === column && sortOrder === "asc" ? "desc" : "asc"
+    setSortBy(column)
+    setSortOrder(newSortOrder)
+    updateURL(undefined, undefined, undefined, undefined, column, newSortOrder)
   }
 
   const clearAllFilters = () => {
@@ -227,7 +229,7 @@ export default function TicketsListPage() {
     setCityFilter(undefined)
     setCountyFilter(undefined)
     setSearchFilter(undefined)
-    setSortBy("earliest_start")
+    setSortBy("expires")
     setSortOrder("asc")
     setCurrentPage(1)
     // Clear URL params when clearing filters

@@ -22,6 +22,8 @@ import { api, ApiError } from "@/lib/api"
 import { GeoMapBox } from "@/components/map/GeoMapBox"
 import {
   formatTicketId,
+  formatTicketKey,
+  formatDate,
   canConfirm,
   canMarkSubmitted,
   canMarkResponsesIn,
@@ -438,7 +440,7 @@ export default function TicketDetailPage() {
             </Button>
 
             <div className="flex items-center space-x-1">
-              <span className="font-mono text-sm font-semibold">{formatTicketId(ticket.id)}</span>
+              <span className="font-mono text-sm font-semibold">{formatTicketKey(ticket.id)}</span>
               <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => copyToClipboard(ticket.id)}>
                 <CopyIcon className="h-3 w-3" />
               </Button>
@@ -468,7 +470,7 @@ export default function TicketDetailPage() {
               >
                 <ClockIcon className="h-3 w-3" />
                 <span title={new Date(ticket.dates.earliest_lawful_start).toISOString()}>
-                  {formatRelativeTime(ticket.dates.earliest_lawful_start)}
+                  {formatDate(ticket.dates.earliest_lawful_start)}
                 </span>
               </div>
             )}
@@ -484,7 +486,7 @@ export default function TicketDetailPage() {
               >
                 <CalendarIcon className="h-3 w-3" />
                 <span title={new Date(ticket.dates.expires_at).toISOString()}>
-                  {formatRelativeTime(ticket.dates.expires_at)}
+                  {formatDate(ticket.dates.expires_at)}
                 </span>
               </div>
             ) : (
@@ -584,6 +586,39 @@ export default function TicketDetailPage() {
 
             {/* Utility Responses Section - Moved to top */}
             <ResponsesSection ticketId={ticket.id} ticket={ticket} initialResponses={ticket.responses} />
+
+            {/* Priority Information Section */}
+            {(ticket.site?.driving_directions || ticket.site?.marking_instructions) && (
+              <Card className="rounded-xl border p-4 bg-blue-50/30 border-blue-200">
+                <CardHeader className="p-0 pb-2">
+                  <CardTitle className="text-base font-semibold flex items-center space-x-2 text-blue-900">
+                    <AlertTriangleIcon className="h-4 w-4" />
+                    <span>Priority Instructions</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="space-y-4">
+                    {ticket.site?.driving_directions && (
+                      <div>
+                        <label className="text-sm text-blue-800 font-semibold">Driving Directions</label>
+                        <div className="text-sm mt-1 leading-5 text-blue-900 bg-white/50 p-3 rounded-md border border-blue-200">
+                          {ticket.site.driving_directions}
+                        </div>
+                      </div>
+                    )}
+
+                    {ticket.site?.marking_instructions && (
+                      <div>
+                        <label className="text-sm text-blue-800 font-semibold">Work Instructions</label>
+                        <div className="text-sm mt-1 leading-5 text-blue-900 bg-white/50 p-3 rounded-md border border-blue-200">
+                          {ticket.site.marking_instructions}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Current Summary Section */}
             <Card id="summary" className="rounded-xl border p-4">

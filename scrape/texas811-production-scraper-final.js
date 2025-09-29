@@ -21,16 +21,16 @@ const CONFIG = {
     username: 'james.simmons@highpointe.tech',
     password: 'jgr6dvc8XBK!kaf8qjv'
   },
-  company: 'BRIGHTSTAR',
+  company: 'BRIGHT STAR SOLUTIONS',
   options: {
     headless: false,
     rateLimitMs: 5000, // Increased for slow site
     maxRetries: 3,
-    outputFile: `texas811-full-brightstar-${new Date().toISOString().split('T')[0]}.json`,
+    outputFile: `texas811-bright-star-solutions-${new Date().toISOString().split('T')[0]}.json`,
     saveProgress: true,
-    // FULL EXTRACTION MODE: Process all available tickets
+    // INCREMENTAL TEST MODE: Process limited tickets to validate changes
     testMode: false,
-    maxTicketsToTest: null, // No limit - process all tickets
+    maxTicketsToTest: 3, // Test with 3 tickets only
     searchOlderTickets: false, // Use default date range
     // BROWSER STABILITY SETTINGS - INCREASED FOR SLOW SITE
     popupTimeout: 60000, // 60 seconds for popup operations
@@ -1278,6 +1278,131 @@ async function extractTicketDataWithFallbacks(popupPage) {
       const utilityResponses = utilityResponsesResult.responses;
       const responseDebugOutput = utilityResponsesResult.debugOutput;
 
+      // INCREMENTAL ADDITION: Extract expected members from Members section
+      const expectedMembers = [];
+      const allHeaders = Array.from(root.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+      const membersHeader = allHeaders.find(h => getText(h).toLowerCase().includes('member') && !getText(h).toLowerCase().includes('response'));
+
+      if (membersHeader) {
+        const membersSection = membersHeader.nextElementSibling;
+        if (membersSection && membersSection.tagName === 'DL') {
+          const memberDivs = Array.from(membersSection.querySelectorAll('div'));
+          let currentMember = {};
+
+          memberDivs.forEach((div) => {
+            const divText = getText(div).trim();
+
+            if (divText.startsWith('Code:')) {
+              const code = divText.replace('Code:', '').trim();
+              if (code) {
+                currentMember.code = code;
+              }
+            } else if (divText.startsWith('Name:')) {
+              const name = divText.replace('Name:', '').trim();
+              if (name) {
+                currentMember.name = name;
+
+                // If we have both code and name, add to expected members
+                if (currentMember.code && currentMember.name) {
+                  expectedMembers.push({
+                    member_code: currentMember.code,
+                    member_name: currentMember.name
+                  });
+                  currentMember = {};
+                }
+              }
+            }
+          });
+        }
+      }
+
+      // INCREMENTAL ADDITION: Parse actual responses from response table
+      const actualResponses = [];
+      const expectedMemberCodes = new Set(expectedMembers.map(m => m.member_code));
+
+      // Look for response tables (typically 3 columns: Code, Name, Facilities)
+      const allTables = Array.from(root.querySelectorAll('table'));
+
+      allTables.forEach(table => {
+        const rows = Array.from(table.querySelectorAll('tr'));
+
+        // Skip tables that are too small to be response tables
+        if (rows.length < 2) return;
+
+        // Check if this looks like a response table by examining first row
+        const headerRow = rows[0];
+        const headerCells = Array.from(headerRow.querySelectorAll('td, th'));
+        const headerText = headerCells.map(cell => getText(cell).toLowerCase()).join(' ');
+
+        // Skip if doesn't look like a response table
+        if (!headerText.includes('code') || headerCells.length < 3) return;
+
+        // Process data rows
+        rows.slice(1).forEach(row => {
+          const cells = Array.from(row.querySelectorAll('td, th'));
+
+          if (cells.length >= 3) {
+            const codeText = getText(cells[0]).trim();
+            const nameText = getText(cells[1]).trim();
+            const facilitiesText = getText(cells[2]).trim();
+
+            // Only process if this code is in our expected members list
+            if (expectedMemberCodes.has(codeText) && nameText) {
+              // Parse the name field for date/time, status, and comment
+              // Format: "Company Name\nDate Time by user: Status\nComment: comment text"
+
+              const lines = nameText.split('\n').map(line => line.trim()).filter(line => line);
+
+              if (lines.length >= 2) {
+                const companyName = lines[0];
+
+                // Look for date/time/status line (second line)
+                const responseLine = lines[1];
+
+                // Regex to extract: "September 29, 2025 10:28 AM by irth.pr: Clear"
+                const responseMatch = responseLine.match(/^(.+?)\s+by\s+[^:]+:\s*(.+)$/);
+
+                let dateTime = '';
+                let status = '';
+                let comment = '';
+
+                if (responseMatch) {
+                  dateTime = responseMatch[1].trim();
+                  status = responseMatch[2].trim();
+                } else {
+                  // Fallback: try to extract status from end of line
+                  const statusMatch = responseLine.match(/:\s*(Clear|Not Clear|Positive|Negative)$/i);
+                  if (statusMatch) {
+                    status = statusMatch[1];
+                    // Try to extract date from beginning
+                    const dateMatch = responseLine.match(/^([^:]+)/);
+                    if (dateMatch) {
+                      dateTime = dateMatch[1].replace(/by\s+[^\s:]+/g, '').trim();
+                    }
+                  }
+                }
+
+                // Look for comment line (starts with "Comment:")
+                const commentLine = lines.find(line => line.toLowerCase().startsWith('comment:'));
+                if (commentLine) {
+                  comment = commentLine.replace(/^comment:\s*/i, '').trim();
+                }
+
+                actualResponses.push({
+                  member_code: codeText,
+                  member_name: companyName,
+                  response_date: dateTime || null,
+                  response_status: status || null,
+                  comment: comment || null,
+                  facilities: facilitiesText || null,
+                  raw_name_field: nameText
+                });
+              }
+            }
+          }
+        });
+      });
+
       // Build comprehensive ticket data
       return {
         // Basic info
@@ -1325,7 +1450,13 @@ async function extractTicketDataWithFallbacks(popupPage) {
         content_length: getText(root).length,
 
         // Debug output from response extraction
-        response_debug_output: responseDebugOutput
+        response_debug_output: responseDebugOutput,
+
+        // INCREMENTAL ADDITION: Expected members from Members section
+        expected_members: expectedMembers,
+
+        // INCREMENTAL ADDITION: Actual responses from response table
+        actual_responses: actualResponses
       };
     });
 

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { TicketFormComponent } from "@/components/forms/TicketFormComponent"
+import { FormErrorBoundary } from "@/components/error-boundaries/FormErrorBoundary"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -130,6 +131,41 @@ export default function EditTicketPage() {
   // Handle form changes for unsaved changes tracking
   const handleFormChangeTracking = (data: TicketFormData) => {
     setHasUnsavedChanges(true)
+  }
+
+  // Handle ticket submission to Texas811
+  const handleSubmitToTexas811 = async (submissionReference: string, notes?: string) => {
+    if (!ticketId) return
+
+    try {
+      setIsSubmitting(true)
+
+      // Call the submission API
+      const result = await TicketService.submitTicket(ticketId, submissionReference, notes)
+
+      if (result.success) {
+        // Clear unsaved changes flag
+        setHasUnsavedChanges(false)
+
+        // Redirect to ticket detail page to show updated status
+        router.push(`/tickets/${ticketId}`)
+      }
+    } catch (error) {
+      console.error('Failed to submit ticket:', error)
+
+      if (error instanceof TicketAPIError) {
+        setValidationErrors([{ message: error.message }])
+      } else {
+        setValidationErrors([
+          { message: 'Failed to submit ticket. Please try again.' }
+        ])
+      }
+
+      // Re-throw to allow dialog to handle error display
+      throw error
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // Handle form submission with optimistic updates
@@ -425,22 +461,30 @@ export default function EditTicketPage() {
       </Breadcrumb>
 
       {/* Main Form */}
-      <TicketFormComponent
-        mode="edit"
-        ticketId={ticketId}
-        initialData={initialFormData}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        validationErrors={validationErrors}
-        isSubmitting={isSubmitting}
-        autoSaveStatus={autoSaveStatus}
-        fieldErrors={fieldErrors}
-        onConflictResolution={handleConflictResolution}
-        optimisticUpdate={true}
-        autoSaveEnabled={true}
-        onAutoSaveError={handleAutoSaveError}
-        onFormChange={handleFormChangeTracking}
-      />
+      <FormErrorBoundary
+        formId={`edit-ticket-${ticketId}`}
+        fallbackMessage="The ticket form encountered an error. Your progress has been automatically saved."
+      >
+        <TicketFormComponent
+          mode="edit"
+          ticketId={ticketId}
+          initialData={initialFormData}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          validationErrors={validationErrors}
+          isSubmitting={isSubmitting}
+          autoSaveStatus={autoSaveStatus}
+          fieldErrors={fieldErrors}
+          onConflictResolution={handleConflictResolution}
+          optimisticUpdate={true}
+          autoSaveEnabled={true}
+          onAutoSaveError={handleAutoSaveError}
+          onFormChange={handleFormChangeTracking}
+          onSubmitToTexas811={handleSubmitToTexas811}
+          currentStatus={ticket?.status}
+          enableSubmission={ticket?.status ? TicketService.canSubmitTicket(ticket.status) : false}
+        />
+      </FormErrorBoundary>
 
       {/* Form Abandonment Warning Dialog */}
       <Dialog open={showAbandonDialog} onOpenChange={setShowAbandonDialog}>

@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { StatusPill } from "./status-pill"
-import { formatRelativeTime, isExpiringWithin3Days, shouldShowPastStartWarning } from "@/lib/format"
+import { formatRelativeTime, isExpiringWithin3Days, shouldShowPastStartWarning, formatTicketKey, formatWorkOrder, formatDate } from "@/lib/format"
 import type { TicketListItem } from "@/lib/types"
-import { ChevronUpIcon, ChevronDownIcon, Clock, Check, ExternalLink } from "lucide-react"
+import { ChevronUpIcon, ChevronDownIcon, Clock, ExternalLink } from "lucide-react"
 
 interface TicketsTableProps {
   tickets: TicketListItem[]
@@ -94,7 +94,7 @@ export function TicketsTable({ tickets, onRowClick, onSort, sortBy, sortOrder }:
               <SortIcon column="expires" />
             </Button>
           </TableHead>
-          <TableHead className="w-20">Gaps</TableHead>
+          <TableHead className="w-20">Issues</TableHead>
           <TableHead className="w-12"></TableHead>
         </TableRow>
       </TableHeader>
@@ -119,10 +119,10 @@ export function TicketsTable({ tickets, onRowClick, onSort, sortBy, sortOrder }:
                 }}
                 title={`Copy full ID: ${ticket.id}`}
               >
-                ...{ticket.id?.slice(-6) || ""}
+                {formatTicketKey(ticket.id)}
               </Button>
             </TableCell>
-            <TableCell>{ticket.work_order_ref || <span className="text-muted-foreground">—</span>}</TableCell>
+            <TableCell>{formatWorkOrder(ticket.work_order_ref, ticket.id)}</TableCell>
             <TableCell>{ticket.city}</TableCell>
             <TableCell>{ticket.county}</TableCell>
             <TableCell>
@@ -131,7 +131,7 @@ export function TicketsTable({ tickets, onRowClick, onSort, sortBy, sortOrder }:
             <TableCell className="text-right">
               {ticket.dates?.earliest_lawful_start ? (
                 <span title={ticket.dates.earliest_lawful_start}>
-                  {formatRelativeTime(ticket.dates.earliest_lawful_start)}
+                  {formatDate(ticket.dates.earliest_lawful_start)}
                 </span>
               ) : (
                 <span className="text-muted-foreground">—</span>
@@ -139,18 +139,18 @@ export function TicketsTable({ tickets, onRowClick, onSort, sortBy, sortOrder }:
             </TableCell>
             <TableCell className="text-right">
               {ticket.dates?.expires_at ? (
-                <span title={ticket.dates.expires_at}>{formatRelativeTime(ticket.dates.expires_at)}</span>
+                <span title={ticket.dates.expires_at}>{formatDate(ticket.dates.expires_at)}</span>
               ) : (
                 <span className="text-muted-foreground">—</span>
               )}
             </TableCell>
             <TableCell className="cursor-pointer" onClick={(e) => handleGapsClick(e, ticket.id)}>
               {ticket.gap_count > 0 ? (
-                <Badge variant="destructive" className="text-xs" title="Fields to resolve in GPT flow">
+                <Badge variant="destructive" className="text-xs" title={`${ticket.gap_count} field${ticket.gap_count !== 1 ? 's' : ''} need${ticket.gap_count === 1 ? 's' : ''} completion`}>
                   {ticket.gap_count}
                 </Badge>
               ) : (
-                <Check className="h-4 w-4 text-green-600" title="No gaps" />
+                <span className="text-muted-foreground text-xs">—</span>
               )}
             </TableCell>
             <TableCell>

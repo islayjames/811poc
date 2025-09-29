@@ -395,7 +395,82 @@ TicketFormComponent (New)
 - [ ] Implement accessibility features and keyboard navigation
 - [ ] Add mobile responsive design
 
-### Phase 4: Polish (Week 4)
+### Phase 4: Data Display & UX Improvements (Week 4)
+
+Based on user feedback from post-Sprint 3 analysis, critical data presentation issues have been identified that impact user comprehension and workflow efficiency.
+
+#### **4.1 Tickets List Page Improvements**
+
+**ID Field Enhancement**
+- [ ] Replace internal identifiers with user-friendly 4-digit ticket keys
+- [ ] Remove ellipses (...) from ID display
+- [ ] Generate consistent internal ID format (e.g., TX24-1001, TX24-1002)
+- [ ] Ensure ID remains stable across all ticket statuses
+
+**Work Order Field Correction**
+- [ ] Fix work order display showing "scraped-data-xxxxxxxx" for submitted tickets
+- [ ] Show actual work order numbers from original PDF sources
+- [ ] Maintain work order reference consistency across ticket lifecycle
+- [ ] Validate work order data integrity during import process
+
+**Status Field Enhancement**
+- [ ] Map technical status codes to Texas811 workflow terminology
+- [ ] Implement complete status vocabulary: DRAFT, VALIDATED, READY, SUBMITTED, IN PROGRESS, RESPONSES IN, READY TO DIG, COMPLETED, EXPIRED, CANCELLED
+- [ ] Add status-specific visual indicators (colors, icons)
+- [ ] Ensure scraped data reflects accurate workflow states (IN PROGRESS, RESPONSES IN, READY TO DIG)
+- [ ] Validate new tickets show proper progression (DRAFT → VALIDATED → READY → SUBMITTED)
+
+**Date Format Standardization**
+- [ ] Replace relative dates ("3 days ago", "in 7 days") with absolute dates
+- [ ] Implement consistent date format (e.g., "Oct 3, 2024" or "2024-10-03")
+- [ ] Ensure earliest start and expires columns sort correctly by absolute dates
+- [ ] Maintain timezone consistency for compliance tracking
+
+**Column Optimization**
+- [ ] Evaluate and improve "Gaps" column utility or remove if not actionable
+- [ ] Ensure all displayed data provides user value
+- [ ] Optimize column widths for better information density
+
+#### **4.2 Ticket Detail Page Enhancements**
+
+**Date Display Consistency**
+- [ ] Convert all relative date displays ("5 days ago", "in 7 days") to absolute dates
+- [ ] Maintain consistent date formatting across all date fields
+- [ ] Include day-of-week information where relevant for business day calculations
+
+**Ticket Identification Clarity**
+- [ ] Display both internal ticket number and work order number prominently
+- [ ] Show full numbers without ellipses or truncation
+- [ ] Clear labeling to distinguish between internal ID and work order reference
+- [ ] Ensure copy-to-clipboard functionality for reference numbers
+
+**Critical Information Display**
+- [ ] **Priority**: Add work instructions section to ticket detail view
+- [ ] **Priority**: Add driving directions section to ticket detail view
+- [ ] Validate work instructions and driving directions data exists in backend
+- [ ] Position work instructions and driving directions prominently under work description
+- [ ] Ensure rich text formatting preserved from original PDF sources
+
+**Information Architecture**
+- [ ] Reorganize ticket detail layout with work instructions as primary focus
+- [ ] Group related information logically (Work Details, Location, Instructions, Status)
+- [ ] Ensure mobile-responsive layout for field teams
+
+#### **4.3 Data Integrity Validation**
+
+**Backend Data Audit**
+- [ ] Verify work instructions are properly extracted and stored from PDF sources
+- [ ] Confirm driving directions data completeness in database
+- [ ] Validate work order number extraction and storage accuracy
+- [ ] Ensure status mapping covers all Texas811 workflow states
+
+**Data Processing Improvements**
+- [ ] Update PDF extraction pipeline to capture work instructions reliably
+- [ ] Enhance work order number recognition and extraction
+- [ ] Improve status classification during data import
+- [ ] Add data validation checks during ticket processing
+
+### Phase 5: Polish & Production Readiness (Week 5)
 - [ ] Performance optimization and testing
 - [ ] User acceptance testing and feedback incorporation
 - [ ] Documentation and help content
